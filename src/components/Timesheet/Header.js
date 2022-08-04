@@ -6,7 +6,7 @@ import { ColView } from '../ConstantComponent';
 export default Header = ({month, total, color}) => {
     return (
         // <View style={styles.main}>
-    <ColView flex={2} justify={"space-between"} padding={20} style={{backgroundColor: color}}> 
+    <ColView justify={"space-between"} padding={20} style={{backgroundColor: color}}> 
         <View>
             <Text >Month:</Text>
             <Text h3 h3Style={styles.h3Style}>{month}</Text>

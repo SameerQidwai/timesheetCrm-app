@@ -9,7 +9,7 @@ export const ColView = ({children, flex,justify, padding, style,}) =>{
 
 const styles = StyleSheet.create({
     main : (flex, justify, padding, style) =>({
-        flex: flex?? 2, 
+        flex: flex, 
         flexDirection: 'row',
         justifyContent: justify,
         padding: padding,
