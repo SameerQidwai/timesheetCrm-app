@@ -83,6 +83,8 @@ const timesheet = [{
   ]
 }]
 const App= () => {
+  const [items, setItems] = useState({})
+
   const weekView =  false
   const marked = useRef(()=>{
     let markedDate = {}
@@ -100,6 +102,8 @@ const App= () => {
 
   const onDateChanged = (day) =>{
     console.log(day)
+    let newItems = timesheet.findIndex(el =>  el.title === day)
+       setItems({[day]: newItems[day]?? {}})
   };
 
   const onMonthChange = useCallback((/* month, updateSource */) => {
@@ -132,39 +136,43 @@ const App= () => {
             date={timesheet[1].title}
             onDateChanged={onDateChanged}
             onMonthChange={onMonthChange}
-            showTodayButton
+            // showTodayButton
             disabledOpacity={0.6} 
             theme={todayBtnTheme.current}
             // todayBottomMargin={16}
           >
-            {weekView ? (
-              <WeekCalendar  firstDay={1} markedDates={marked.current}/>
-            ) : (
-              <ExpandableCalendar
-                // horizontal={false}
-                hideArrows
-                // disablePan
-                // hideKnob
-                // initialPosition={ExpandableCalendar.positions.OPEN}
-                calendarStyle={styles.calendar}
-                // headerStyle={styles.calendar} // for horizontal only
-                // disableWeekScroll
-                theme={theme.current}
-                // disableAllTouchEventsForDisabledDays
-                firstDay={1}
-                markedDates={marked.current}
-                // leftArrowImageSource={leftArrowIcon}
-                // rightArrowImageSource={rightArrowIcon}
-                // animateScroll
-              />
-            )}
-            <AgendaList
+            <ExpandableCalendar
+              // horizontal={false}
+              hideArrows
+              // disablePan
+              // hideKnob
+              // initialPosition={ExpandableCalendar.positions.OPEN}
+              calendarStyle={styles.calendar}
+              // headerStyle={styles.calendar} // for horizontal only
+              // disableWeekScroll
+              theme={theme.current}
+              // disableAllTouchEventsForDisabledDays
+              firstDay={1}
+              markedDates={marked.current}
+              // leftArrowImageSource={leftArrowIcon}
+              // rightArrowImageSource={rightArrowIcon}
+              // animateScroll
+            />
+            <TouchableOpacity style={styles.item} >
+              <View>
+                <Text style={styles.itemHourText}>{23213}</Text>
+                <Text style={styles.itemDurationText}>{213}</Text>
+              </View>
+              <Text style={styles.itemTitleText}>{444}</Text>
+            </TouchableOpacity>
+            
+            {/* <AgendaList
               sections={timesheet}
               renderItem={renderItem}
               // scrollToNextEvent
               sectionStyle={styles.section}
               // dayFormat={'YYYY-MM-d'}
-            />
+            /> */}
           </CalendarProvider>
     </View>
   )
