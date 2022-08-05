@@ -6,90 +6,180 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React, {useState, useRef, useCallback} from 'react';
+import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View, StyleSheet, TouchableOpacity } from 'react-native';
+import {Text, Card} from '@rneui/themed'
 
-import {Text} from '@rneui/themed'
+import {ExpandableCalendar, AgendaList, CalendarProvider, WeekCalendar} from 'react-native-calendars';
+import { getTheme, lightThemeColor, themeColor } from './src/theme';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-import { Calander } from './src/components/Timesheet/Calander';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+const timesheet = [{
+  title: '2022-08-05',
+  data: [{hour: '12am', duration: '1h', title: 'First Yoga'}]
+},
+{
+  title: '2022-08-04',
+  data: [
+    {hour: '4pm', duration: '1h', title: 'Pilates ABC'},
+    {hour: '5pm', duration: '1h', title: 'Vinyasa Yoga'}
+  ]
+},
+{
+  title: '2022-08-06',
+  data: [
+    {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
+    {hour: '2pm', duration: '1h', title: 'Deep Stretches'},
+    {hour: '3pm', duration: '1h', title: 'Private Yoga'}
+  ]
+},
+{
+  title: '2022-08-08',
+  data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}]
+},
+{
+  title: '2022-08-10',
+  data: [{}]
+},
+{
+  title: '2022-08-11',
+  data: [
+    {hour: '9pm', duration: '1h', title: 'Middle Yoga'},
+    {hour: '10pm', duration: '1h', title: 'Ashtanga'},
+    {hour: '11pm', duration: '1h', title: 'TRX'},
+    {hour: '12pm', duration: '1h', title: 'Running Group'}
+  ]
+},
+{
+  title: '2022-08-13', 
+  data: [
+    {hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}
+  ]
+},
+{
+  title: '2022-08-15', 
+  data: [{}]
+},
+{
+  title: '2022-08-20',
+  data: [
+    {hour: '9pm', duration: '1h', title: 'Pilates Reformer'},
+    {hour: '10pm', duration: '1h', title: 'Ashtanga'},
+    {hour: '11pm', duration: '1h', title: 'TRX'},
+    {hour: '12pm', duration: '1h', title: 'Running Group'}
+  ]
+},
+{
+  title: '2022-08-21',
+  data: [
+    {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
+    {hour: '2pm', duration: '1h', title: 'Deep Stretches'},
+    {hour: '3pm', duration: '1h', title: 'Private Yoga'}
+  ]
+},
+{
+  title: '2022-08-22', 
+  data: [
+    {hour: '12am', duration: '1h', title: 'Last Yoga'}
+  ]
+}]
 const App= () => {
+  const weekView =  false
+  const marked = useRef(()=>{
+    let markedDate = {}
+    for (let obj of timesheet){
+      markedDate[obj.title] = {marked:true}
+    }
+    return markedDate
+  });
+  const theme = useRef(getTheme());
+  const todayBtnTheme = useRef({
+    todayButtonTextColor: themeColor
+  });
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+
+  const onDateChanged = (day) =>{
+    console.log(day)
   };
 
+  const onMonthChange = useCallback((/* month, updateSource */) => {
+    // console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
+  }, []);
+
+  const renderItem = ({item}) => {
+    if (item === {}) {
+      return (
+        <View style={styles.emptyItem}>
+          <Text style={styles.emptyItemText}>No Events Planned Today</Text>
+        </View>
+      );
+    }
+  
+    return (
+      <TouchableOpacity style={styles.item} >
+        <View>
+          <Text style={styles.itemHourText}>{item.hour}</Text>
+          <Text style={styles.itemDurationText}>{item.duration}</Text>
+        </View>
+        <Text style={styles.itemTitleText}>{item.title}</Text>
+      </TouchableOpacity>
+    )
+  }
+
   return (
-    <View style={{paddingTop: 100}}>
-        <Calendar
-    // Initially visible month. Default = now
-        initialDate={'2022-08-04'}
-        // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-        minDate={'2012-05-10'}
-        // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-        maxDate={'2022-08-10'}
-        // Handler which gets executed on day press. Default = undefined
-        onDayPress={day => {
-          console.log('selected day', day);
-        }}
-        // Handler which gets executed on day long press. Default = undefined
-        onDayLongPress={day => {
-          console.log('selected day', day);
-        }}
-        // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-        monthFormat={'yyyy MM'}
-        // Handler which gets executed when visible month changes in calendar. Default = undefined
-        onMonthChange={month => {
-          console.log('month changed', month);
-        }}
-        // Hide month navigation arrows. Default = false
-        hideArrows={true}
-        // Replace default arrows with custom ones (direction can be 'left' or 'right')
-        renderArrow={direction => <Arrow />}
-        // Do not show days of other months in month page. Default = false
-        hideExtraDays={true}
-        // If hideArrows = false and hideExtraDays = false do not switch month when tapping on greyed out
-        // day from another month that is visible in calendar page. Default = false
-        disableMonthChange={true}
-        // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday
-        firstDay={1}
-        // Hide day names. Default = false
-        hideDayNames={true}
-        // Show week numbers to the left. Default = false
-        showWeekNumbers={true}
-        // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-        onPressArrowLeft={subtractMonth => subtractMonth()}
-        // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-        onPressArrowRight={addMonth => addMonth()}
-        // Disable left arrow. Default = false
-        disableArrowLeft={true}
-        // Disable right arrow. Default = false
-        disableArrowRight={true}
-        // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-        markedDates={{
-          '2022-08-05': {selected: true, marked: true, selectedColor: 'blue'},
-        }}
-        disableAllTouchEventsForDisabledDays={true}
-        // Replace default month and year title with custom one. the function receive a date as parameter
-        renderHeader={date => {
-          /*Return JSX*/
-        }}
-        // Enable the option to swipe between months. Default = false
-        enableSwipeMonths={true}
-      />
+    <View style={{flex: 1}}>
+         <CalendarProvider
+            date={timesheet[1].title}
+            onDateChanged={onDateChanged}
+            onMonthChange={onMonthChange}
+            showTodayButton
+            disabledOpacity={0.6} 
+            theme={todayBtnTheme.current}
+            // todayBottomMargin={16}
+          >
+            {weekView ? (
+              <WeekCalendar  firstDay={1} markedDates={marked.current}/>
+            ) : (
+              <ExpandableCalendar
+                // horizontal={false}
+                hideArrows
+                // disablePan
+                // hideKnob
+                // initialPosition={ExpandableCalendar.positions.OPEN}
+                calendarStyle={styles.calendar}
+                // headerStyle={styles.calendar} // for horizontal only
+                // disableWeekScroll
+                theme={theme.current}
+                // disableAllTouchEventsForDisabledDays
+                firstDay={1}
+                markedDates={marked.current}
+                // leftArrowImageSource={leftArrowIcon}
+                // rightArrowImageSource={rightArrowIcon}
+                // animateScroll
+              />
+            )}
+            <AgendaList
+              sections={timesheet}
+              renderItem={renderItem}
+              // scrollToNextEvent
+              sectionStyle={styles.section}
+              // dayFormat={'YYYY-MM-d'}
+            />
+          </CalendarProvider>
     </View>
   )
 };
 
 export default App;
 
+const styles = StyleSheet.create({
+  calendar: {
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  section: {
+    backgroundColor: lightThemeColor,
+    color: 'grey',
+    textTransform: 'capitalize'
+  }
+});
