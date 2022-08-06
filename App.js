@@ -12,74 +12,247 @@ import {Text, Card} from '@rneui/themed'
 
 import {ExpandableCalendar, AgendaList, CalendarProvider, WeekCalendar} from 'react-native-calendars';
 import { getTheme, lightThemeColor, themeColor } from './src/theme';
+import ProjectCards from './src/components/Timesheet/ProjectCards';
 
 const timesheet = [{
   title: '2022-08-05',
-  data: [{hour: '12am', duration: '1h', title: 'First Yoga'}]
+  data:
+  [{
+    id: 1,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: 27,
+    status: 'Submit',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id: 2,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: 27,
+    status: 'Submit',
+    notes:  'As a cross platform UI Toolkit,'
+  },]
 },
 {
   title: '2022-08-04',
   data: [
-    {hour: '4pm', duration: '1h', title: 'Pilates ABC'},
-    {hour: '5pm', duration: '1h', title: 'Vinyasa Yoga'}
+    {
+      id: 1,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 2,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    }
   ]
 },
 {
   title: '2022-08-06',
   data: [
-    {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
-    {hour: '2pm', duration: '1h', title: 'Deep Stretches'},
-    {hour: '3pm', duration: '1h', title: 'Private Yoga'}
+    {
+      id: 1,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 2,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    }
   ]
 },
 {
   title: '2022-08-08',
-  data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}]
-},
-{
-  title: '2022-08-10',
-  data: [{}]
+  data: [{
+    id: 1,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: 27,
+    status: 'Submit',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  ]
 },
 {
   title: '2022-08-11',
   data: [
-    {hour: '9pm', duration: '1h', title: 'Middle Yoga'},
-    {hour: '10pm', duration: '1h', title: 'Ashtanga'},
-    {hour: '11pm', duration: '1h', title: 'TRX'},
-    {hour: '12pm', duration: '1h', title: 'Running Group'}
+    {
+      id: 1,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 2,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 3,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 4,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    }
   ]
 },
 {
   title: '2022-08-13', 
   data: [
-    {hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}
+    {
+      id: 1,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 2,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    }
   ]
-},
-{
-  title: '2022-08-15', 
-  data: [{}]
 },
 {
   title: '2022-08-20',
   data: [
-    {hour: '9pm', duration: '1h', title: 'Pilates Reformer'},
-    {hour: '10pm', duration: '1h', title: 'Ashtanga'},
-    {hour: '11pm', duration: '1h', title: 'TRX'},
-    {hour: '12pm', duration: '1h', title: 'Running Group'}
+    {
+      id: 1,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 2,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 3,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 4,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 5,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 6,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    }
   ]
 },
 {
   title: '2022-08-21',
   data: [
-    {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
-    {hour: '2pm', duration: '1h', title: 'Deep Stretches'},
-    {hour: '3pm', duration: '1h', title: 'Private Yoga'}
+    {
+      id: 1,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      id: 2,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    }
   ]
 },
 {
   title: '2022-08-22', 
   data: [
-    {hour: '12am', duration: '1h', title: 'Last Yoga'}
+    {
+      id: 1,
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
   ]
 }]
 const App= () => {
@@ -101,9 +274,11 @@ const App= () => {
 
 
   const onDateChanged = (day) =>{
-    console.log(day)
-    let newItems = timesheet.findIndex(el =>  el.title === day)
-       setItems({[day]: newItems[day]?? {}})
+    // console.log(day)
+    let index = timesheet.findIndex(el =>  el.title === day)
+    // console.log(index)
+    // console.log(timesheet)
+    setItems(timesheet[index])
   };
 
   const onMonthChange = useCallback((/* month, updateSource */) => {
@@ -131,7 +306,8 @@ const App= () => {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+
          <CalendarProvider
             date={timesheet[1].title}
             onDateChanged={onDateChanged}
@@ -147,32 +323,26 @@ const App= () => {
               // disablePan
               // hideKnob
               // initialPosition={ExpandableCalendar.positions.OPEN}
+              
               calendarStyle={styles.calendar}
-              // headerStyle={styles.calendar} // for horizontal only
+              headerStyle={styles.calendar} // for horizontal only
               // disableWeekScroll
               theme={theme.current}
               // disableAllTouchEventsForDisabledDays
               firstDay={1}
               markedDates={marked.current}
-              // leftArrowImageSource={leftArrowIcon}
+              // leftArrowImageSource={leftArrowIcon}rea
               // rightArrowImageSource={rightArrowIcon}
               // animateScroll
+              renderHeader={date => (
+                <View style={{paddingVertical:10,flex: 3, flexDirection: 'row', justifyContent: 'space-between'}}>
+                   <Text Text>{'<'}</Text> 
+                  <Text>{date.toISOString().split('T')[0]}</Text>
+                   <Text>{278.3}</Text>
+                </View>
+              )}
             />
-            <TouchableOpacity style={styles.item} >
-              <View>
-                <Text style={styles.itemHourText}>{23213}</Text>
-                <Text style={styles.itemDurationText}>{213}</Text>
-              </View>
-              <Text style={styles.itemTitleText}>{444}</Text>
-            </TouchableOpacity>
-            
-            {/* <AgendaList
-              sections={timesheet}
-              renderItem={renderItem}
-              // scrollToNextEvent
-              sectionStyle={styles.section}
-              // dayFormat={'YYYY-MM-d'}
-            /> */}
+            <ProjectCards timesheets={items?.data ?? []}/>
           </CalendarProvider>
     </View>
   )
@@ -182,8 +352,8 @@ export default App;
 
 const styles = StyleSheet.create({
   calendar: {
-    paddingLeft: 20,
-    paddingRight: 20
+    // paddingLeft: 20,
+    // paddingRight: 20
   },
   section: {
     backgroundColor: lightThemeColor,

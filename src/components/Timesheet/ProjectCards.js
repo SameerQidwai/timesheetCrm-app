@@ -1,11 +1,85 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { View , StyleSheet, TouchableOpacity , FlatList} from 'react-native';
 import { Card, Text, Badge, Tooltip } from '@rneui/themed'
 import { ColView } from '../ConstantComponent';
 
+const projects = [
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Rejected',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Rejected',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Submit',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+    {
+      projectName: 'One LM',
+      type:  1,
+      milestoneName: 'Milestone 1',
+      hours: 27,
+      status: 'Rejected',
+      notes:  'As a cross platform UI Toolkit,'
+    },
+]
+  
+
 export default ProjectCards = ({timesheets}) =>{
     const [selected, setSelected] = useState({})
     const [longPressed, setLongPress] = useState(false)
+
+    useEffect(() => {
+      console.log(timesheets)
+    
+    }, [])
+    
 
     const onPressItem = (key, long)=>{
         let newSelected = selected
