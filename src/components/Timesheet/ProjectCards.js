@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { View , StyleSheet, TouchableOpacity , FlatList} from 'react-native';
-import { Card, Text, Badge, Tooltip } from '@rneui/themed'
+import {Card, Text, Badge } from 'react-native-paper';
 import { ColView } from '../ConstantComponent';
 
 const projects = [
@@ -130,12 +130,12 @@ export default ProjectCards = ({timesheets}) =>{
                     </ColView>
                     <ColView  style={styles.cardView}>
                         <Text>Notes: </Text>
-                        <Tooltip
+                        {/* <Tooltip
                             popover={<Text>Tooltip info goes here</Text>}
                             width={200}
-                        >
+                        > */}
                             <Text>{item.notes}</Text>
-                        </Tooltip>
+                        {/* </Tooltip> */}
                     </ColView>
                 </Card>
             </TouchableOpacity>
@@ -158,56 +158,9 @@ const styles = StyleSheet.create({
         paddingVertical:  5,
     },
     card: (selectColor)=> ({
-        borderRadius: 30,  
-        backgroundColor: selectColor ? "#6e3b6e" : "white"
+        margin:10,
+        borderRadius: 10,  
+        backgroundColor: selectColor ? "#c3f7ff9e" : "white"
     })
 })
-
-
-    // export default ProjectCards = ({timesheets}) =>{
-    //     const keyExtractor = (item, index) => index.toString()
-    //     const renderItem = ({ item }) => (
-    //         <ListItem 
-    //         style={{marginLeft: 0, paddingLeft: 0}}
-    //         >
-    //            {/* <View> */}
-    //                 <Card containerStyle={styles.card}>
-    //                     <ColView style={styles.cardView}>
-    //                         <Text>Project Name: </Text>
-    //                         <Text>{item.projectName}</Text>
-    //                     </ColView>
-    //                     {item.type===1 && <ColView style={styles.cardView}>
-    //                         <Text>Milestone Name: </Text>
-    //                         <Text>{item.milestoneName}</Text>
-    //                     </ColView> }
-    //                     <ColView style={styles.cardView} justify={"space-between"}>
-    //                         <ColView>
-    //                             <Text>Total Hours: </Text>
-    //                             <Text>{item.hours}</Text>
-    //                         </ColView>
-    //                         <ColView>
-    //                             <Text>Status: </Text>
-    //                             <Badge value={item.status} status={item.status === 'Submit' ? 'success': 'error'} />
-    //                         </ColView>
-    //                     </ColView>
-    //                     <ColView style={styles.cardView}>
-    //                         <Text>Notes: </Text>
-    //                         <Tooltip
-    //                             popover={<Text>Tooltip info goes here</Text>}
-    //                             width={200}
-    //                         >
-    //                             <Text>{item.notes}</Text>
-    //                         </Tooltip>
-    //                     </ColView>
-    //                 </Card>
-    //            {/* </View> */}
-    //         </ListItem>
-    //         )
-    //     return <FlatList
-    //     style={{marginLeft: 0, paddingLeft: 0}}
-    //     keyExtractor={keyExtractor}
-    //     data={timesheets}
-    //     renderItem={renderItem}
-    //   />
-    // }
     

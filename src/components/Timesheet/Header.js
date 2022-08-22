@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text } from '@rneui/themed'
+import {Text } from 'react-native-paper';
 import { ColView } from '../ConstantComponent';
 
 export default Header = ({month, total, color}) => {

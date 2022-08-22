@@ -22,6 +22,7 @@ export function getTheme() {
     textDayHeaderFontSize: 12,
     textDayHeaderFontFamily: 'HelveticaNeue',
     textDayHeaderFontWeight: 'normal' as 'normal',
+    textDayHeaderStyle:{flex:1, marginBottom: 20, color: 'red'},
     // dates
     dayTextColor: themeColor,
     todayTextColor: '#af0078',
