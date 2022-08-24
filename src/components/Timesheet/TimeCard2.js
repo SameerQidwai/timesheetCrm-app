@@ -1,20 +1,25 @@
   
 import React, {useEffect, useState} from 'react';
-import { View , StyleSheet, TouchableOpacity } from 'react-native';
+import { View , StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import {Card, Text, Badge } from 'react-native-paper';
 import { ColView } from '../ConstantComponent';
 
-export default TimeCard2 = ({timeEntry, selected}) => {
+export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
   useEffect(() => {
-    //   console.log(timeEntry)
-  }, []);
+      // console.log(selected)
+  }, [{...selected}]);
 
   return (
     <Card 
         style={styles.card(selected)} 
         elevation={10} mode="elevated"
     >
-      <Card.Content>
+      <Pressable
+        android_ripple={{color: '#747474', borderless: true}}
+        onLongPress={onLongPress}
+        onPress={onPress}
+      >
+      <Card.Content >
         <ColView justify={'space-between'}>
           <View>
             <ColView style={styles.cardView}>
@@ -60,6 +65,7 @@ export default TimeCard2 = ({timeEntry, selected}) => {
           </View>
         </ColView>
       </Card.Content>
+      </Pressable>
     </Card>
   );
 };
@@ -72,7 +78,7 @@ const styles = StyleSheet.create({
     card: (selectColor)=> ({
         borderRadius: 10,  
         margin:10,
-        backgroundColor: selectColor ? "#c3f7ff9e" : "white"
+        backgroundColor: selectColor ? "#727ef6b3" : "white"
     })
 })
 

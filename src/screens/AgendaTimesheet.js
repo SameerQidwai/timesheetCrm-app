@@ -82,7 +82,7 @@ import moment from 'moment';
      {id:21,startTime:'12:00 PM', endTime: '9:00 PM', hour: '12am', duration: '1h', notes:  'As a cross platform UI Toolkit,', type:1, milestoneName: 'Milesone 1', projectName: 'Last Yoga'}
    ]
  }]
- const MonthlyTimeSheet= () => {
+ const AgendaTimesheet= () => {
    const isDarkMode = useColorScheme() === 'dark';
    const [items, setItems] = useState({})
    const [marked, setMarked] = useState({})
@@ -182,7 +182,7 @@ import moment from 'moment';
    )
  };
  
- export default MonthlyTimeSheet;
+ export default AgendaTimesheet;
  
  
  const styles = StyleSheet.create({

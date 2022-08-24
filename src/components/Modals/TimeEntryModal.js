@@ -1,11 +1,15 @@
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import {Dialog, Divider, TextInput, Text } from 'react-native-paper';
+import {Dialog, Divider, TextInput, Text, Portal, Button, Subheading, Title } from 'react-native-paper';
 import moment from 'moment';
 import React, {useState} from 'react';
-// import Autocomplete from 'react-native-autocomplete-input';
 import {Modal, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 
 export default TimeEntryModal = ({visible, selectedDate, onClose}) => {
+  const data = [
+    { id: '1', title: 'Alpha' },
+    { id: '2', title: 'Beta' },
+    { id: '3', title: 'Gamma' },
+  ]
   const [formData, setFormData]= useState({date:selectedDate, startTime: moment(), endTime: moment(), notes: '', breakHour: ''})
   const [modalVisible, setModalVisible] = useState(visible);
   const [dateTime, setdateTime] = useState({open:false, key: '', mode: 'date'})
@@ -22,100 +26,83 @@ export default TimeEntryModal = ({visible, selectedDate, onClose}) => {
     setFormData(prev=>({...prev, [key]: value}));
   };
 
+  const hideDialog = () => {
+    setModalVisible(false)
+    onClose()
+  };
+
+
   return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.modalHeader}>
-              <Text h4 style={styles.headerText}>{'Add Entry'}</Text>
-            </View>
-            <View style={styles.modalBody}>
-              <Pressable
-                onPressOut={()=>{openDateTime(true, 'date', 'date')}}
-              >
-                <Text h4>{formData['date'].format('dddd - DD MM YYYY')}</Text>
-              </Pressable>
-              <Divider style={styles.divider}/>
-              <ScrollView>
-              {/* <Autocomplete
-                autoCorrect={false}
-                // value={query}
-                // onChangeText={(text) => this.setState({ query: text })}
-                data={[
-                  { id: '1', title: 'Alpha' },
-                  { id: '2', title: 'Beta' },
-                  { id: '3', title: 'Gamma' },
-                ]}
-              /> */}
-                <TextInput 
-                  label="Project Name"
-                  placeholder='Set Project'
-                  returnKeyType='next'
-                  value={formData['projectName']}
+    <Portal >
+      <Dialog visible={modalVisible} style={styles.modalView} onDismiss={hideDialog}>
+        <Dialog.Title style={[styles.modalHeader, styles.headerText]}>{'Add Entry'}</Dialog.Title>
+        <Dialog.Content style={styles.modalBody}>
+        <Pressable
+              onPressOut={()=>{openDateTime(true, 'date', 'date')}}
+            >
+              <Title style={styles.subheading}>{formData['date'].format('dddd - DD MMM YYYY')}</Title>
+          </Pressable>
+          <Dialog.ScrollArea style={styles.fieldView}>
+            <ScrollView >
+              {/* <Divider style={styles.divider}/  > */}
+              <TextInput
+                mode="outlined" 
+                label="Project Name"
+                placeholder='Set Project'
+                returnKeyType='next'
+                value={formData['projectName']}
+              />
+              <TextInput
+                mode="outlined" 
+                label="Start Time"
+                placeholder='Set Time'
+                keyboardType='decimal-pad'
+                onFocus={()=>{openDateTime(true, 'startTime', 'time')}}
+                onPressOut={()=>{openDateTime(true, 'startTime', 'time')}}
+                showSoftInputOnFocus={false}
+                value={formData['startTime'].format('LT')}
+              />
+              <TextInput
+                mode="outlined" 
+                label="End Time"
+                placeholder='Set Time'
+                onFocus={()=>{openDateTime(true, 'endTime', 'time')}}
+                onPressOut={()=>{openDateTime(true, 'endTime', 'time')}}
+                showSoftInputOnFocus={false}
+                value={formData['endTime'].format('LT')}
+              />
+              <TextInput
+                mode="outlined" 
+                label="Break Hours"
+                placeholder='set hours'
+                keyboardType='decimal-pad'
+                onChange={(eventCount, target, text)=>setFieldValue('breakHours', text)}
                 />
-                <TextInput 
-                  label="Start Time"
-                  placeholder='Set Time'
-                  keyboardType='decimal-pad'
-                  onFocus={()=>{openDateTime(true, 'startTime', 'time')}}
-                  onPressOut={()=>{openDateTime(true, 'startTime', 'time')}}
-                  showSoftInputOnFocus={false}
-                  value={formData['startTime'].format('LT')}
-                />
-                <TextInput 
-                  label="End Time"
-                  placeholder='Set Time'
-                  onFocus={()=>{openDateTime(true, 'endTime', 'time')}}
-                  onPressOut={()=>{openDateTime(true, 'endTime', 'time')}}
-                  showSoftInputOnFocus={false}
-                  value={formData['endTime'].format('LT')}
-                />
-                <TextInput 
-                  label="Break Hours"
-                  placeholder='set hours'
-                  keyboardType='decimal-pad'
-                  onChange={(eventCount, target, text)=>setFieldValue('breakHours', text)}
-                  />
-                <TextInput 
-                  label="Notes"
-                  placeholder='Enter Note..'
-                  multiline
-                  numberOfLines={4}
-                  onChange={(eventCount, target, text)=>setFieldValue('notes', text)}
-                  returnKeyType='next'
-                />
-                <Divider style={styles.divider}/>
-                <View style={styles.actionView}>
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => {setModalVisible(!modalVisible); onClose()}}>
-                    <Text style={styles.textStyle}>Cancel</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => setModalVisible(!modalVisible)}>
-                    <Text style={styles.textStyle}>Save</Text>
-                  </Pressable>  
-                </View>
-              </ScrollView>
-            </View>
-            {dateTime.open&& <RNDateTimePicker 
-              mode={dateTime['mode']} 
-              value={formData[dateTime['key']] ? moment(formData[dateTime['key']]).toDate(): new Date()} 
-              onChange={(event, dateValue)=>{setFieldValue(dateTime.key, dateValue)}}
-            />}
-          </View>
-        </View>
-      </Modal>
-    </View>
+              <TextInput
+                mode="outlined" 
+                label="Notes"
+                placeholder='Enter Note..'
+                multiline
+                numberOfLines={4}
+                onChange={(eventCount, target, text)=>setFieldValue('notes', text)}
+                returnKeyType='next'
+              />
+            </ScrollView>
+          </Dialog.ScrollArea>
+          <Dialog.Actions style={styles.actionView}>
+            <Pressable onPressOut={hideDialog}>
+              <Button  mode="contained" color="#f47b4e" compact labelStyle={styles.bText}>Cancel</Button>
+            </Pressable>
+            <Button mode="contained" color='#4356fa' compact labelStyle={styles.bText}>Save</Button>
+          </Dialog.Actions>
+        </Dialog.Content>
+      </Dialog>
+      {dateTime.open&& <RNDateTimePicker 
+        mode={dateTime['mode']} 
+        value={formData[dateTime['key']] ? moment(formData[dateTime['key']]).toDate(): new Date()} 
+        onChange={(event, dateValue)=>{setFieldValue(dateTime.key, dateValue)}}
+      />}
+    </Portal>
   );
 };
 
@@ -123,17 +110,19 @@ export default TimeEntryModal = ({visible, selectedDate, onClose}) => {
 
 const styles = StyleSheet.create({
   centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // marginTop: 22,
   },
   modalView: {
-    margin: 20,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     borderRadius: 20,
-    width: 325,
-    // paddingVertical: 20,
+    // width: 325,
+    paddingVertical: 0,
+    marginVertical:0,
+    margin:0,
+    marginTop:0,
     // alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -145,7 +134,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalBody:{
-    paddingVertical: 10,
+    // paddingVertical: 10,
+    paddingBottom:10,
+    paddingTop:0,
     paddingHorizontal: 20,
   },
   button: {
@@ -154,11 +145,12 @@ const styles = StyleSheet.create({
     elevation: 2,
     width: 90
   },
+  fieldView:{
+    paddingHorizontal: 0,
+    paddingVertical: 10
+  },
   actionView:{
-    flex: 2,
-    flexDirection: 'row',
     justifyContent: 'space-evenly',
-    alignItems: 'center',
   },
   divider:{
     marginVertical: 10
@@ -184,8 +176,15 @@ const styles = StyleSheet.create({
     backgroundColor:'#4356fa',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    marginHorizontal:0,
+    marginTop:0,
+    marginVertical:0
   },
   headerText: {
+    color: '#fff',
+    fontWeight: '700'
+  },
+  bText:{
     color: '#fff'
   },
   select:{
