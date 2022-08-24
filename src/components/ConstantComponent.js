@@ -25,13 +25,13 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
         <View>
             <View
                 style={[
-                     styles.renderDayView(state),
+                     styles.renderDayView,
                     marking?.['customStyles']?.container,
                 ]}
             >
                 <Pressable
                     android_ripple={{
-                        color: state === 'selected' ? 'white' : 'grey',
+                        color: state === 'selected' ? 'white' : '#707cf4',
                         borderless: true,
                         // foreground:  true
                     }}
@@ -67,14 +67,14 @@ const styles = StyleSheet.create({
         padding: padding,
         ...(style??{})
     }),
-    renderDayView: (state) =>({
+    renderDayView: {
         flex: 2,
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: state === 'selected' ? 'blue' : 'white',
+        backgroundColor: 'white',
         width: 38,
-    }),
+    },
     renderDayText: {
         textAlign: 'center'
     }

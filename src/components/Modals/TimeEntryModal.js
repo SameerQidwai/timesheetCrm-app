@@ -1,107 +1,160 @@
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import {Dialog, Divider, TextInput, Text, Portal, Button, Subheading, Title } from 'react-native-paper';
+import { Dialog, Divider, TextInput, Text, Portal, Button, Subheading, Title, } from 'react-native-paper';
 import moment from 'moment';
 import React, {useState} from 'react';
 import {Modal, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 
-export default TimeEntryModal = ({visible, selectedDate, onClose}) => {
+export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, }) => {
   const data = [
-    { id: '1', title: 'Alpha' },
-    { id: '2', title: 'Beta' },
-    { id: '3', title: 'Gamma' },
-  ]
-  const [formData, setFormData]= useState({date:selectedDate, startTime: moment(), endTime: moment(), notes: '', breakHour: ''})
+    {id: '1', title: 'Alpha'},
+    {id: '2', title: 'Beta'},
+    {id: '3', title: 'Gamma'},
+  ];
+  const [formData, setFormData] = useState({ projectName: '', date: selectedDate, startTime: moment(), endTime: moment(), notes: '', duration: '',
+  });
   const [modalVisible, setModalVisible] = useState(visible);
-  const [dateTime, setdateTime] = useState({open:false, key: '', mode: 'date'})
+  const [dateTime, setdateTime] = useState({
+    open: false,
+    key: '',
+    mode: 'date',
+  });
 
-  const openDateTime = (open, key, mode) =>{
-    setdateTime({ open, key, mode})
-  }
+  const openDateTime = (open, key, mode) => {
+    setdateTime({open, key, mode});
+  };
 
   const setFieldValue = (key, value) => {
-    if (dateTime['open']){
-      setdateTime(prev=>({...prev, open:false}))
-      value = moment(value)
+    console.log({[key]:value})
+    if (dateTime['open']) {
+      setdateTime(prev => ({...prev, open: false}));
+      value = moment(value);
     }
-    setFormData(prev=>({...prev, [key]: value}));
+    setFormData(prev => ({...prev, [key]: value}));
   };
 
   const hideDialog = () => {
-    setModalVisible(false)
-    onClose()
+    setModalVisible(false);
+    onClose();
   };
 
-
   return (
-    <Portal >
-      <Dialog visible={modalVisible} style={styles.modalView} onDismiss={hideDialog}>
-        <Dialog.Title style={[styles.modalHeader, styles.headerText]}>{'Add Entry'}</Dialog.Title>
+    <Portal>
+      <Dialog
+        visible={modalVisible}
+        style={styles.modalView}
+        onDismiss={hideDialog}>
+        <Dialog.Title style={[styles.modalHeader, styles.headerText]}>
+          {'Add Entry'}
+        </Dialog.Title>
         <Dialog.Content style={styles.modalBody}>
-        <Pressable
-              onPressOut={()=>{openDateTime(true, 'date', 'date')}}
-            >
-              <Title style={styles.subheading}>{formData['date'].format('dddd - DD MMM YYYY')}</Title>
+          <Pressable
+            onPressOut={() => {
+              openDateTime(true, 'date', 'date');
+            }}>
+            <Title style={styles.subheading}>
+              {formData['date'].format('dddd - DD MMM YYYY')}
+            </Title>
           </Pressable>
           <Dialog.ScrollArea style={styles.fieldView}>
-            <ScrollView >
+            <ScrollView>
               {/* <Divider style={styles.divider}/  > */}
               <TextInput
-                mode="outlined" 
+                mode="outlined"
                 label="Project Name"
-                placeholder='Set Project'
-                returnKeyType='next'
+                placeholder="Set Project"
+                returnKeyType="next"
                 value={formData['projectName']}
+                onChangeText={(text) =>
+                  setFieldValue('projectName', text)
+                }
               />
               <TextInput
-                mode="outlined" 
+                mode="outlined"
                 label="Start Time"
-                placeholder='Set Time'
-                keyboardType='decimal-pad'
-                onFocus={()=>{openDateTime(true, 'startTime', 'time')}}
-                onPressOut={()=>{openDateTime(true, 'startTime', 'time')}}
+                placeholder="Set Time"
+                keyboardType="decimal-pad"
+                onFocus={() => {
+                  openDateTime(true, 'startTime', 'time');
+                }}
+                onPressOut={() => {
+                  openDateTime(true, 'startTime', 'time');
+                }}
                 showSoftInputOnFocus={false}
                 value={formData['startTime'].format('LT')}
               />
               <TextInput
-                mode="outlined" 
+                mode="outlined"
                 label="End Time"
-                placeholder='Set Time'
-                onFocus={()=>{openDateTime(true, 'endTime', 'time')}}
-                onPressOut={()=>{openDateTime(true, 'endTime', 'time')}}
+                placeholder="Set Time"
+                onFocus={() => {
+                  openDateTime(true, 'endTime', 'time');
+                }}
+                onPressOut={() => {
+                  openDateTime(true, 'endTime', 'time');
+                }}
                 showSoftInputOnFocus={false}
                 value={formData['endTime'].format('LT')}
               />
               <TextInput
-                mode="outlined" 
+                mode="outlined"
                 label="Break Hours"
-                placeholder='set hours'
-                keyboardType='decimal-pad'
-                onChange={(eventCount, target, text)=>setFieldValue('breakHours', text)}
-                />
+                placeholder="set hours"
+                keyboardType="decimal-pad"
+                onChangeText={(text) =>
+                  setFieldValue('duration', text)
+                }
+              />
               <TextInput
-                mode="outlined" 
+                mode="outlined"
                 label="Notes"
-                placeholder='Enter Note..'
+                placeholder="Enter Note.."
                 multiline
                 numberOfLines={4}
-                onChange={(eventCount, target, text)=>setFieldValue('notes', text)}
-                returnKeyType='next'
+                onChangeText={(text) =>
+                  setFieldValue('notes', text)
+                }
+                returnKeyType="next"
               />
             </ScrollView>
           </Dialog.ScrollArea>
           <Dialog.Actions style={styles.actionView}>
             <Pressable onPressOut={hideDialog}>
-              <Button  mode="contained" color="#f47b4e" compact labelStyle={styles.bText}>Cancel</Button>
+              <Button
+                mode="contained"
+                color="#f47b4e"
+                compact
+                labelStyle={styles.bText}>
+                Cancel
+              </Button>
             </Pressable>
-            <Button mode="contained" color='#4356fa' compact labelStyle={styles.bText}>Save</Button>
+            <Button
+              mode="contained"
+              color="#4356fa"
+              compact
+              labelStyle={styles.bText}
+              onPress={()=>{
+                const {startTime, endTime} = formData
+                onSuccess({...formData, startTime: startTime.format('LT'), endTime: endTime.format('LT')})
+              }}
+            >
+              Save
+            </Button>
           </Dialog.Actions>
         </Dialog.Content>
       </Dialog>
-      {dateTime.open&& <RNDateTimePicker 
-        mode={dateTime['mode']} 
-        value={formData[dateTime['key']] ? moment(formData[dateTime['key']]).toDate(): new Date()} 
-        onChange={(event, dateValue)=>{setFieldValue(dateTime.key, dateValue)}}
-      />}
+      {dateTime.open && (
+        <RNDateTimePicker
+          mode={dateTime['mode']}
+          value={
+            formData[dateTime['key']]
+              ? moment(formData[dateTime['key']]).toDate()
+              : new Date()
+          }
+          onChange={(event, dateValue) => {
+            setFieldValue(dateTime.key, dateValue);
+          }}
+        />
+      )}
     </Portal>
   );
 };
@@ -120,9 +173,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // width: 325,
     paddingVertical: 0,
-    marginVertical:0,
-    margin:0,
-    marginTop:0,
+    marginVertical: 0,
+    margin: 0,
+    marginTop: 0,
     // alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -133,27 +186,27 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalBody:{
+  modalBody: {
     // paddingVertical: 10,
-    paddingBottom:10,
-    paddingTop:0,
+    paddingBottom: 10,
+    paddingTop: 0,
     paddingHorizontal: 20,
   },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    width: 90
+    width: 90,
   },
-  fieldView:{
+  fieldView: {
     paddingHorizontal: 0,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
-  actionView:{
+  actionView: {
     justifyContent: 'space-evenly',
   },
-  divider:{
-    marginVertical: 10
+  divider: {
+    marginVertical: 10,
   },
   buttonOpen: {
     backgroundColor: '#4356fa',
@@ -170,24 +223,24 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-  modalHeader:{
+  modalHeader: {
     paddingVertical: 15,
     paddingHorizontal: 10,
-    backgroundColor:'#4356fa',
+    backgroundColor: '#4356fa',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    marginHorizontal:0,
-    marginTop:0,
-    marginVertical:0
+    marginHorizontal: 0,
+    marginTop: 0,
+    marginVertical: 0,
   },
   headerText: {
     color: '#fff',
-    fontWeight: '700'
+    fontWeight: '700',
   },
-  bText:{
-    color: '#fff'
+  bText: {
+    color: '#fff',
   },
-  select:{
+  select: {
     // appearance: 'none',
     // backgroundColor: '#fff',
     // borderRadius: 0,
@@ -197,5 +250,5 @@ const styles = StyleSheet.create({
     // margin: 0,
     // padding: 0,
     // resize: 'none',
-  }
+  },
 });

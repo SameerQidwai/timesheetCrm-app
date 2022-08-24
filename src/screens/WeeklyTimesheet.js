@@ -7,30 +7,9 @@
  */
 
 import React, {useState, useRef, useCallback, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Pressable,
-} from 'react-native';
-import {
-  Button,
-  Caption,
-  Divider,
-  FAB,
-  Headline,
-  IconButton,
-  Subheading,
-  Text,
-  Title,
-} from 'react-native-paper';
-
-import {
-  ExpandableCalendar,
-  CalendarProvider,
-  WeekCalendar,
-} from 'react-native-calendars';
+import { View, StyleSheet, TouchableOpacity, FlatList, Pressable, } from 'react-native';
+import { Button, Caption, Divider, FAB, Headline, IconButton, Subheading, Text, Title, } from 'react-native-paper';
+import { ExpandableCalendar, CalendarProvider, WeekCalendar, } from 'react-native-calendars';
 import {getTheme, lightThemeColor, themeColor} from '../theme';
 import moment from 'moment';
 import TimeCard2 from '../components/Timesheet/TimeCard2';
@@ -38,332 +17,24 @@ import TimeCard from '../components/Timesheet/TimeCard';
 import TimeEntryModal from '../components/Modals/TimeEntryModal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RenderDay } from '../components/ConstantComponent';
+import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
 
-const data = [
-  {
-    title: '2022-08-10',
-    data: [
-      {
-        id: 1,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'First Yoga',
-      },
-    ],
-  },
-  {
-    title: '2022-08-11',
-    data: [
-      {
-        id: 2,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Pilates ABC',
-      },
-      {
-        id: 3,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Vinyasa Yoga',
-      },
-    ],
-  },
-  {
-    title: '2022-08-12',
-    data: [
-      {
-        id: 4,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Ashtanga Yoga',
-      },
-      {
-        id: 5,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        type: 2,
-        projectName: 'Deep Stretches',
-      },
-      {
-        id: 6,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Private Yoga',
-      },
-    ],
-  },
-  {
-    title: '2022-08-13',
-    data: [
-      {
-        id: 7,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Ashtanga Yoga',
-      },
-    ],
-  },
-  {
-    title: '2022-08-15',
-    data: [
-      {
-        id: 8,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Middle Yoga',
-      },
-      {
-        id: 9,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Ashtanga',
-      },
-      {
-        id: 10,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 2,
-        projectName: 'TRX',
-      },
-      {
-        id: 11,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Running Group',
-      },
-      {
-        id: 12,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Running Group',
-      },
-    ],
-  },
-  {
-    title: '2022-08-17',
-    data: [
-      {
-        id: 1,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 2,
-        projectName: 'Ashtanga Yoga',
-      },
-    ],
-  },
-  {
-    title: '2022-08-18',
-    data: [
-      {
-        id: 13,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Pilates Reformer',
-      },
-      {
-        id: 14,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Ashtanga',
-      },
-      {
-        id: 15,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        type: 2,
-        projectName: 'TRX',
-      },
-      {
-        id: 16,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Running Group',
-      },
-      {
-        id: 17,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Running Group',
-      },
-    ],
-  },
-  {
-    title: '2022-08-19',
-    data: [
-      {
-        id: 18,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Ashtanga Yoga',
-      },
-      {
-        id: 19,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Deep Stretches',
-      },
-      {
-        id: 20,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Private Yoga',
-      },
-    ],
-  },
-  {
-    title: '2022-08-20',
-    data: [
-      {
-        id: 21,
-        startTime: '12:00 PM',
-        endTime: '9:00 PM',
-        hour: 9,
-        duration: '1h',
-        notes: 'As a cross platform UI Toolkit,',
-        type: 1,
-        milestoneName: 'Milesone 1',
-        projectName: 'Last Yoga',
-      },
-    ],
-  },
-];
 
-const dailyhours = {
-  '2022-08-10': '1',
-  '2022-08-11': '2.3',
-  '2022-08-12': '3.45',
-  '2022-08-13': '4',
-  '2022-08-15': '5.2',
-  '2022-08-18': '6.4',
-  '2022-08-19': '7',
-  '2022-08-20': '8.24',
-  '2022-08-21': '6.4',
-  '2022-08-22': '7',
-  '2022-08-23': '16.99',
-  '2022-08-24': '10.4',
-  '2022-08-25': '18.3',
-  '2022-08-26': '24.24',
-      
-}
+
+
 
 const WeeklyTimesheet = () => {
-//   const dailyhours = data.reduce((acc, post) => {
-//     let {title, data} = post;
-//     return { [title]: data.reduce((a,b)=> a.duration+b.duration, 0) };
-// }, {});
-  const [timesheet, setTimesheet] = useState(data);
+  const dailyhours = timesheet_dailyhours
+  const [timesheet, setTimesheet] = useState(timesheet_data);
   const [openModal, setOpenModal] = useState(false);
   const [dateTime, setdateTime] = useState(false);
-  const [month, setMonth] = useState(moment(new Date()));
   const [sDate, setDate] = useState(moment(new Date()));
   const [items, setItems] = useState({});
   const [selected, setSelected] = useState({});
   const [longPressed, setLongPress] = useState(false);
 
-  useEffect(() => {
-    // onDateChanged('2022-08-18');
-  }, []);
-
-  const theme = useRef(getTheme());
-
   const onDateChanged = day => {
-    // console.log(day)
     let index = timesheet.findIndex(el => el.title === day);
-    // console.log(index)
-    // console.log(timesheet)
     setDate(moment(day));
     setItems(timesheet[index]);
   };
@@ -411,22 +82,53 @@ const WeeklyTimesheet = () => {
     );
   };
 
+  const fabAction = () =>{
+    if (longPressed) {
+      let dateIndex = null;
+      let copyTimesheet = timesheet.map((el, index) => {
+        if (el.title === items.title) {
+          dateIndex = index;
+          el.data = el.data.filter(fel => {
+            if (!Object.keys(selected).includes(`${fel.id}`)) {
+              return fel;
+            }
+          });
+        }
+        return el;
+      });
+      setTimesheet(copyTimesheet);
+      setItems(copyTimesheet[dateIndex]);
+      setLongPress(false);
+      setSelected({});
+    } else {
+      setOpenModal(!openModal);
+    }
+  }
+
+  const onSuccess = (data) =>{
+    console.log(data)
+    let addDate = moment(data.date).format('yyyy-MM-DD')
+    let index = timesheet.findIndex(el => el.title === addDate)
+    let newTimesheet = timesheet
+    if (index > -1){
+      newTimesheet[index].data.push(data)
+    }else{
+      newTimesheet.push({title: addDate, data:[data]})
+    }
+    console.log(newTimesheet[newTimesheet.length -1])
+    setTimesheet([...newTimesheet])
+    setOpenModal(false)
+  }
+
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <View
-        style={{
-          flexDirection: 'row',
-          backgroundColor: 'white',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingRight: 10,
-        }}>
+    <View style={styles.pageView}>
+      <View style={styles.containerView}>
         <View>
           <IconButton icon="arrow-left" color="black" />
         </View>
         <View>
           <Pressable 
-            android_ripple={{color: '#747474', borderless: true}}
+            android_ripple={{color: '#f8a587', borderless: true}}
             onPressOut={() => setdateTime(true)}>
             <Title>
               {sDate.format('MMM YYYY')}
@@ -466,12 +168,7 @@ const WeeklyTimesheet = () => {
         <WeekCalendar
           initialDate={sDate.format('yyyy-MM-DD')}
           // style={{backgroundColor: 'purple', height: 1000}}
-          theme={{
-            todayTextColor: 'red',
-            // calendarBackground: 'yellow',
-          }}
-          // style={{backgroundColor: 'red'}}
-
+          theme={{ todayTextColor: 'blue', }}
           // pastScrollRange={1}
           // futureScrollRange={1}
           displayLoadingIndicator={true}
@@ -488,20 +185,7 @@ const WeeklyTimesheet = () => {
           firstDay={1}
           animateScroll
           markingType={'custom'}
-          markedDates={{
-            [sDate.format('yyyy-MM-DD')]: {
-              customStyles: {
-                container: {
-                  borderRadius: 5,
-                  paddingVertical:2
-                },
-                text: {
-                  color: 'white',
-                  fontWeight: 'bold'
-                },
-              },
-            },
-          }}
+          markedDates={{ [sDate.format('yyyy-MM-DD')]: styles.calendarMarked, }}
           dayComponent={({date, state, marking, theme}) => (
             <RenderDay 
               date={date} 
@@ -527,34 +211,14 @@ const WeeklyTimesheet = () => {
           // icon={longPressed ? 'delete' : 'add'}
           icon={longPressed ? 'delete' : 'plus'}
           size="large"
-          onPress={() => {
-            if (longPressed) {
-              let dateIndex = null;
-              let copyTimesheet = timesheet.map((el, index) => {
-                if (el.title === items.title) {
-                  dateIndex = index;
-                  el.data = el.data.filter(fel => {
-                    if (!Object.keys(selected).includes(`${fel.id}`)) {
-                      return fel;
-                    }
-                  });
-                }
-                return el;
-              });
-              setTimesheet(copyTimesheet);
-              setItems(copyTimesheet[dateIndex]);
-              setLongPress(false);
-              setSelected({});
-            } else {
-              setOpenModal(!openModal);
-            }
-          }}
+          onPress={fabAction}
           // color={longPressed ? 'red' : 'green'}
         />
       {openModal && (
         <TimeEntryModal
           visible={openModal}
           selectedDate={sDate}
+          onSuccess={onSuccess}
           //  data=
           onClose={() => setOpenModal(false)}
         />
@@ -563,8 +227,6 @@ const WeeklyTimesheet = () => {
         <DateTimePicker
           mode={'date'}
           value={moment(sDate).toDate()}
-          // value={formData[dateTime['key']] ? moment(formData[dateTime['key']]).toDate(): new Date()}
-          // onChange={(event, dateValue)=>{setFieldValue(dateTime.key, dateValue)}}
           onChange={(event, dateValue) => {
             setdateTime(false)
             if (event?.type === 'set' && dateValue){
@@ -580,9 +242,33 @@ const WeeklyTimesheet = () => {
 export default WeeklyTimesheet;
 
 const styles = StyleSheet.create({
+  pageView: {
+    flex: 1, 
+    backgroundColor: 'white'
+  },
+  containerView:{
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 10,
+  },
   theme: {
     weekContainer: {
       height: 1000,
+    },
+  },
+  calendarMarked: {
+    customStyles: {
+      container: {
+        borderRadius: 5,
+        paddingVertical:2,
+        backgroundColor: '#2e44fc',
+      },
+      text: {
+        color: 'white',
+        fontWeight: 'bold',
+      },
     },
   },
   calendar: {
@@ -598,6 +284,6 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: pressed ? 'red' : 'green',
+    backgroundColor: pressed ? 'red' : '#f8a587',
   }),
 });
