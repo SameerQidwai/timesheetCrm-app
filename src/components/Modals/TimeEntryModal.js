@@ -13,11 +13,7 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
   const [formData, setFormData] = useState({ projectName: '', date: selectedDate, startTime: moment(), endTime: moment(), notes: '', duration: '',
   });
   const [modalVisible, setModalVisible] = useState(visible);
-  const [dateTime, setdateTime] = useState({
-    open: false,
-    key: '',
-    mode: 'date',
-  });
+  const [dateTime, setdateTime] = useState({ open: false, key: '', mode: 'date', });
 
   const openDateTime = (open, key, mode) => {
     setdateTime({open, key, mode});
@@ -118,15 +114,15 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
             </ScrollView>
           </Dialog.ScrollArea>
           <Dialog.Actions style={styles.actionView}>
-            <Pressable onPressOut={hideDialog}>
-              <Button
-                mode="contained"
-                color="#f47b4e"
-                compact
-                labelStyle={styles.bText}>
-                Cancel
-              </Button>
-            </Pressable>
+            <Button
+              mode="contained"
+              color="#f47b4e"
+              compact
+              labelStyle={styles.bText}
+              onPress={hideDialog}
+            >
+              Cancel
+            </Button>
             <Button
               mode="contained"
               color="#4356fa"

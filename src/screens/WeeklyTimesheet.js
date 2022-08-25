@@ -203,6 +203,7 @@ const WeeklyTimesheet = () => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           extraData={selected}
+          onRefresh={()=>console.log('take some time for you')}
         />
       </CalendarProvider>
         <FAB

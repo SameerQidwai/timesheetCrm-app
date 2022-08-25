@@ -12,8 +12,8 @@ import Header from './src/components/Timesheet/Header';
 import ProjectCards from './src/components/Timesheet/ProjectCards';
 import AgendaTimesheet from './src/screens/AgendaTimesheet';
 import WeeklyTimesheet from './src/screens/WeeklyTimesheet';
-import Test from './src/screens/Test';
 import ExpandablesTimesheet from './src/screens/ExpandablesTimesheet';
+import LeaveRequest from './src/screens/LeaveRequest';
 
 const App= () => {
 
@@ -22,7 +22,8 @@ const App= () => {
       <View style={{flex: 1, backgroundColor: 'white'}}>
         {/* <Test/> */}
         {/* <AgendaTimesheet/> */}
-        <WeeklyTimesheet/>
+        {/* <WeeklyTimesheet/> */}
+        <LeaveRequest/>
         {/* <ExpandablesTimesheet/> */}
         {/* <Header/>
         <ProjectCards/> */}

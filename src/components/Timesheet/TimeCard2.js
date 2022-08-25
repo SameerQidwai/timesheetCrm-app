@@ -1,6 +1,6 @@
   
-import React, {useEffect, useState} from 'react';
-import { View , StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import React, {useEffect} from 'react';
+import { View , StyleSheet, Pressable } from 'react-native';
 import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline } from 'react-native-paper';
 import { ColView } from '../ConstantComponent';
 

@@ -296,4 +296,577 @@ export const timesheet_dailyhours = {
     '2022-08-25': '18.3',
     '2022-08-26': '24.24',
         
-  }
+}
+
+export const leave_request_balance = [
+    /** Structure
+     *  accured = carryForward 
+     *  earned = balanceHours - carryForward + used
+     *  used = used 
+     * balanceHOurs = balance
+     */
+    {
+        name: 'Total', 
+        balanceHours: 1000,
+        carryForward: 400, 
+        used: 400
+    }, 
+    {
+        name: 'Annual Leave',
+        balanceHours: 186.201,
+        carryForward: 173.534,
+        used: 237.23
+    },
+    {
+        name: 'Community Service Leave',
+        balanceHours: 19,
+        carryForward: 909,
+        used: 0
+    },
+    {
+        name: 'Personal Leave', 
+        balanceHours: 321,
+        carryForward: 173.534,
+        used: 280
+    },
+    {
+        name: 'Long Service Leave',
+        balanceHours: 126,
+        carryForward: 17,
+        used: 237.23
+    },
+]
+
+export const leave_request = [
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+  {
+    startDate: "2022-04-04",
+    endDate: "2022-04-04",
+    status: 'AP',
+    leaveRequestName: 'Sick Leave',
+    projectName: 'something',
+    notes: 'Helping me out',
+    totalHours: 7.6
+  },
+]
