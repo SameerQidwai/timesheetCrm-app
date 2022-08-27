@@ -8,26 +8,21 @@
 
 import React from 'react';
 import { View } from 'react-native';
-import Header from './src/components/Timesheet/Header';
-import ProjectCards from './src/components/Timesheet/ProjectCards';
-import AgendaTimesheet from './src/screens/AgendaTimesheet';
-import WeeklyTimesheet from './src/screens/WeeklyTimesheet';
-import ExpandablesTimesheet from './src/screens/ExpandablesTimesheet';
-import LeaveRequest from './src/screens/LeaveRequest';
+import { AppProvider } from './src/context/AppContext';
+import { NavigationContainer } from '@react-navigation/native';
+import Stacks from './src/components/Navigation/Stacks';
+
+
 
 const App= () => {
-
   return (
-    
+    <AppProvider>
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        {/* <Test/> */}
-        {/* <AgendaTimesheet/> */}
-        {/* <WeeklyTimesheet/> */}
-        <LeaveRequest/>
-        {/* <ExpandablesTimesheet/> */}
-        {/* <Header/>
-        <ProjectCards/> */}
+      <NavigationContainer>
+        <Stacks/>
+      </NavigationContainer>
       </View>
+    </AppProvider>
   )
 };
 

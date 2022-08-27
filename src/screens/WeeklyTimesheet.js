@@ -6,14 +6,13 @@
  * @flow strict-local
  */
 
-import React, {useState, useRef, useCallback, useEffect} from 'react';
-import { View, StyleSheet, TouchableOpacity, FlatList, Pressable, } from 'react-native';
-import { Button, Caption, Divider, FAB, Headline, IconButton, Subheading, Text, Title, } from 'react-native-paper';
-import { ExpandableCalendar, CalendarProvider, WeekCalendar, } from 'react-native-calendars';
-import {getTheme, lightThemeColor, themeColor} from '../theme';
+import React, {useState, useCallback} from 'react';
+import { View, StyleSheet, FlatList, Pressable, } from 'react-native';
+import { Caption, FAB, IconButton, Title, } from 'react-native-paper';
+import {  CalendarProvider, WeekCalendar, } from 'react-native-calendars';
+import { lightThemeColor} from '../theme';
 import moment from 'moment';
 import TimeCard2 from '../components/Timesheet/TimeCard2';
-import TimeCard from '../components/Timesheet/TimeCard';
 import TimeEntryModal from '../components/Modals/TimeEntryModal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RenderDay } from '../components/ConstantComponent';
@@ -23,15 +22,16 @@ import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
 
 
 
-const WeeklyTimesheet = () => {
+const WeeklyTimesheet = ({route, navigation}) => {
   const dailyhours = timesheet_dailyhours
   const [timesheet, setTimesheet] = useState(timesheet_data);
   const [openModal, setOpenModal] = useState(false);
   const [dateTime, setdateTime] = useState(false);
-  const [sDate, setDate] = useState(moment(new Date()));
+  const [sDate, setDate] = useState(moment(route?.params?.sDate) ??moment(new Date()));
   const [items, setItems] = useState({});
   const [selected, setSelected] = useState({});
   const [longPressed, setLongPress] = useState(false);
+  const [fetching, setFetching] = useState(false)
 
   const onDateChanged = day => {
     let index = timesheet.findIndex(el => el.title === day);
@@ -69,16 +69,11 @@ const WeeklyTimesheet = () => {
 
   const renderItem = ({item}) => {
     return (
-      // <TouchableOpacity
-      //   onLongPress={() => onPressItem(item.id, true)}
-      //   onPress={() => onPressItem(item.id)}
-      //   >
         <TimeCard2 
           timeEntry={item} selected={selected[item.id]} 
           onLongPress={() => onPressItem(item.id, true)}
           onPress={() => onPressItem(item.id)}
         />
-      // </TouchableOpacity>
     );
   };
 
@@ -106,7 +101,6 @@ const WeeklyTimesheet = () => {
   }
 
   const onSuccess = (data) =>{
-    console.log(data)
     let addDate = moment(data.date).format('yyyy-MM-DD')
     let index = timesheet.findIndex(el => el.title === addDate)
     let newTimesheet = timesheet
@@ -115,16 +109,27 @@ const WeeklyTimesheet = () => {
     }else{
       newTimesheet.push({title: addDate, data:[data]})
     }
-    console.log(newTimesheet[newTimesheet.length -1])
     setTimesheet([...newTimesheet])
     setOpenModal(false)
   }
 
+  const onRefresh = () =>{
+    setFetching(true)
+    setTimeout(() => {
+        setLeave(leave_request)
+        setFetching(false)
+    }, 3000);
+  }
+  
   return (
     <View style={styles.pageView}>
       <View style={styles.containerView}>
         <View>
-          <IconButton icon="arrow-left" color="black" />
+          <IconButton 
+            icon="arrow-left" 
+            color="black"
+            onPress={()=>navigation.navigate('Timesheet')} 
+          />
         </View>
         <View>
           <Pressable 
@@ -203,18 +208,19 @@ const WeeklyTimesheet = () => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
           extraData={selected}
-          onRefresh={()=>console.log('take some time for you')}
+          onRefresh={onRefresh}
+          refreshing={fetching}
         />
       </CalendarProvider>
-        <FAB
-          style={styles.fab(longPressed)}
-          placement="right"
-          // icon={longPressed ? 'delete' : 'add'}
-          icon={longPressed ? 'delete' : 'plus'}
-          size="large"
-          onPress={fabAction}
-          // color={longPressed ? 'red' : 'green'}
-        />
+      <FAB
+        style={styles.fab(longPressed)}
+        placement="right"
+        // icon={longPressed ? 'delete' : 'add'}
+        icon={longPressed ? 'delete' : 'plus'}
+        size="large"
+        onPress={fabAction}
+        // color={longPressed ? 'red' : 'green'}
+      />
       {openModal && (
         <TimeEntryModal
           visible={openModal}

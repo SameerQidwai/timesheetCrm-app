@@ -6,9 +6,10 @@ import { leave_request, leave_request_balance } from "../../assets/constant";
 import { ColView } from "../components/ConstantComponent";
 import LeaveBalance from "../components/Leave/LeaveBalance";
 import LeaveRequestModal from "../components/Modals/LeaveRequestModal";
-import { status_color } from "../Services/constant";
+import { status_color } from "../services/constant";
 
 const LeaveRequest = () =>{
+    
     const [longPressed, setLongPress] = useState(false);
     const [Leave_Request, setLeave] = useState(leave_request)
     const [fetching, setFetching] = useState(false)
@@ -80,22 +81,20 @@ const LeaveRequest = () =>{
     return (
         <View style={{flex: 1}}>
             <ColView style={styles.header}>
-                <IconButton icon="arrow-left" color="black" />
-                <Title>Leave</Title>
-                <View></View>
+                <Title style={styles.headerTitle}>Leave</Title>
             </ColView>
             <LeaveBalance leave_balnce={leave_request_balance}/>
             <View style={{flex: 1}}>
                 <Subheading style={{paddingLeft:10, color: 'grey'}}>Leave Request</Subheading>
                 <VirtualizedList
-                    data={Leave_Request}
-                    renderItem={renderItem}
-                    initialNumToRender={4}
-                    getItemCount={()=>Leave_Request.length}
-                    keyExtractor={(item, index)=> index}
-                    getItem={(data, index)=>(Leave_Request[index])}
-                    onRefresh={onRefresh}
-                    refreshing={fetching}
+                  data={Leave_Request}
+                  renderItem={renderItem}
+                  initialNumToRender={4}
+                  getItemCount={()=>Leave_Request.length}
+                  keyExtractor={(item, index)=> index}
+                  getItem={(data, index)=>(Leave_Request[index])}
+                  onRefresh={onRefresh}
+                  refreshing={fetching}
                 />
             </View>
             {openModal && (
@@ -124,9 +123,13 @@ export default LeaveRequest
 
 const styles = StyleSheet.create({
   header: {
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     backgroundColor: '#2e44fc',
     alignItems: 'baseline',
+    height: 48
+  },
+  headerTitle: {
+    color: '#fff'
   },
   card: {
     borderRadius: 10,
@@ -165,6 +168,6 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: pressed ? 'red' : 'green'
+    backgroundColor: pressed ? 'red' : '#f8a587'
   }),
 });

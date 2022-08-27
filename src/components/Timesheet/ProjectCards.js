@@ -1,166 +1,83 @@
-import React, {useEffect, useState} from 'react';
-import { View , StyleSheet, TouchableOpacity , FlatList} from 'react-native';
-import {Card, Text, Badge } from 'react-native-paper';
+import React from 'react';
+import { View , StyleSheet, Pressable} from 'react-native';
+import {Card, Headline, Subheading, Title, Caption, Text } from 'react-native-paper';
+import { status_color } from '../../services/constant';
 import { ColView } from '../ConstantComponent';
 
-const projects = [
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Submit',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Submit',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Rejected',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Rejected',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Submit',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Submit',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Submit',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-    {
-      projectName: 'One LM',
-      type:  1,
-      milestoneName: 'Milestone 1',
-      hours: 27,
-      status: 'Rejected',
-      notes:  'As a cross platform UI Toolkit,'
-    },
-]
+
   
 
-export default ProjectCards = ({timesheets}) =>{
-    const [selected, setSelected] = useState({})
-    const [longPressed, setLongPress] = useState(false)
-
-    useEffect(() => {
-      console.log(timesheets)
-    
-    }, [])
-    
-
-    const onPressItem = (key, long)=>{
-        let newSelected = selected
-        let selectedItems = Object.keys(selected).length
-        if (longPressed && selectedItems > 0){
-            if (newSelected[key]){
-                delete newSelected[key]
-                if (selectedItems === 1){
-                    setLongPress(false)
-                }
-            }else{
-                newSelected[key] = true
-            }
-            setSelected({...newSelected})
-        }
-        if (long && selectedItems === 0){
-            setSelected({[key]: true})
-            setLongPress(true)
-        }
-    }
-
-    const renderItem = ({item}) =>{
-        return (
-            <TouchableOpacity 
-                onLongPress={()=>onPressItem(item.id, true)}
-                onPress={()=>onPressItem(item.id)}
+const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
+    const statusColor = status_color[timesheet.status]?.['color'] ?? '#476ba6'
+    return( 
+        <Card 
+            style={styles.card(selected)} 
+            elevation={10} 
+            mode="elevated"
+        >
+            <Pressable
+                android_ripple={{color: '#747474', borderless: true}}
+                onLongPress={onLongPress}
+                onPress={onPress}
             >
-                <Card 
-                    containerStyle={styles.card(selected[item.id])}
-                >
-                    <ColView  style={styles.cardView}>
-                        <Text>Project Name: </Text>
-                        <Text>{item.projectName}</Text>
+                <Card.Content >
+                    <ColView justify={'space-between'} >
+                        <View style={styles.detailView}>
+                            <View >
+                                <Text style={styles.headline}>{timesheet.project}</Text>
+                                <Subheading style={styles.subheading}>{timesheet.projectType === 1 ? timesheet.milestone: ''}</Subheading>
+                            </View>
+                            <View>
+                                <Caption>{timesheet.status}</Caption>
+                            </View>
+                        </View>
+                        <View style={[styles.hourView, status_color[timesheet.status]]}
+                        >
+                            <Title style={{fontWeight: '900', color:statusColor}}>{timesheet.totalHours}</Title>
+                            <Subheading style={{color:statusColor}}>hours</Subheading>
+                        </View>
                     </ColView>
-                    {item.type===1 && <ColView  style={styles.cardView}>
-                        <Text>Milestone Name: </Text>
-                        <Text>{item.milestoneName}</Text>
-                    </ColView> }
-                    <ColView  style={styles.cardView} justify={"space-between"}>
-                        <ColView flex={2}>
-                            <Text>Total Hours: </Text>
-                            <Text>{item.hours}</Text>
-                        </ColView>
-                        <ColView flex={2}>
-                            <Text>Status: </Text>
-                            <Badge value={item.status} status={item.status === 'Submit' ? 'success': 'error'} />
-                        </ColView>
-                    </ColView>
-                    <ColView  style={styles.cardView}>
-                        <Text>Notes: </Text>
-                        {/* <Tooltip
-                            popover={<Text>Tooltip info goes here</Text>}
-                            width={200}
-                        > */}
-                            <Text>{item.notes}</Text>
-                        {/* </Tooltip> */}
-                    </ColView>
-                </Card>
-            </TouchableOpacity>
-        )
-    }
-
-    return <View  >
-        <FlatList
-            data={timesheets}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            extraData={selected}
-        />
-    </View >
+                </Card.Content>
+            </Pressable>
+        </Card>
+    )
 }
-
+export default ProjectCards
 
 const styles = StyleSheet.create({
     cardView: {
         paddingVertical:  5,
     },
     card: (selectColor)=> ({
-        margin:10,
         borderRadius: 10,  
-        backgroundColor: selectColor ? "#c3f7ff9e" : "white"
-    })
+        margin:10,
+        backgroundColor: selectColor ? "#727ef6b3" : "white"
+    }),
+    detailView: {
+        width: '75%', 
+        paddingTop: 15, 
+        justifyContent: 'space-between'
+    },
+    headline: {
+        lineHeight: 26, 
+        marginVertical: 0
+    },
+    subheading:{
+        color: '#747474', 
+        lineHeight: 18, 
+        marginVertical: 0, 
+        marginBottom: 5
+    },
+    hourView:{
+        width: '25%',
+        height: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        backgroundColor :'#edf5ff', 
+        borderColor: '#8fb2eb', 
+        borderWidth: 1, 
+        color: '#476ba6'
+    } 
 })
-    
+ 

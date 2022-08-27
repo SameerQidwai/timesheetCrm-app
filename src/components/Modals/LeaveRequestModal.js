@@ -2,185 +2,182 @@ import moment from 'moment';
 import React, { useCallback, useState } from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Dialog, Portal, TextInput } from 'react-native-paper'
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, })=> {
-    console.log('is this working or not?')
-    const [visible, setVisble] = useState(modalVisible)
-    const [dateTime, setDateTime] = useState({ open: false, key: '', mode: 'date', });
-    const [formData, setFormData] = useState({startDate: moment(), endDate: moment()})
-    const [days, setDays] = useState(0)
+  const [visible, setVisble] = useState(modalVisible)
+  const [dateTime, setDateTime] = useState({ open: false, key: '', mode: 'date', });
+  const [formData, setFormData] = useState({startDate: moment(), endDate: moment()})
+  const [days, setDays] = useState([])
 
-    const openDateTime = (open, key, mode) => {
-        setdateTime({open, key, mode});
+  const openDateTime = (open, key, mode) => {
+      setDateTime({open, key, mode});
+  };
+  
+  const setFieldValue = (key, value) => {
+      if (dateTime['open']) {
+        setDateTime(prev => ({...prev, open: false}));
+        value = moment(value);
+      }
+      setFormData(prev => ({...prev, [key]: value}));
+      if (key === 'startDate' || key === 'endDate'){
+        setTimeout(() => {
+          setNumberOfDays()
+          
+        }, 500);
+      }
     };
 
-    const setFieldValue = (key, value) => {
-        console.log({[key]:value})
-        if (dateTime['open']) {
-          setdateTime(prev => ({...prev, open: false}));
-          value = moment(value);
-        }
-        setFormData(prev => ({...prev, [key]: value}));
-      };
+  const hideDialog = () => {
+    setVisble(false);
+      onClose();
+  };
 
-    const hideDialog = () => {
-      setVisble(false);
-        onClose();
-    };
-
-    // const setNumberOfDays = useCallback(() => { 
-    //   const {startDate, endDate} = formData
-    //   if (startDate && endDate) {
-    //     setDay(startDate.diff(endDate, 'days'))
-    //   }else if(startDate){
-    //     setDay(1)
-    //   }else{
-    //     setDay(0)
-    //   }
-    // },
-    //   [formData],
-    // )
+  const setNumberOfDays = () => { 
+    let dayArray= []
+    let {startDate, endDate} = formData
+    console.log(moment(startDate).toDate, moment(endDate).toDate)
+    if (startDate && endDate) {
+      startDate = moment(startDate)
+      while(startDate.isSameOrBefore(endDate)){
+        let day = moment(startDate).format('dddd - DD MMM YYYY')
+        dayArray.push({label: day, key: day})
+        startDate.add(1, 'days')
+      }
+      // }
+    }else if(startDate){
+      let day = moment(startDate).format('dddd - DD MMM YYYY')
+      dayArray.push({label: day, key: day})
+    }
+    // setDays([dayArray])
+    return dayArray
+  }
     
-
-    // const rednerDateHour = () =>{
-    //     const {startDate, endDate} = formData
-    //     let dates = []
-    //     for (var day = moment(startDate); day.isSameOrBefore(endDate); day.add(1, 'days')){
-    //         dates.push({
-                
-    //         })
-    //     }
-    // }
-    
-    return (
-        <Portal>
-            <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog}>
-                <Dialog.Title style={[styles.modalHeader, styles.headerText]}>
-                {'Leave Request'}
-                </Dialog.Title>
-                <Dialog.Content>
-                    <Dialog.ScrollArea>
-                        <ScrollView>
-                        <TextInput
-                            mode="outlined"
-                            label="Leave Type"
-                            placeholder="Select Leave Type"
-                            returnKeyType="next"
-                            value={formData['leaveType']}
-                            onChangeText={(text) =>
-                            setFieldValue('leaveType', text)
-                            }
-                        />
-                        <TextInput
-                            mode="outlined"
-                            label="Project Name"
-                            placeholder="Set Project"
-                            returnKeyType="next"
-                            value={formData['projectName']}
-                            onChangeText={(text) =>
-                            setFieldValue('projectName', text)
-                            }
-                        />
-                        <TextInput
-                            mode="outlined"
-                            label="start Date"
-                            placeholder="Set Date"
-                            onFocus={() => {
-                            openDateTime(true, 'startDate', 'time');
-                            }}
-                            onPressOut={() => {
-                            openDateTime(true, 'startDate', 'time');
-                            }}
-                            showSoftInputOnFocus={false}
-                            value={formData['startDate'].format('dddd - DD MMM YYYY')}
-                        />
-                        <TextInput
-                            mode="outlined"
-                            label="End Date"
-                            placeholder="Set Date"
-                            onFocus={() => {
-                            openDateTime(true, 'endDate', 'time');
-                            }}
-                            onPressOut={() => {
-                            openDateTime(true, 'endDate', 'time');
-                            }}
-                            showSoftInputOnFocus={false}
-                            value={formData['endDate'].format('dddd - DD MMM YYYY')}
-                        />
-                        <View style={{height: 150, borderLeftWidth: 2, padding: 5, margin: 5}}> 
-                          <ScrollView> 
-                          <TextInput
-                            dense 
-                            mode="outlined"
-                            label="Break Hours"
-                            placeholder="set hours"
-                            keyboardType="decimal-pad"
-                            onChangeText={(text) =>
-                              setFieldValue('duration', text)
-                            }
-                          />
-                          <TextInput
-                            dense 
-                            mode="outlined"
-                            label="Break Hours"
-                            placeholder="set hours"
-                            keyboardType="decimal-pad"
-                            onChangeText={(text) =>
-                              setFieldValue('duration', text)
-                            }
-                          />
-                          <TextInput
-                            dense 
-                            mode="outlined"
-                            label="Break Hours"
-                            placeholder="set hours"
-                            keyboardType="decimal-pad"
-                            onChangeText={(text) =>
-                              setFieldValue('duration', text)
-                            }
-                          />
-                          </ScrollView>
-                        </View>
-                        <TextInput
-                            mode="outlined"
-                            label="Notes"
-                            placeholder="Add Somre Reason.."
-                            multiline
-                            numberOfLines={4}
-                            onChangeText={(text) =>
-                            setFieldValue('notes', text)
-                            }
-                            returnKeyType="next"
-                        />
-                        </ScrollView>
-                    </Dialog.ScrollArea> 
-                        </Dialog.Content>
-                    <Dialog.Actions style={styles.actionView}>
-                        <Button
-                            mode="contained"
-                            color="#f47b4e"
-                            compact
-                            labelStyle={styles.bText}
-                            onPress={hideDialog}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            mode="contained"
-                            color="#4356fa"
-                            compact
-                            labelStyle={styles.bText}
-                            onPress={()=>{
-                              const {startTime, endTime} = formData
-                              onSuccess({...formData, startTime: startTime.format('LT'), endTime: endTime.format('LT')})
-                            }}
-                        >
-                            Save
-                        </Button>
-                    </Dialog.Actions>
-            </Dialog>
-        </Portal>
-    );
+  return (
+    <Portal>
+      <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog}>
+        <Dialog.Title style={[styles.modalHeader, styles.headerText]}>
+          {'Leave Request'}
+        </Dialog.Title>
+        <Dialog.Content>
+          <Dialog.ScrollArea>
+            <ScrollView>
+              <TextInput
+                mode="outlined"
+                label="Leave Type"
+                placeholder="Select Leave Type"
+                returnKeyType="next"
+                value={formData['leaveType']}
+                onChangeText={text => setFieldValue('leaveType', text)}
+              />
+              <TextInput
+                mode="outlined"
+                label="Project Name"
+                placeholder="Set Project"
+                returnKeyType="next"
+                value={formData['projectName']}
+                onChangeText={text => setFieldValue('projectName', text)}
+              />
+              <TextInput
+                mode="outlined"
+                label="start Date"
+                placeholder="Set Date"
+                onFocus={() => {
+                  openDateTime(true, 'startDate', 'date');
+                }}
+                onPressOut={() => {
+                  openDateTime(true, 'startDate', 'date');
+                }}
+                showSoftInputOnFocus={false}
+                value={formData['startDate'].format('dddd - DD MMM YYYY')}
+              />
+              <TextInput
+                mode="outlined"
+                label="End Date"
+                placeholder="Set Date"
+                onFocus={() => {
+                  openDateTime(true, 'endDate', 'date');
+                }}
+                onPressOut={() => {
+                  openDateTime(true, 'endDate', 'date');
+                }}
+                showSoftInputOnFocus={false}
+                value={formData['endDate'].format('dddd - DD MMM YYYY')}
+              />
+              <View
+                style={{
+                  height: 150,
+                  borderLeftWidth: 2,
+                  padding: 5,
+                  margin: 5,
+                }}>
+                <ScrollView>
+                  {setNumberOfDays().map(el=>(
+                    <TextInput
+                      key={el.key}
+                      dense
+                      mode="outlined"
+                      label={el.label}
+                      placeholder="set hours"
+                      keyboardType="decimal-pad"
+                      onChangeText={text => setFieldValue(el.key, text)}
+                    />))
+                  }
+                </ScrollView>
+              </View>
+              <TextInput
+                mode="outlined"
+                label="Notes"
+                placeholder="Add Somre Reason.."
+                multiline
+                numberOfLines={4}
+                onChangeText={text => setFieldValue('notes', text)}
+                returnKeyType="next"
+              />
+            </ScrollView>
+          </Dialog.ScrollArea>
+        </Dialog.Content>
+        <Dialog.Actions style={styles.actionView}>
+          <Button
+            mode="contained"
+            color="#f47b4e"
+            compact
+            labelStyle={styles.bText}
+            onPress={hideDialog}>
+            Cancel
+          </Button>
+          <Button
+            mode="contained"
+            color="#4356fa"
+            compact
+            labelStyle={styles.bText}
+            onPress={() => {
+              const {startTime, endTime} = formData;
+              onSuccess({
+                ...formData,
+                startTime: startTime.format('LT'),
+                endTime: endTime.format('LT'),
+              });
+            }}>
+            Save
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+      {dateTime.open && (
+        <DateTimePicker
+          mode={dateTime['mode']}
+          value={
+            formData[dateTime['key']]
+              ? moment(formData[dateTime['key']]).toDate()
+              : new Date()
+          }
+          onChange={(event, dateValue) => {
+            setFieldValue(dateTime.key, dateValue);
+          }}
+        />
+      )}
+    </Portal>
+  );
 }
 
 const styles = StyleSheet.create({

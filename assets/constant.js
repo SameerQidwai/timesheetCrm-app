@@ -1,3 +1,96 @@
+export const projects_timesheet = [
+  {
+    id: 1,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'SB',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id: 2,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'SB',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id: 3,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'RJ',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id:4,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'RJ',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id:5,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '20',
+    status: 'SB',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id:6,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'SB',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id:7,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'AP',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id:8,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'RJ',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id:9,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'AP',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    id:10,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'RJ',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+]
+
 export const timesheet_data = [
     {
       title: '2022-08-10',
@@ -278,7 +371,7 @@ export const timesheet_data = [
         },
       ],
     },
-];
+]
 
 export const timesheet_dailyhours = {
     '2022-08-10': '1',
