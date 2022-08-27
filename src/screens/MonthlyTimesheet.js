@@ -17,9 +17,9 @@ const MonthlyTimesheet =({navigation}) =>{
     const [fetching, setFetching] = useState(false)
     const [timesheets, setTimesheets] = useState({})
 
-    // useEffect(() => {
-    //     getData()
-    // }, [sDate])
+    useEffect(() => {
+        getData()
+    }, [sDate])
 
     const getData = async() =>{
         setFetching(true)
@@ -93,7 +93,7 @@ const MonthlyTimesheet =({navigation}) =>{
           setLongPress(false);
           setSelected({});
         } else {
-            navigation.navigate('Timesheet-Details', {sDate: moment(sDate).toString() })
+            navigation.navigate('Timesheet-Details', {sDate: moment(sDate).format('yyyy-MM-DD')})
         }
     }
 
@@ -129,7 +129,7 @@ const MonthlyTimesheet =({navigation}) =>{
                 <FlatList
                     data={timesheets['milestones']}
                     renderItem={renderItem}
-                    keyExtractor={(item, index) => item.milestoneId}
+                    keyExtractor={(item, index) => index}
                     extraData={selected}
                     onRefresh={getData}
                     refreshing={fetching}

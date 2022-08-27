@@ -5,7 +5,7 @@ import { AppContext } from '../context/AppContext'
 import { loginApi } from '../services/login-api'
 
 function Login() {
-    const [formData, setFormData] = useState({})
+    const [formData, setFormData] = useState({email: 'mustafa.syed@1lm.com.au', password: 'Rauf20'})
     const [snack, setSnack] = useState({
         visible: false,
         duration: 3000,
@@ -50,12 +50,14 @@ function Login() {
                 <TextInput
                     mode="outlined"
                     label={'Username'}
+                    value={formData['email']}
                     placeholder={'Enter Your Username'}
                     onChangeText={(text)=>setFormData(prev=> ({...prev, email:text}))}
                 />
                 <TextInput
                     mode="outlined"
                     label={'Password'}
+                    value={formData['password']}
                     placeholder={'Enter Your Passwrod'}
                     // keyboardType='visible-password'
                     secureTextEntry={eye}

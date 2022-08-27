@@ -26,15 +26,15 @@ export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
       <Card.Content >
         <ColView justify={'space-between'} >
           <View style={styles.detailView}>
-              <Headline style={styles.headline}>{timeEntry.projectName}</Headline>
-              <Subheading style={styles.subheading}>{timeEntry.type === 1 ? timeEntry.milestoneName: ''}</Subheading>
-              <Paragraph >{timeEntry.startTime} To {timeEntry.endTime} With {timeEntry.duration} Hour Break</Paragraph>
+              <Text style={styles.headline}>{timeEntry.project}</Text>
+              <Subheading style={styles.subheading}>{timeEntry.projectType === 1 ? timeEntry.milestone: ''}</Subheading>
+              <Paragraph >{timeEntry.startTime} To {timeEntry.endTime} With {timeEntry.breakHours} Hour Break</Paragraph>
               <Caption >{timeEntry.notes}</Caption>
           </View>
           <View style={[styles.hourView, status_color[timeEntry.status]]
           }
           >
-              <Title style={{fontWeight: '900', color: statusColor,}}>{timeEntry.duration}</Title>
+              <Title style={{fontWeight: '900', color: statusColor,}}>{timeEntry.actualHours}</Title>
               <Subheading style={{color: statusColor}}>hours</Subheading>
           </View>
         </ColView>

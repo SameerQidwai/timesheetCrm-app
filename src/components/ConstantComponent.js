@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useCallback, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -10,9 +11,9 @@ export const ColView = ({children, flex,justify, padding, style,}) =>{
 
 export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, dailyhours}) =>{
     // const [selectedDate, setSelectedDate] = useState( date.dateString ||new Date())
-
+    // console.log(dailyhours)
     const getDate = () => {
-        return date.dateString
+        return moment(date.dateString).format('yyyy-M-D')
     }
     // const getDate = useCallback(
     //     (date) => {

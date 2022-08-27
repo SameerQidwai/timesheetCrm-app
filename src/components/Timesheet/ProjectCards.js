@@ -1,11 +1,8 @@
 import React from 'react';
 import { View , StyleSheet, Pressable} from 'react-native';
 import {Card, Headline, Subheading, Title, Caption, Text } from 'react-native-paper';
-import { status_color } from '../../services/constant';
+import { status_color, status_name } from '../../services/constant';
 import { ColView } from '../ConstantComponent';
-
-
-  
 
 const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
     const statusColor = status_color[timesheet.status]?.['color'] ?? '#476ba6'
@@ -21,22 +18,41 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
                 onPress={onPress}
             >
                 <Card.Content >
-                    <ColView justify={'space-between'} >
-                        <View style={styles.detailView}>
-                            <View >
-                                <Text style={styles.headline}>{timesheet.project}</Text>
-                                <Subheading style={styles.subheading}>{timesheet.projectType === 1 ? timesheet.milestone: ''}</Subheading>
+                    {!timesheet['leaveRequest']?
+                        <ColView justify={'space-between'} >
+                            <View style={styles.detailView}>
+                                <View >
+                                    <Text style={styles.headline}>{timesheet.project}</Text>
+                                    <Subheading style={styles.subheading}>{timesheet.projectType === 1 ? timesheet.milestone: ''}</Subheading>
+                                </View>
+                                <View>
+                                    <Caption>{status_name[timesheet.status]}</Caption>
+                                </View>
                             </View>
-                            <View>
-                                <Caption>{timesheet.status}</Caption>
+                            <View style={[styles.hourView, status_color[timesheet.status]]}
+                            >
+                                <Title style={{fontWeight: '900', color:statusColor}}>{timesheet.totalHours}</Title>
+                                <Subheading style={{color:statusColor}}>hours</Subheading>
                             </View>
-                        </View>
-                        <View style={[styles.hourView, status_color[timesheet.status]]}
-                        >
-                            <Title style={{fontWeight: '900', color:statusColor}}>{timesheet.totalHours}</Title>
-                            <Subheading style={{color:statusColor}}>hours</Subheading>
-                        </View>
-                    </ColView>
+                        </ColView>
+                        :
+                        <ColView justify={'space-between'} >
+                            <View style={styles.detailView}>
+                                <View >
+                                    <Text style={styles.headline}>{timesheet.leaveType}</Text>
+                                    <Subheading style={styles.subheading}>{timesheet.project}</Subheading>
+                                </View>
+                                <View>
+                                    <Caption>{status_name[timesheet.status]}</Caption>
+                                </View>
+                            </View>
+                            <View style={[styles.hourView, status_color[timesheet.status]]}
+                            >
+                                <Title style={{fontWeight: '900', color:statusColor}}>{timesheet.totalHours}</Title>
+                                <Subheading style={{color:statusColor}}>hours</Subheading>
+                            </View>
+                        </ColView>
+                    }
                 </Card.Content>
             </Pressable>
         </Card>
@@ -74,10 +90,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginVertical: 10,
-        backgroundColor :'#edf5ff', 
-        borderColor: '#8fb2eb', 
+        backgroundColor :'#f5f5f5', 
+        borderColor: '#c4c4c4', 
         borderWidth: 1, 
-        color: '#476ba6'
+        color: '#c4c4c4'
     } 
 })
  

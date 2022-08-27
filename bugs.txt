@@ -1,1 +1,9 @@
 Edit is not yet completed
+
+MonthlyTimesheet
+    calculate and show total in MonthlyTimesheet
+    maybe want to change color or leave request
+    onclick Card
+
+WeeklyTimesheet 
+    Leave Request is not added yet

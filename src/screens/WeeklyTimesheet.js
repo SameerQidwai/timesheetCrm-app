@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect, useContext} from 'react';
 import { View, StyleSheet, FlatList, Pressable, } from 'react-native';
 import { Caption, FAB, IconButton, Title, } from 'react-native-paper';
 import {  CalendarProvider, WeekCalendar, } from 'react-native-calendars';
@@ -17,14 +17,13 @@ import TimeEntryModal from '../components/Modals/TimeEntryModal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RenderDay } from '../components/ConstantComponent';
 import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
-
-
-
+import { getTimesheetApi } from '../services/timesheet-api';
+import { AppContext } from '../context/AppContext';
 
 
 const WeeklyTimesheet = ({route, navigation}) => {
-  const dailyhours = timesheet_dailyhours
-  const [timesheet, setTimesheet] = useState(timesheet_data);
+  const {appStorage} = useContext(AppContext)
+  const [timesheet, setTimesheet] = useState({timesheet_data: timesheet_data, total: "0.00", dailyHour: {}});
   const [openModal, setOpenModal] = useState(false);
   const [dateTime, setdateTime] = useState(false);
   const [sDate, setDate] = useState(moment(route?.params?.sDate) ??moment(new Date()));
@@ -33,10 +32,36 @@ const WeeklyTimesheet = ({route, navigation}) => {
   const [longPressed, setLongPress] = useState(false);
   const [fetching, setFetching] = useState(false)
 
+  useEffect(() => {
+    getData()
+  }, [])
+
+
+  const getData = async() =>{
+    setFetching(true)
+    let keys = {startDate: '01-11-2021'?? moment(sDate).startOf('month').format('DD-MM-YYYY'),
+        endDate: '30-11-2021'??moment(sDate).endOf('month').format('DD-MM-YYYY'),
+        userId: 12??appStorage['id']
+    }
+    try {
+        let {success, data} = await getTimesheetApi(keys, appStorage['accessToken'])
+        if(success){
+          const {daily_totalHour, grandTotal, newData} = restructure(data, sDate)
+          // console.log(newData)
+          setTimesheet({timesheet_data: newData, total: grandTotal, dailyHour: daily_totalHour})
+          setFetching(false)
+        }
+    }catch (e){
+        console.log(e)
+    }
+  }
+
   const onDateChanged = day => {
-    let index = timesheet.findIndex(el => el.title === day);
+    const {timesheet_data} = timesheet
+    let index = timesheet_data.findIndex(el => el.title === moment(day).format('yyyy-M-D'));
     setDate(moment(day));
-    setItems(timesheet[index]);
+    setItems(timesheet_data[index]);
+    // console.log(timesheet_data[index])
   };
 
   const onMonthChange = useCallback(month => {
@@ -70,17 +95,18 @@ const WeeklyTimesheet = ({route, navigation}) => {
   const renderItem = ({item}) => {
     return (
         <TimeCard2 
-          timeEntry={item} selected={selected[item.id]} 
-          onLongPress={() => onPressItem(item.id, true)}
-          onPress={() => onPressItem(item.id)}
+          timeEntry={item} selected={selected[item.entryId]} 
+          onLongPress={() => onPressItem(item.entryId, true)}
+          onPress={() => onPressItem(item.entryId)}
         />
     );
   };
 
   const fabAction = () =>{
+    const {timesheet_data} = timesheet
     if (longPressed) {
       let dateIndex = null;
-      let copyTimesheet = timesheet.map((el, index) => {
+      let copyTimesheet = timesheet_data.map((el, index) => {
         if (el.title === items.title) {
           dateIndex = index;
           el.data = el.data.filter(fel => {
@@ -91,7 +117,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
         }
         return el;
       });
-      setTimesheet(copyTimesheet);
+      setTimesheet(prev => ({...prev, timesheet_data: copyTimesheet}));
       setItems(copyTimesheet[dateIndex]);
       setLongPress(false);
       setSelected({});
@@ -101,9 +127,10 @@ const WeeklyTimesheet = ({route, navigation}) => {
   }
 
   const onSuccess = (data) =>{
+    const {timesheet_data} = timesheet
     let addDate = moment(data.date).format('yyyy-MM-DD')
-    let index = timesheet.findIndex(el => el.title === addDate)
-    let newTimesheet = timesheet
+    let index = timesheet_data.findIndex(el => el.title === addDate)
+    let newTimesheet = timesheet_data
     if (index > -1){
       newTimesheet[index].data.push(data)
     }else{
@@ -111,14 +138,6 @@ const WeeklyTimesheet = ({route, navigation}) => {
     }
     setTimesheet([...newTimesheet])
     setOpenModal(false)
-  }
-
-  const onRefresh = () =>{
-    setFetching(true)
-    setTimeout(() => {
-        setLeave(leave_request)
-        setFetching(false)
-    }, 3000);
   }
   
   return (
@@ -154,7 +173,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
             <Caption>Total Hours</Caption>
           </View>
           <View>
-            <Title style={{lineHeight: 20}}>{'120.66'}</Title>
+            <Title style={{lineHeight: 20}}>{timesheet['total']}</Title>
           </View>
         </View>
       </View>
@@ -179,9 +198,9 @@ const WeeklyTimesheet = ({route, navigation}) => {
           displayLoadingIndicator={true}
           // customHeader
           enableSwipeMonths={false}
-          // minDate={'2022-08-01'}
-          // maxDate={'2022-08-31'}
-          onMonthChange={onMonthChange}
+          minDate={moment(sDate).startOf('month').format('yyyy-MM-DD')}
+          maxDate={moment(sDate).endOf('month').format('yyyy-MM-DD')}
+          // onMonthChange={onMonthChange}
           disableMonthChange
           // hideArrows
           rowHasChanged={(r1, r2) => {
@@ -198,7 +217,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
               marking={marking} 
               theme={theme} 
               onDateChanged={onDateChanged} 
-              dailyhours={dailyhours} 
+              dailyhours={timesheet['dailyHour']} 
               sDate={sDate}
             />
           )}
@@ -206,9 +225,9 @@ const WeeklyTimesheet = ({route, navigation}) => {
         <FlatList
           data={items?.data ?? []}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.entryId}
           extraData={selected}
-          onRefresh={onRefresh}
+          onRefresh={getData}
           refreshing={fetching}
         />
       </CalendarProvider>
@@ -294,3 +313,60 @@ const styles = StyleSheet.create({
     backgroundColor: pressed ? 'red' : '#f8a587',
   }),
 });
+
+
+//--------Helping Function --------//
+
+function useRegex(input) {
+  let regex = /(0?[1-9]|[12][0-9]|3[01])\/[0-9]+/i;
+  return regex.test(input);
+}
+
+function restructure (data, date) {
+  let year = '2021'??moment(date).format('YYYY')
+  let date_index = {}
+  let daily_totalHour ={}
+  let grandTotal = 0
+  let newData = []
+  let leaveData = []
+  let count = 0
+  data['milestones'].forEach((el, p_index)=>{
+    Object.entries(el).forEach(([key, value], e_index) => {
+        if (useRegex(key)){
+            let keySplit = key.split('/')
+            let newKey = `${year}-${keySplit[1]}-${keySplit[0]}`
+            value = {
+                ...value,
+                milestone: el['milestone'],
+                project: el['project'],
+                projectType: el['projectType'],
+                status: el['status'],
+                milestoneId: el['milestoneId'],
+                projectId: el['projectId'],
+                milestoneEntryId: el['milestoneEntryId'],
+            }
+            if (date_index[newKey]){
+              if(!el.leaveRequest){
+                newData[date_index[newKey]]['data'].push(value)
+                daily_totalHour[newKey] += value['actualHours']
+                grandTotal += el['totalHours']
+              }
+            }else{
+              if(!el.leaveRequest){
+                date_index[newKey] = count
+                newData.push({title: newKey, data: [value]})
+                daily_totalHour[newKey] = value['actualHours']
+                grandTotal = el['totalHours']
+                count++
+              }
+            }
+        }
+    })
+  })
+  // console.log('________________________________________________>')
+  // console.log(newData[0])
+  // console.log('<________________________________________________')
+  return {daily_totalHour, grandTotal, newData}
+}
+
+
