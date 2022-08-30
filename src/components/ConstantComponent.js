@@ -1,7 +1,7 @@
-import moment from 'moment';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Text } from 'react-native-paper';
+import { formatDate, formatFloat } from '../services/constant';
 
 export const ColView = ({children, flex,justify, padding, style,}) =>{
     return <View style={{...styles.main(flex, justify, padding, style)}}>
@@ -10,10 +10,13 @@ export const ColView = ({children, flex,justify, padding, style,}) =>{
 }
 
 export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, dailyhours}) =>{
-    // const [selectedDate, setSelectedDate] = useState( date.dateString ||new Date())
-    // console.log(dailyhours)
+    const [reload, setReload] = useState(false)
+    useEffect(() => {
+        setReload(!reload)
+    }, [dailyhours])
+    
     const getDate = () => {
-        return moment(date.dateString).format('yyyy-M-D')
+        return formatDate(date.dateString, true, 'yyyy-M-D')
     }
     // const getDate = useCallback(
     //     (date) => {
@@ -51,7 +54,7 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                     </View>
                     <View>
                         <Text style={[marking?.['customStyles']?.text,styles.renderDayText]}>
-                        {dailyhours[getDate()]??'0.00'}
+                        {formatFloat(dailyhours?.[getDate()])}
                         </Text>
                     </View>
                 </Pressable>

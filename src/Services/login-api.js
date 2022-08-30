@@ -4,6 +4,7 @@ import { Api } from './constant';
 const url = `${Api}/auth`;
 
 export const loginApi = (data) => {
+  console.log(data)
   return axios
     .post(`${Api}/login`, data)
     .then((res) => {
@@ -35,6 +36,7 @@ export const loginApi = (data) => {
         return { success, data };
     })
     .catch((err) => {
+      console.log(err)
       return {
         error: 'Please login again!',
         status: false,

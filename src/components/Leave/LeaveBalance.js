@@ -2,6 +2,7 @@ import React from 'react'
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native'
 import { Card, Subheading, Text } from 'react-native-paper'
 import { leave_request_balance } from '../../../assets/constant'
+import { formatFloat } from '../../services/constant'
 
 
 export default LeaveBalance= ({leave_balnce})=> {
@@ -30,13 +31,13 @@ export default LeaveBalance= ({leave_balnce})=> {
             mode="elevated"
         >
             {/* <View > */}
-                <Card.Title title={item.balanceHours}/>
+                <Card.Title title={formatFloat(item.balanceHours)}/>
                 <View>
                     {/* <Card.Title subtitle={item.name} /> */}
-                    <Subheading style={{paddingLeft:10}}>Total</Subheading>
-                    <Text>Accured is {item.carryForward}</Text>
-                    <Text>Earned YTD is {item.balanceHours - item.carryForward + item.used}</Text>
-                    <Text>Used YTD is {item.used}</Text>
+                    <Subheading style={{paddingLeft:10, fontWeight: '700'}}>{item.name}</Subheading>
+                    <Text>Accured is {formatFloat(item.carryForward)}</Text>
+                    <Text>Earned YTD is {formatFloat(item.balanceHours - item.carryForward + item.used)}</Text>
+                    <Text>Used YTD is {formatFloat(item.used)}</Text>
                 </View>
             {/* </View> */}
         </Card>

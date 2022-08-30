@@ -1,29 +1,48 @@
+import React, {useContext, useEffect, useState} from 'react';
+import { Dialog, TextInput, Portal, Button, Title, } from 'react-native-paper';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import { Dialog, Divider, TextInput, Text, Portal, Button, Subheading, Title, } from 'react-native-paper';
 import moment from 'moment';
-import React, {useState} from 'react';
-import {Modal, Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet} from 'react-native';
+import { addTimeEntryApi, editTimeEntryApi } from '../../services/timesheet-api';
+import { userMilestonesApi } from '../../services/constant-api';
+import { AppContext } from '../../context/AppContext';
+import MDropDown from '../MUI-dropdown';
+import { formatDate } from '../../services/constant';
 
-export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, }) => {
-  const data = [
-    {id: '1', title: 'Alpha'},
-    {id: '2', title: 'Beta'},
-    {id: '3', title: 'Gamma'},
-  ];
-  const [formData, setFormData] = useState({ projectName: '', date: selectedDate, startTime: moment(), endTime: moment(), notes: '', duration: '',
-  });
+export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => {
+  const { appStorage, setAppStorage } = useContext( AppContext )
   const [modalVisible, setModalVisible] = useState(visible);
   const [dateTime, setdateTime] = useState({ open: false, key: '', mode: 'date', });
+  const [select, setSelect] = useState({open: false, items: [], })
+  const [loading, setLoading] = useState(false)
+  const [fetching, setFetching] = useState(true)
+  const [formData, setFormData] = useState(data);
 
-  const openDateTime = (open, key, mode) => {
-    setdateTime({open, key, mode});
+  useEffect(() => {
+    
+    const {id: userId, accessToken} = appStorage
+    userMilestonesApi(userId, 0, accessToken)
+    .then(res=>{
+      const {success, data, setToken} = res
+      if(success){
+        setSelect(prev => ({...prev, items: data??[]}))
+        setAppStorage(prev=> ({...prev, accessToken: setToken}))
+        setFetching(false)
+      }
+    })
+  }, [])
+
+  const openDateTime = (open, key, mode, is24Hour) => {
+    setdateTime({open, key, mode, is24Hour});
   };
 
   const setFieldValue = (key, value) => {
-    console.log({[key]:value})
+    
     if (dateTime['open']) {
       setdateTime(prev => ({...prev, open: false}));
-      value = moment(value);
+      if (key !== 'breakHours'){
+        value = moment(value);
+      }
     }
     setFormData(prev => ({...prev, [key]: value}));
   };
@@ -32,6 +51,60 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
     setModalVisible(false);
     onClose();
   };
+
+
+  const onSubmit = () =>{
+    setLoading(true)
+    const {id: userId, accessToken} = appStorage
+    const { startTime, endTime, date, breakHours} = formData
+    let entry= {
+      ...formData, 
+      startTime: startTime.format('HH:mm'), 
+      endTime: endTime.format('HH:mm'), 
+      date: date.format('D/M/YYYY'),
+      breakHours: breakHours ? moment.duration(moment(breakHours).format('HH:mm')).asHours(): 0
+    }
+    if (edit >= 0){
+      editing(entry, accessToken)
+    }else{
+      adding(entry, userId, accessToken)
+    }
+  }
+
+  const adding = (newEntry, userId, token) =>{
+    let {date} = formData
+    let query = {
+      startDate: formatDate(date).startOf('month').format('DD-MM-YYYY'),
+      endDate: formatDate(date).endOf('month').format('DD-MM-YYYY'),
+      userId: userId
+    }
+
+    addTimeEntryApi(query, newEntry, token)
+    .then(res =>{
+      if(res?.success){
+        setLoading(false)
+        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+        onSuccess(res.data)
+      }
+    })
+  }
+
+  const editing = (editEntry, token) =>{
+    editTimeEntryApi(editEntry, token)
+    .then(res =>{
+      if(res?.success){
+        setLoading(false)
+        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+        onSuccess(res.data)
+      }
+    })
+  }
+
+  const getBreakTime = (date) =>{
+    let hours = ("0" + new Date(date).getHours()).slice(-2);
+    let minutes = ("0" + new Date(date).getMinutes()).slice(-2);
+    return `${hours}:${minutes}`
+  }
 
   return (
     <Portal>
@@ -46,25 +119,23 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
           <Pressable
             onPressOut={() => {
               openDateTime(true, 'date', 'date');
-            }}>
+            }}
+          >
             <Title style={styles.subheading}>
               {formData['date'].format('dddd - DD MMM YYYY')}
             </Title>
           </Pressable>
           <Dialog.ScrollArea style={styles.fieldView}>
             <ScrollView>
-              {/* <Divider style={styles.divider}/  > */}
-              <TextInput
-                mode="outlined"
-                label="Project Name"
-                placeholder="Set Project"
-                returnKeyType="next"
-                value={formData['projectName']}
-                onChangeText={(text) =>
-                  setFieldValue('projectName', text)
-                }
+              <MDropDown
+                placeholder={'Select Project...'}
+                label="Projects"
+                value={formData['milestoneId']}
+                data={[{"label": "Non-Project Hours", "value": 15}]}
+                onSelect={(item) => {setFieldValue('milestoneId', item.value)}}
               />
               <TextInput
+                value={formData['startTime'].format('LT')}
                 mode="outlined"
                 label="Start Time"
                 placeholder="Set Time"
@@ -76,9 +147,9 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
                   openDateTime(true, 'startTime', 'time');
                 }}
                 showSoftInputOnFocus={false}
-                value={formData['startTime'].format('LT')}
               />
               <TextInput
+                value={formData['endTime'].format('LT')}
                 mode="outlined"
                 label="End Time"
                 placeholder="Set Time"
@@ -89,18 +160,33 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
                   openDateTime(true, 'endTime', 'time');
                 }}
                 showSoftInputOnFocus={false}
-                value={formData['endTime'].format('LT')}
               />
-              <TextInput
+              {/* <TextInput
+                value={formData['breakHours']}
+                // value={'01:08'}
                 mode="outlined"
                 label="Break Hours"
                 placeholder="set hours"
                 keyboardType="decimal-pad"
                 onChangeText={(text) =>
-                  setFieldValue('duration', text)
+                  setFieldValue('breakHours', text)
                 }
+              /> */}
+              <TextInput
+                value={getBreakTime(formData['breakHours'])}
+                mode="outlined"
+                label="Break Hours"
+                placeholder="set hours"
+                onFocus={() => {
+                  openDateTime(true, 'breakHours', 'time', true);
+                }}
+                onPressOut={() => {
+                  openDateTime(true, 'breakHours', 'time', true);
+                }}
+                showSoftInputOnFocus={false}
               />
               <TextInput
+                value={formData['notes']}
                 mode="outlined"
                 label="Notes"
                 placeholder="Enter Note.."
@@ -115,23 +201,24 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
           </Dialog.ScrollArea>
           <Dialog.Actions style={styles.actionView}>
             <Button
-              mode="contained"
+              mode={"contained"}
               color="#f47b4e"
               compact
-              labelStyle={styles.bText}
+              loading={loading}
+              disabled={(fetching || loading)}
+              labelStyle={{color: '#fff'}}
               onPress={hideDialog}
             >
               Cancel
             </Button>
             <Button
-              mode="contained"
+              mode={"contained"}
               color="#4356fa"
               compact
-              labelStyle={styles.bText}
-              onPress={()=>{
-                const {startTime, endTime} = formData
-                onSuccess({...formData, startTime: startTime.format('LT'), endTime: endTime.format('LT')})
-              }}
+              loading={loading}
+              disabled={(fetching || loading)}
+              labelStyle={{color: '#fff'}}
+              onPress={onSubmit}
             >
               Save
             </Button>
@@ -141,9 +228,12 @@ export default TimeEntryModal = ({ visible, selectedDate, onClose, onSuccess, })
       {dateTime.open && (
         <RNDateTimePicker
           mode={dateTime['mode']}
+          is24Hour={dateTime['is24Hour']}
+          display={dateTime['is24Hour']? 'spinner':'default'}
+          themeVariant="dark"
           value={
             formData[dateTime['key']]
-              ? moment(formData[dateTime['key']]).toDate()
+              ? formatDate(formData[dateTime['key']]).toDate()
               : new Date()
           }
           onChange={(event, dateValue) => {
@@ -196,7 +286,7 @@ const styles = StyleSheet.create({
   },
   fieldView: {
     paddingHorizontal: 0,
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   actionView: {
     justifyContent: 'space-evenly',
@@ -248,3 +338,6 @@ const styles = StyleSheet.create({
     // resize: 'none',
   },
 });
+
+//======================HELPER=================
+

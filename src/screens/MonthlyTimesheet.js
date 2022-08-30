@@ -1,17 +1,17 @@
-import moment from 'moment'
 import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, Pressable, StyleSheet, View } from 'react-native'
-import { Caption, FAB, IconButton, Title } from 'react-native-paper'
-import { projects_timesheet } from '../../assets/constant'
+import { Caption, FAB, IconButton, Portal, Title } from 'react-native-paper'
+// import { projects_timesheet, timesheet_data } from '../../assets/constant'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ProjectCards from '../components/Timesheet/ProjectCards'
 import { AppContext } from '../context/AppContext'
-import { getTimesheetApi } from '../services/timesheet-api'
+import { getTimesheetApi, reviewTimeSheet } from '../services/timesheet-api'
+import { formatDate, formatFloat } from '../services/constant';
 
 const MonthlyTimesheet =({navigation}) =>{
-    const { appStorage } = useContext(AppContext)
+    const { appStorage, setAppStorage } = useContext(AppContext)
     const [dateTime, setDateTime] = useState(false)
-    const [sDate, setDate] = useState(moment())
+    const [sDate, setDate] = useState(formatDate(new Date()))
     const [selected, setSelected] = useState({})
     const [longPressed, setLongPress] = useState(false)
     const [fetching, setFetching] = useState(false)
@@ -23,14 +23,18 @@ const MonthlyTimesheet =({navigation}) =>{
 
     const getData = async() =>{
         setFetching(true)
-        let keys = {startDate: '01-11-2021'?? moment(sDate).startOf('month').format('DD-MM-YYYY'),
-            endDate: '30-11-2021'??moment(sDate).endOf('month').format('DD-MM-YYYY'),
-            userId: 12??appStorage['id']
+        let keys = {startDate: formatDate(sDate).startOf('month').format('DD-MM-YYYY'),
+            endDate: formatDate(sDate).endOf('month').format('DD-MM-YYYY'),
+            userId: appStorage['id']
         }
         try {
-            let {success, data} = await getTimesheetApi(keys, appStorage['accessToken'])
+            let {success, data, setToken} = await getTimesheetApi(keys, appStorage['accessToken'])
             if(success){
-                setTimesheets(data)
+                const { grandtotal } = calculate_total(data)
+                setTimesheets({data: data, total: grandtotal})
+                setAppStorage(prev=> ({...prev, accessToken: setToken}))
+                setFetching(false)
+            }else{
                 setFetching(false)
             }
         }catch (e){
@@ -74,29 +78,26 @@ const MonthlyTimesheet =({navigation}) =>{
         );
     };
 
-    const fabAction = () =>{
-        if (longPressed) {
-          let dateIndex = null;
-          let copyTimesheet = timesheet.map((el, index) => {
-            if (el.title === items.title) {
-              dateIndex = index;
-              el.data = el.data.filter(fel => {
-                if (!Object.keys(selected).includes(`${fel.id}`)) {
-                  return fel;
-                }
-              });
+    const actionTimeSheet = (stage) => {
+        if (stage === 'Add'){
+            navigation.navigate('Timesheet-Details', {sDate: formatDate(sDate).format('YYYY-MM-DD')})
+        }else{
+            const { id: userId, accessToken}= appStorage
+            const  keys  = Object.keys(selected)
+            const query= {
+                userId, startDate: 
+                formatDate(sDate).startOf('month').format('DD-MM-YYYY'), 
+                endDate: formatDate(sDate).endOf('month').format('DD-MM-YYYY') 
             }
-            return el;
-          });
-          setTimesheet(copyTimesheet);
-          setItems(copyTimesheet[dateIndex]);
-          setLongPress(false);
-          setSelected({});
-        } else {
-            navigation.navigate('Timesheet-Details', {sDate: moment(sDate).format('yyyy-MM-DD')})
+            const data = {milestoneEntries: keys}
+            reviewTimeSheet(query, 'Submit', data, accessToken).then(res=>{
+                getData()
+                setAppStorage(prev=> ({...prev, accessToken: setToken}))
+                setLongPress(false);
+                setSelected({});
+            })
         }
-    }
-
+    };
 
     return(
         <View style={styles.pageView}>
@@ -121,13 +122,13 @@ const MonthlyTimesheet =({navigation}) =>{
                         <Caption>Total Hours</Caption>
                     </View>
                     <View>
-                        <Title style={{lineHeight: 20}}>{'120.66'}</Title>
+                        <Title style={{lineHeight: 20}}>{formatFloat(timesheets?.['total'])}</Title>
                     </View>
                 </View>
             </View>
             <View style={styles.pageView}>
                 <FlatList
-                    data={timesheets['milestones']}
+                    data={timesheets?.['data']?.['milestones']?? []}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index}
                     extraData={selected}
@@ -138,19 +139,29 @@ const MonthlyTimesheet =({navigation}) =>{
             <FAB
                 style={styles.fab(longPressed)}
                 color="white"
-                placement="right"
                 icon={longPressed ? 'delete' : 'plus'}
+                disabled={fetching}
                 size="large"
-                onPress={fabAction}
+                animated
+                onPress={()=>actionTimeSheet(longPressed? 'Delete': 'Add')}
             />
+            {longPressed && <FAB
+                style={[styles.fabsubmit]}
+                color="white"
+                icon={'check-decagram'}
+                disabled={fetching}
+                size="large"
+                animated
+                onPress={()=> actionTimeSheet('Submit') }
+            />}
             {dateTime && (
                 <DateTimePicker
                 mode={'date'}
-                value={moment(sDate).toDate()}
+                value={formatDate(sDate).toDate()}
                 onChange={(event, dateValue) => {
                     setDateTime(false)
                     if (event?.type === 'set' && dateValue){
-                        dateValue && setDate(moment(dateValue));
+                        dateValue && setDate(formatDate(dateValue));
                     }
                 }}
                 />
@@ -179,5 +190,21 @@ const styles =  StyleSheet.create({
         right: 0,
         bottom: 0,
         backgroundColor: pressed ? 'red' : '#2e44fc',
-      }),
+    }),
+    fabsubmit: {
+        position: 'absolute',
+        margin: 16,
+        right: 70,
+        bottom: 0,
+        backgroundColor: 'green',
+    }
 })
+
+//------------helping Number ---------//
+function calculate_total (data){
+    let grandtotal  = 0
+    data['milestones'].forEach((el, p_index)=>{
+        grandtotal += el['totalHours']
+    })
+    return { grandtotal }
+}

@@ -1,9 +1,19 @@
-Edit is not yet completed
-
 MonthlyTimesheet
-    calculate and show total in MonthlyTimesheet
     maybe want to change color or leave request
     onclick Card
 
 WeeklyTimesheet 
     Leave Request is not added yet
+    not disabling months
+    add & edit & delete => testing is not yet done
+    on edit open modal look for breakhours
+
+
+LeaveRequest 
+    Notification is not completed yet
+    // add & edit & delete => testing is not yet done
+
+
+    optimization
+        maybe I need to create setDays and setValueDays seperately for better performance
+    

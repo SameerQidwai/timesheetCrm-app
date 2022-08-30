@@ -1,8 +1,9 @@
   
 import React, {useEffect} from 'react';
+import moment from 'moment';
 import { View , StyleSheet, Pressable } from 'react-native';
 import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline } from 'react-native-paper';
-import { status_color } from '../../services/constant';
+import { formatFloat, status_color } from '../../services/constant';
 import { ColView } from '../ConstantComponent';
 
 export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
@@ -10,6 +11,11 @@ export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
   useEffect(() => {
       // console.log(selected)
   }, [{...selected}]);
+
+  const getBreakTime = (hours) =>{
+    let breakHours = moment.duration(hours,'hours')
+    return breakHours ? moment(moment().hours(breakHours.hours()).minutes(breakHours.minutes())).format("HH:mm"): '00:00'
+  }
 
   return (
     <Card 
@@ -28,13 +34,13 @@ export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
           <View style={styles.detailView}>
               <Text style={styles.headline}>{timeEntry.project}</Text>
               <Subheading style={styles.subheading}>{timeEntry.projectType === 1 ? timeEntry.milestone: ''}</Subheading>
-              <Paragraph >{timeEntry.startTime} To {timeEntry.endTime} With {timeEntry.breakHours} Hour Break</Paragraph>
+              <Paragraph >{moment(timeEntry["startTime"], ["HH:mm"]).format("h:mm A")} To {moment(timeEntry["endTime"], ["HH:mm"]).format("h:mm A")} With {getBreakTime(timeEntry.breakHours)} Hour Break</Paragraph>
               <Caption >{timeEntry.notes}</Caption>
           </View>
           <View style={[styles.hourView, status_color[timeEntry.status]]
           }
           >
-              <Title style={{fontWeight: '900', color: statusColor,}}>{timeEntry.actualHours}</Title>
+              <Title style={{fontWeight: '900', color: statusColor,}}>{formatFloat(timeEntry.actualHours)}</Title>
               <Subheading style={{color: statusColor}}>hours</Subheading>
           </View>
         </ColView>
@@ -54,7 +60,7 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: selectColor ? '#727ef6b3' : 'white',
   }),
-  detailView: {width: '75%', paddingTop: 10},
+  detailView: {width: '75%', paddingTop: 10, paddingRight: 5},
   subheading: {
     color: '#747474',
     lineHeight: 18,

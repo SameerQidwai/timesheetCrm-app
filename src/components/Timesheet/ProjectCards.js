@@ -1,7 +1,7 @@
 import React from 'react';
 import { View , StyleSheet, Pressable} from 'react-native';
 import {Card, Headline, Subheading, Title, Caption, Text } from 'react-native-paper';
-import { status_color, status_name } from '../../services/constant';
+import { formatFloat, status_color, status_name } from '../../services/constant';
 import { ColView } from '../ConstantComponent';
 
 const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
@@ -13,9 +13,9 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
             mode="elevated"
         >
             <Pressable
-                android_ripple={{color: '#747474', borderless: true}}
-                onLongPress={onLongPress}
-                onPress={onPress}
+                android_ripple={!timesheet['leaveRequest']?{color: '#747474', borderless: true} : {}}
+                onLongPress={()=>!timesheet['leaveRequest'] && onLongPress() } //only be pressed if it is not Leave
+                onPress={()=>!timesheet['leaveRequest'] && onPress()} //only be pressed if it is not Leave
             >
                 <Card.Content >
                     {!timesheet['leaveRequest']?
@@ -31,7 +31,7 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
                             </View>
                             <View style={[styles.hourView, status_color[timesheet.status]]}
                             >
-                                <Title style={{fontWeight: '900', color:statusColor}}>{timesheet.totalHours}</Title>
+                                <Title style={{fontWeight: '900', color:statusColor}}>{formatFloat(timesheet.totalHours)}</Title>
                                 <Subheading style={{color:statusColor}}>hours</Subheading>
                             </View>
                         </ColView>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     }),
     detailView: {
         width: '75%', 
-        paddingTop: 15, 
+        // paddingTop: 15, 
         justifyContent: 'space-between'
     },
     headline: {
