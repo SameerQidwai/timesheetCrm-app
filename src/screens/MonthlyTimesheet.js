@@ -7,6 +7,7 @@ import ProjectCards from '../components/Timesheet/ProjectCards'
 import { AppContext } from '../context/AppContext'
 import { getTimesheetApi, reviewTimeSheet } from '../services/timesheet-api'
 import { formatDate, formatFloat } from '../services/constant';
+import moment from 'moment';
 
 const MonthlyTimesheet =({navigation}) =>{
     const { appStorage, setAppStorage } = useContext(AppContext)
@@ -161,7 +162,7 @@ const MonthlyTimesheet =({navigation}) =>{
                 onChange={(event, dateValue) => {
                     setDateTime(false)
                     if (event?.type === 'set' && dateValue){
-                        dateValue && setDate(formatDate(dateValue));
+                        setDate(formatDate(dateValue));
                     }
                 }}
                 />

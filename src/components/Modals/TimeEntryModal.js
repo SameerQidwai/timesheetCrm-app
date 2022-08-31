@@ -13,7 +13,6 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
   const { appStorage, setAppStorage } = useContext( AppContext )
   const [modalVisible, setModalVisible] = useState(visible);
   const [dateTime, setdateTime] = useState({ open: false, key: '', mode: 'date', });
-  const [select, setSelect] = useState({open: false, items: [], })
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [formData, setFormData] = useState(data);
@@ -25,7 +24,6 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
     .then(res=>{
       const {success, data, setToken} = res
       if(success){
-        setSelect(prev => ({...prev, items: data??[]}))
         setAppStorage(prev=> ({...prev, accessToken: setToken}))
         setFetching(false)
       }
@@ -37,11 +35,14 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
   };
 
   const setFieldValue = (key, value) => {
-    
     if (dateTime['open']) {
       setdateTime(prev => ({...prev, open: false}));
       if (key !== 'breakHours'){
-        value = moment(value);
+        if (key !== 'date'){
+          value = moment(value); //this should be change to utc
+        }else{
+          value = formatDate(value)
+        }
       }
     }
     setFormData(prev => ({...prev, [key]: value}));
@@ -78,7 +79,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
       endDate: formatDate(date).endOf('month').format('DD-MM-YYYY'),
       userId: userId
     }
-
+    
     addTimeEntryApi(query, newEntry, token)
     .then(res =>{
       if(res?.success){
@@ -90,14 +91,15 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
   }
 
   const editing = (editEntry, token) =>{
-    editTimeEntryApi(editEntry, token)
-    .then(res =>{
-      if(res?.success){
-        setLoading(false)
-        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
-        onSuccess(res.data)
-      }
-    })
+    onSuccess(editEntry)
+    // editTimeEntryApi(editEntry, token)
+    // .then(res =>{
+    //   if(res?.success){
+    //     setLoading(false)
+    //     // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+    //     onSuccess(res.data)
+    //   }
+    // })
   }
 
   const getBreakTime = (date) =>{
@@ -229,15 +231,21 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
         <RNDateTimePicker
           mode={dateTime['mode']}
           is24Hour={dateTime['is24Hour']}
-          display={dateTime['is24Hour']? 'spinner':'default'}
+          // display={dateTime['is24Hour']? 'spinner':'default'}
+          display={dateTime['key'] !== 'date' ? 'spinner' :'default'}
           themeVariant="dark"
           value={
-            formData[dateTime['key']]
-              ? formatDate(formData[dateTime['key']]).toDate()
+            formData[dateTime['key']] ? 
+              dateTime['key'] !== 'date'?
+              moment(formData[dateTime['key']]).toDate()
+              :
+              formatDate(formData['date']).toDate()
               : new Date()
           }
           onChange={(event, dateValue) => {
-            setFieldValue(dateTime.key, dateValue);
+            if (event?.type === 'set' && dateValue){
+              setFieldValue(dateTime.key, dateValue);
+            }
           }}
         />
       )}

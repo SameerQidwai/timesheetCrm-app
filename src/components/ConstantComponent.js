@@ -10,20 +10,15 @@ export const ColView = ({children, flex,justify, padding, style,}) =>{
 }
 
 export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, dailyhours}) =>{
+   
     const [reload, setReload] = useState(false)
     useEffect(() => {
         setReload(!reload)
     }, [dailyhours])
     
     const getDate = () => {
-        return formatDate(date.dateString, true, 'yyyy-M-D')
+        return date.dateString
     }
-    // const getDate = useCallback(
-    //     (date) => {
-    //       return date.dateString;
-    //     },
-    //     [selectedDate]
-    //   );
     
     return (
         <View>
@@ -39,7 +34,11 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                         borderless: true,
                         // foreground:  true
                     }}
-                    onPress={() => onDateChanged(getDate())}
+                    onPress={() => {
+                        // if (state !== 'disabled'){
+                            onDateChanged(getDate())
+                        // }
+                    }}
                     style={{
                         flex:1,
                         flexDirection: 'column',
@@ -48,13 +47,13 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                     }}
                 >
                     <View>
-                        <Text style={[marking?.['customStyles']?.text,styles.renderDayText]}>
+                        <Text style={[styles.renderDayText(state),marking?.['customStyles']?.text]}>
                         {date.day}
                         </Text>
                     </View>
                     <View>
-                        <Text style={[marking?.['customStyles']?.text,styles.renderDayText]}>
-                        {formatFloat(dailyhours?.[getDate()])}
+                        <Text style={[styles.renderDayText(state),marking?.['customStyles']?.text]}>
+                            {formatFloat(dailyhours?.[getDate(state)])}
                         </Text>
                     </View>
                 </Pressable>
@@ -79,7 +78,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         width: 38,
     },
-    renderDayText: {
-        textAlign: 'center'
-    }
+    renderDayText: (state)=>({
+        textAlign: 'center',
+        color: state === 'disabled' ? 'gray' : 'black'
+    })
 })

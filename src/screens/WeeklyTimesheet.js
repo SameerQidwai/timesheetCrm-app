@@ -19,16 +19,18 @@ import { RenderDay } from '../components/ConstantComponent';
 import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
 import { deleteTimeEntryApi, getTimesheetApi } from '../services/timesheet-api';
 import { AppContext } from '../context/AppContext';
-import { formatDate, formatFloat, utcDate } from '../services/constant';
+import { formatDate, formatFloat, newFormatDate } from '../services/constant';
 
 
 const WeeklyTimesheet = ({route, navigation}) => {
+  // console.log('param',formatDate(route?.params?.sDate))
+  // console.log('new',formatDate(new Date()))
   const {appStorage,setAppStorage} = useContext(AppContext)
-  const [timesheet, setTimesheet] = useState({timesheet_data: timesheet_data, total: "0.00", dailyHour: {}});
+  const [timesheet, setTimesheet] = useState({timesheet_data: timesheet_data, total: 0, dailyHour: {}});
   const [openModal, setOpenModal] = useState({visible: false});
   const [dateTime, setdateTime] = useState(false);
   const [sDate, setDate] = useState(formatDate(route?.params?.sDate) ??formatDate(new Date()));
-  const [items, setItems] = useState({});
+  const [items, setItems] = useState({title: '', data: []});
   const [selected, setSelected] = useState({});
   const [longPressed, setLongPress] = useState(false);
   const [fetching, setFetching] = useState(false)
@@ -49,8 +51,8 @@ const WeeklyTimesheet = ({route, navigation}) => {
         let {success, data, setToken} = await getTimesheetApi(keys, accessToken)
         if(success){
           const {daily_totalHour, grandTotal, newData, currItem} = restructure(data, sDate)
-          setTimesheet({timesheet_data: newData, total: grandTotal, dailyHour: daily_totalHour})
-          setItems(currItem)
+          setTimesheet({timesheet_data: [...newData], total: grandTotal, dailyHour: {...daily_totalHour}})
+          setItems({title: currItem.title, data: [...currItem.data]})
           setAppStorage(prev=> ({...prev, accessToken: setToken}))
         }
         setFetching(false)
@@ -60,15 +62,19 @@ const WeeklyTimesheet = ({route, navigation}) => {
   }
 
   const onDateChanged = day => {
-    setFetching(true)
-    const {timesheet_data} = timesheet
-    let index = timesheet_data.findIndex(el => el.title === moment(day,'yyyy-M-DD').format('yyyy-M-D'));
-    setDate(moment(day, 'yyyy-M-DD'));
-    setItems(timesheet_data[index]);
+    let start = moment(sDate).utcOffset(0, true).startOf('month')
+    let end = moment(sDate).utcOffset(0, true).endOf('month')
+    // if (moment(day,'yyyy-M-DD').isBetween(start, end, 'day', '[]')){
+      setFetching(true)
+      const {timesheet_data} = timesheet
+      let entries = timesheet_data.find(el => el.title === day )?? {title: day, data: []}
+      setDate(formatDate(day, 'YYYY-MM-DD'));
+      setItems({title: entries.title, data: [...entries.data]})
 
-    setTimeout(() => {
-      setFetching(false)
-    }, 500);
+      setTimeout(() => {
+        setFetching(false)
+      }, 500);
+    // }
     // console.log(timesheet_data[index])
   };
 
@@ -122,13 +128,13 @@ const WeeklyTimesheet = ({route, navigation}) => {
   }
 
   const fabAction = () =>{
-    const {timesheet_data} = timesheet
     if (longPressed) {
       setFetching(true)
       let entryId = Object.keys(selected)[0]
       let { accessToken } = appStorage
       deleteTimeEntryApi(entryId, accessToken)
       .then(res=>{
+        console.log(res)
         if(res?.success){
           getData()
           setLongPress(false);
@@ -141,7 +147,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
       setOpenModal({
         visible: !openModal['visible'], 
         entryData: {
-          date: sDate, 
+          date: moment(sDate).utcOffset(0, true), 
           startTime: moment('9:00', ["HH:mm"]), 
           endTime: moment('18:00', ["HH:mm"]),
           breakHours: new Date ().setHours(0, 0, 0, 0)
@@ -151,41 +157,12 @@ const WeeklyTimesheet = ({route, navigation}) => {
   }
 
   const onSuccess = (data) =>{
-    getData()
-    setDate(moment(data.date, 'DD-MM-YYYY'))
+    // getData()
+    setDate(formatDate(data.date, 'DD-MM-YYYY'))
     setOpenModal({visible: false})
-    // let {timesheet_data, dailyHour, total} = timesheet
-    // let addDate = moment(data.date, 'DD-MM-YYYY').format('yyyy-MM-DD')
-    // let entryIndex = timesheet_data.findIndex(el => el.title === addDate)
-    // if(openModal['index'] >= 0){ //on Edit
-
-    //   if(timesheet_data[entryIndex] &&     // this condition is just  
-    //   timesheet_data[entryIndex]['data'] && // to rid of the 
-    //   timesheet_data[entryIndex]['data'][openModal['index']]){ // else this condition will always be teuw
-
-    //     let editingItem = timesheet_data[entryIndex]['data'][openModal['index']] 
-    //     let hours = Math.abs((editingItem['actualHours'] - data['actualHours']))
-    //     timesheet_data[entryIndex]['data'][openModal['index']] = data //
-    //     dailyHour[addDate] += hours // per day hour
-    //     total += hours //monthy Hour
-
-    //   }
-
-    // }else if (entryIndex > -1){ //on New add
-
-    //   data.id = data.entryId
-    //   timesheet_data[entryIndex].data.push(data)
-    //   dailyHour[addDate] += data['actualHours'] // per day hour
-    //   total += data['actualHours'] // total hours of the month
-
-    // }else{
-      
-    //   timesheet_data.push({title: addDate, data:[data]})
-    //   dailyHour[addDate] = data['actualHours'] // per day hour
-    //   total += data['actualHours'] // total hours of the month
-    // }
-    // setTimesheet({timesheet_data: [...timesheet_data], dailyHour: {...dailyHour}, total})
-    
+    const {currItem, ...rest} = timesheet_update(data, timesheet, openModal)
+    setTimesheet({...rest})
+    setItems({title: currItem.title, data: [...currItem.data]})
   }
 
   
@@ -230,24 +207,34 @@ const WeeklyTimesheet = ({route, navigation}) => {
         onMonthChange={onMonthChange}
         // showTodayButton
         disabledOpacity={0.6}
-        //  theme={todayBtnTheme.current}
-        // todayBottomMargin={16}
-        // pastScrollRange={1}
-        // futureScrollRange={1}
-        displayLoadingIndicator={true}>
+        /** Extra testing */
+        allowShadow={true}
+        displayLoadingIndicator={true}
+        enableSwipeMonths={false}
+        // minDate={formatDate(sDate).startOf('month').format('yyyy-MM-DD')}
+        // maxDate={formatDate(sDate).endOf('month').format('yyyy-MM-DD')}
+        pastScrollRange={0}
+        futureScrollRange={0}
+        // hideExtraDays={true}
+        /** Extra testing */
+        >
         <WeekCalendar
-          initialDate={sDate.format('yyyy-MM-DD')}
+          current={sDate.format('yyyy-MM-DD')}
           // style={{backgroundColor: 'purple', height: 1000}}
           theme={{ todayTextColor: 'blue', }}
           // pastScrollRange={1}
           // futureScrollRange={1}
-          displayLoadingIndicator={true}
-          // customHeader
-          enableSwipeMonths={false}
-          minDate={formatDate(sDate).startOf('month').format('yyyy-MM-DD')}
-          maxDate={formatDate(sDate).endOf('month').format('yyyy-MM-DD')}
-          // onMonthChange={onMonthChange}
+          /** Extra testing */
+          allowShadow={true}
+          // minDate={formatDate(sDate).startOf('month').format('yyyy-MM-DD')}
+          // maxDate={formatDate(sDate).endOf('month').format('yyyy-MM-DD')}
+          pastScrollRange={0}
+          futureScrollRange={0}
           disableMonthChange
+          // hideExtraDays={true}
+          /** Extra testing */
+
+          // onMonthChange={onMonthChange}
           // hideArrows
           rowHasChanged={(r1, r2) => {
             return r1.title !== r2.title;
@@ -302,7 +289,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
           onChange={(event, dateValue) => {
             setdateTime(false)
             if (event?.type === 'set' && dateValue){
-              dateValue&&setDate(formatDate(dateValue));
+              setDate(formatDate(dateValue));
             }
           }}
         />
@@ -381,7 +368,7 @@ function restructure (data, date) {
     Object.entries(el).forEach(([key, value], e_index) => {
         if (useRegex(key)){
             let keySplit = key.split('/')
-            let newKey = `${year}-${keySplit[1]}-${keySplit[0]}`
+            let newKey = formatDate(`${year}-${keySplit[1]}-${keySplit[0]}`, 'YYYY-M-D').format('YYYY-MM-DD')
             value = {
                 ...value,
                 milestone: el['milestone'],
@@ -410,50 +397,72 @@ function restructure (data, date) {
         }
     })
   })
-  if (date_index[moment(date).format('YYYY-M-D')]){
-    currItem = newData[date_index[moment(date).format('YYYY-M-D')]] ?? {}
+
+  if (date_index[formatDate(date).format('YYYY-MM-DD')]){
+    currItem = newData[date_index[formatDate(date).format('YYYY-MM-DD')]] ?? {}
   } 
+
   return {daily_totalHour, grandTotal, newData, currItem}
 }
 
-
-
-
-let timesheet_update = (data) =>{
-  let timesheet = []
-  let openModal = {}
-  let dailyHour={}
-  let total = 0
+function timesheet_update (data, timesheet, openModal){
+  
+  let {timesheet_data, dailyHour: updateHours, total: updateTotal} = timesheet
+  let addDate = formatDate(data.date, 'DD-MM-YYYY').format('YYYY-MM-DD')
   let added = false
-  timesheet_data = timesheet_data.map(el=>{
-    if(el.title === addDate){
-      if(openModal['index'] >= 0){ 
-        return el.data = el.data.map((dataEl,index)=>{
-          if (index == openModal['index']){
+  let currItem = {} //set current Item to set new data
+  let updateTimesheet = timesheet_data.map((el, tIndex)=>{
+    if(el.title === addDate){ 
+      if(openModal['index'] >= 0){  //checking if the request is for edit
+
+         el.data = el.data.map((dataEl,index)=>{
+          if (index == openModal['index']){ // if edit is found
             let hours = dataEl['actualHours'] - data['actualHours']
             dataEl = data
-            dailyHour[addDate] += hours
-            total += hours
+            updateHours[addDate] += hours // updating updateHourss
+            updateTotal += hours // updating monthly hours
             added = true
             return dataEl
           }else{
             return dataEl
           }
         })
-      }else{
+        if (added){ 
+          currItem = el
+        }
+
+        return el
+      }else{ // if open['index'] is undefined the request is for ad
         el.data.push(data)
-        dailyHour[addDate] += data['actualHours'] // per day hour
-        total += data['actualHours'] // total hours of the month
-        added = true
+        updateHours[addDate] += data['actualHours'] // per day hour
+        updateTotal += data['actualHours'] // updateTotal hours of the month
+        added = true // test if key was found and has been added into app
+        currItem = el
         return el
       }
     }else{
-      return el
+      if (!added && tIndex === timesheet_data.length -1){ // if day is not found
+
+        el.push({title: addDate, data:[data]})
+        updateHours[addDate] = data['actualHours'] // per day hour
+        updateTotal += data['actualHours'] // updateTotal hours of the month
+        added =true
+        currItem = el
+        return el
+
+      }else{
+        return el
+      }
     }
   })
-  if(!added){
-    timesheet_data.push({title: addDate, data:[data]})
-    dailyHour[addDate] = data['actualHours'] // per day hour
-    total += data['actualHours'] // total hours of the month
+  console.log(updateTimesheet)
+  if (!added){ // if timesheet is not found
+    currItem = {title: addDate, data:[data]}
+    updateTimesheet = [currItem]
+    updateHours[addDate] = data['actualHours'] // per day hour
+    updateTotal += data['actualHours'] // updateTotal hours of the month
+    added =true
   }
+
+  return {timesheet_data: updateTimesheet, dailyHour: updateHours, total: updateTotal, currItem}
 }

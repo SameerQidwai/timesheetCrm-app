@@ -22,7 +22,7 @@ export const formatFloat = (number) => {
   return !isNaN(parseFloat(number)) ? parseFloat(number).toFixed(2) : '0.00';
 };
 
-export const formatDate = (date, string, format) => {
+export const oldFormatDate = (date, string, format) => {
   return (
     date && // check if date is not null or undefined
     (string // check if request is for string date or object
@@ -33,6 +33,14 @@ export const formatDate = (date, string, format) => {
       : moment.utc(date))
   );
 };
+
+export const formatDate = (date, initialString)=>{
+  if (initialString){
+    return moment.parseZone(date, initialString)
+  }else{
+    return moment.parseZone(date)
+  }
+}
 
 export const offsetDate = (datetime, initialFormat, returnFormat) =>{
   return (returnFormat ?
