@@ -8,7 +8,8 @@ import { AppContext } from '../context/AppContext'
 import { getTimesheetApi, reviewTimeSheet } from '../services/timesheet-api'
 import { formatDate, formatFloat } from '../services/constant';
 import moment from 'moment';
-
+// import MonthPicker from 'react-native-month-year-picker';
+import DatePicker from 'react-native-modern-datepicker';
 const MonthlyTimesheet =({navigation}) =>{
     const { appStorage, setAppStorage } = useContext(AppContext)
     const [dateTime, setDateTime] = useState(false)
@@ -28,14 +29,18 @@ const MonthlyTimesheet =({navigation}) =>{
             endDate: formatDate(sDate).endOf('month').format('DD-MM-YYYY'),
             userId: appStorage['id']
         }
+        console.log(keys)
         try {
             let {success, data, setToken} = await getTimesheetApi(keys, appStorage['accessToken'])
             if(success){
                 const { grandtotal } = calculate_total(data)
-                setTimesheets({data: data, total: grandtotal})
                 setAppStorage(prev=> ({...prev, accessToken: setToken}))
+                setTimesheets({data: data, total: grandtotal})
                 setFetching(false)
+                console.log('if condition')
             }else{
+                console.log('else condition')
+                setTimesheets({data: [], total: 0})
                 setFetching(false)
             }
         }catch (e){
@@ -106,7 +111,7 @@ const MonthlyTimesheet =({navigation}) =>{
                 <View>
                     <Pressable 
                         android_ripple={{color: '#f47749', borderless: true}}
-                        onPressOut={() => setDateTime(true)}>
+                        onPressOut={() => setDateTime(dateTime)}>
                         <Title>
                             {sDate.format('MMM YYYY')}
                         <IconButton
@@ -118,12 +123,12 @@ const MonthlyTimesheet =({navigation}) =>{
                         </Title>
                     </Pressable>
                 </View>
-                <View>
+                <View style={{justifyContent: 'center'}}>
                     <View>
                         <Caption>Total Hours</Caption>
                     </View>
                     <View>
-                        <Title style={{lineHeight: 20}}>{formatFloat(timesheets?.['total'])}</Title>
+                        <Title style={{lineHeight: 22, textAlign: 'center'}}>{formatFloat(timesheets?.['total'])}</Title>
                     </View>
                 </View>
             </View>
@@ -155,7 +160,7 @@ const MonthlyTimesheet =({navigation}) =>{
                 animated
                 onPress={()=> actionTimeSheet('Submit') }
             />}
-            {dateTime && (
+            {/* {dateTime && (
                 <DateTimePicker
                 mode={'date'}
                 value={formatDate(sDate).toDate()}
@@ -166,7 +171,25 @@ const MonthlyTimesheet =({navigation}) =>{
                     }
                 }}
                 />
-            )}
+            )} */}
+            {dateTime && 
+                <Pressable android_ripple={{color: '#f47749', borderless: true}} onPress={()=>setDateTime(false)} style={{height: 50, backgroundColor: 'grey'}}>
+                    
+                </Pressable>
+            }
+            {dateTime && 
+            
+            <DatePicker
+                mode="monthYear"
+                // current={"2022-01-01"}
+                // value="07 2022"
+                selectorStartingYear={2000}
+                onMonthYearChange={selectedDate => {
+                    setDate(formatDate(selectedDate, 'YYYY MM'))
+                    setDateTime(false)
+                }}
+            />
+            }
         </View>
     )
 }
@@ -180,7 +203,7 @@ const styles =  StyleSheet.create({
     },
     containerView:{
         flexDirection: 'row',
-        backgroundColor: '#f8a587',
+        backgroundColor: '#1890ff',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 15,

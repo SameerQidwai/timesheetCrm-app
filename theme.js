@@ -1,56 +1,56 @@
-import { configureFonts, DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { configureFonts, DefaultTheme } from 'react-native-paper';
 const fontConfig = {
     web: {
       regular: {
-        fontFamily: 'sans-serif',
+        fontFamily: 'Poppins-Regular',
         fontWeight: 'normal',
       },
       medium: {
-        fontFamily: 'sans-serif-medium',
+        fontFamily: 'Poppins-Medium',
         fontWeight: 'normal',
       },
       light: {
-        fontFamily: 'sans-serif-light',
+        fontFamily: 'Poppins-Light',
         fontWeight: 'normal',
       },
       thin: {
-        fontFamily: 'sans-serif-thin',
+        fontFamily: 'Poppins-SemiBold',
         fontWeight: 'normal',
       },
     },
     ios: {
       regular: {
-        fontFamily: 'sans-serif',
+        fontFamily: 'Poppins-Regular',
         fontWeight: 'normal',
       },
       medium: {
-        fontFamily: 'sans-serif-medium',
+        fontFamily: 'Poppins-Medium',
         fontWeight: 'normal',
       },
       light: {
-        fontFamily: 'sans-serif-light',
+        fontFamily: 'Poppins-Light',
         fontWeight: 'normal',
       },
       thin: {
-        fontFamily: 'sans-serif-thin',
+        fontFamily: 'Poppins-SemiBold',
         fontWeight: 'normal',
       },
     },
     android: {
       regular: {
-        fontFamily: 'sans-serif',
+        fontFamily: 'Poppins-Regular',
         fontWeight: 'normal',
       },
       medium: {
-        fontFamily: 'sans-serif-medium',
+        fontFamily: 'Poppins-Medium',
         fontWeight: 'normal',
       },
       light: {
-        fontFamily: 'sans-serif-light',
+        fontFamily: 'Poppins-Light',
         fontWeight: 'normal',
       },
       thin: {
-        fontFamily: 'sans-serif-thin',
+        fontFamily: 'Poppins-Bold',
         fontWeight: 'normal',
       },
     }
@@ -58,5 +58,6 @@ const fontConfig = {
 
 export const theme = {
   ...DefaultTheme,
+  dark: false,
   fonts: configureFonts(fontConfig),
 };

@@ -34,11 +34,33 @@ export const oldFormatDate = (date, string, format) => {
   );
 };
 
-export const formatDate = (date, initialString)=>{
+export const formatDate = (date, initialString, format)=>{
   if (initialString){
+    if (format){
+      return moment.parseZone(date, initialString).format(format === true ? 'yyyy-MM-DD' : format )
+    }
     return moment.parseZone(date, initialString)
   }else{
+    if (format){
+      return moment.parseZone(date).format(format === true ? 'yyyy-MM-DD' : format)
+    }
     return moment.parseZone(date)
+  }
+}
+
+export const testingformatDate = (date, initialString, format)=>{
+  
+  function func (date, initialString){
+    moment.parseZone(date, initialString)
+  }
+  function func (date, initialString, format){
+
+  }
+  function func (date, format){
+    return moment.parseZone(date).format(format)
+  }
+  function func (date, initialString, format){
+    moment.parseZone(date, initialString).format(format)
   }
 }
 

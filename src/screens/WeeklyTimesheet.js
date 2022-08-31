@@ -20,7 +20,7 @@ import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
 import { deleteTimeEntryApi, getTimesheetApi } from '../services/timesheet-api';
 import { AppContext } from '../context/AppContext';
 import { formatDate, formatFloat, newFormatDate } from '../services/constant';
-
+import DatePicker from 'react-native-modern-datepicker';
 
 const WeeklyTimesheet = ({route, navigation}) => {
   // console.log('param',formatDate(route?.params?.sDate))
@@ -121,7 +121,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
     return (
         <TimeCard2 
           timeEntry={item} selected={selected[item.entryId]} 
-          onLongPress={() => onPressItem(item.entryId, true)}
+          // onLongPress={() => onPressItem(item.entryId, true)}
           onPress={() => onPressItem(item.entryId, false, item, index)}
         />
     );
@@ -179,7 +179,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
         <View>
           <Pressable 
             android_ripple={{color: '#f8a587', borderless: true}}
-            onPressOut={() => setdateTime(true)}>
+            onPressOut={() => setdateTime(!dateTime)}>
             <Title>
               {sDate.format('MMM YYYY')}
               <IconButton
@@ -196,7 +196,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
             <Caption>Total Hours</Caption>
           </View>
           <View>
-            <Title style={{lineHeight: 20}}>{formatFloat(timesheet['total'])}</Title>
+            <Title style={{lineHeight: 22}}>{formatFloat(timesheet['total'])}</Title>
           </View>
         </View>
       </View>
@@ -282,7 +282,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
           onClose={() => setOpenModal({visible: false})}
         />
       )}
-      {dateTime && (
+      {/* {dateTime && (
         <DateTimePicker
           mode={'date'}
           value={formatDate(sDate).toDate()}
@@ -292,6 +292,26 @@ const WeeklyTimesheet = ({route, navigation}) => {
               setDate(formatDate(dateValue));
             }
           }}
+        />
+      )} */}
+      {dateTime && (
+        <DatePicker
+          current="2022-07-13"
+          selected={formatDate(sDate ,false ,true)}
+          mode="calendar"
+          minuteInterval={30}
+          selectorStartingYear={2000}
+          onDateChange={(dateValue) => {
+            setdateTime(false)
+            if (dateValue){
+              console.log(dateValue)
+              setDate(formatDate(dateValue, 'YYYY-MM-DD'));
+            }
+          }}
+          // onMonthYearChange={selectedDate => {
+          //     setDate(formatDate(selectedDate, 'YYYY-MM-DD'))
+          //     setdateTime(false)
+          // }}
         />
       )}
     </View>

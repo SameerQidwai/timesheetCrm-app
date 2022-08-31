@@ -59,7 +59,7 @@ const LeaveRequest = () =>{
                 {/* <Card mode='outlined'  style={styles.dateCard}> */}
                 <View style={styles.dateCard}>
                   <Headline style={styles.dateText}>
-                    {formatDate(item.startDate, true, 'DD MMM')}
+                    {formatDate(item.startDate, false, 'DD MMM')}
                   </Headline>
                 </View>
                 {/* </Card> */}
