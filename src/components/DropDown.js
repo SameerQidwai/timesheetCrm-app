@@ -30,7 +30,7 @@ const DropDown =({value, data, placeholder, onSelect, inputStyle}) =>{
             }}
             style={[{
                 borderColor: open ? '#6200ee':  '#717171',
-                borderRadius: 5,
+                borderRadius: 2,
             },inputStyle]}
             placeholderStyle={{
                 color: "#969696",

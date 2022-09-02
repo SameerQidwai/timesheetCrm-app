@@ -1,4 +1,5 @@
 import { configureFonts, DefaultTheme } from 'react-native-paper';
+
 const fontConfig = {
     web: {
       regular: {

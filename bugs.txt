@@ -5,7 +5,7 @@ MonthlyTimesheet
 WeeklyTimesheet 
     Leave Request is not added yet
     not disabling months
-    add & edit & delete => testing is not yet done
+    //add & edit & delete => testing is not yet done
 
     date time error when I refresh multiple time
 
@@ -18,3 +18,35 @@ LeaveRequest
     optimization
         maybe I need to create setDays and setValueDays seperately for better performance
     
+
+project
+    hour detail :  full innerHeight
+    //status: show
+    select on corner_of card
+    select all, unselect all, 
+    in card select overlay
+    //buttons as mock 
+    //card border raduis 2
+    //header height
+    //header left 
+    description
+
+week
+    Modal header same as tiese
+    hour detail :  full innerHeight
+    select on corner_of card
+    select all, unselect all, 
+    buttons as mock 
+    card border raduis 2
+    header height
+    header left 
+    Modal as web
+    in card select overlay
+
+    leave_request
+        
+calanders overlay
+
+icons as web
+
+timesheet_ NAN problen on timer

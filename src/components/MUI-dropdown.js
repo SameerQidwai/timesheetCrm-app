@@ -60,7 +60,7 @@ const MDropDown =({value, data, placeholder, onSelect, inputStyle, label, zIndex
                 }}
                 style={[{
                     borderColor: open ? '#6200ee':  '#717171',
-                    borderRadius: 5,
+                    borderRadius: 2,
                     display: 'none'
                 },inputStyle]}
                 placeholderStyle={{

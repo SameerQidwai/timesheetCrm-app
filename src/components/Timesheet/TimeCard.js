@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     },
     style :{margin: 10,  borderRadius: 10 },
     card: (selectColor)=> ({
-        borderRadius: 10,  
+        borderRadius: 2,  
         margin: 10,
         backgroundColor: selectColor ? "#727ef6b3" : "white"
     })

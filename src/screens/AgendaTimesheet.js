@@ -193,7 +193,7 @@ import moment from 'moment';
      borderBottomColor: 'lightgrey',
      flexDirection: 'row',
      margin: 20,
-     borderRadius: 20
+     borderRadius: 2
    },
    itemHourText: {
      color: 'black'

@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   calendarMarked: {
     customStyles: {
       container: {
-        borderRadius: 5,
+        borderRadius: 2,
         paddingVertical:2,
         backgroundColor: '#2e44fc',
       },

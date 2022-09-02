@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FlatList, Pressable, StyleSheet, View } from 'react-native'
-import { Caption, FAB, IconButton, Portal, Title } from 'react-native-paper'
-// import { projects_timesheet, timesheet_data } from '../../assets/constant'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { FlatList,  Dimensions, StyleSheet, View } from 'react-native'
+import { Appbar, Button, Caption, Card, FAB, IconButton, Modal, Portal, Surface, Title, TouchableRipple } from 'react-native-paper'
 import ProjectCards from '../components/Timesheet/ProjectCards'
 import { AppContext } from '../context/AppContext'
 import { getTimesheetApi, reviewTimeSheet } from '../services/timesheet-api'
 import { formatDate, formatFloat } from '../services/constant';
-import moment from 'moment';
-// import MonthPicker from 'react-native-month-year-picker';
 import DatePicker from 'react-native-modern-datepicker';
+import { ColView } from '../components/ConstantComponent'
+const deviceHeight = Dimensions.get('window').height
+
 const MonthlyTimesheet =({navigation}) =>{
     const { appStorage, setAppStorage } = useContext(AppContext)
     const [dateTime, setDateTime] = useState(false)
@@ -107,31 +106,41 @@ const MonthlyTimesheet =({navigation}) =>{
 
     return(
         <View style={styles.pageView}>
-            <View style={styles.containerView}>
-                <View>
-                    <Pressable 
-                        android_ripple={{color: '#f47749', borderless: true}}
-                        onPressOut={() => setDateTime(dateTime)}>
-                        <Title>
+            <Appbar.Header style={styles.containerView}>
+                <Appbar.Content 
+                    title={
+                     <TouchableRipple
+                            onPress={() => setDateTime(!dateTime)}
+                            rippleColor="rgba(0, 0, 0, .32)"
+                        >
+                        <Title
+                            style={{
+                                textTransform: 'uppercase',
+                                color: '#fff'
+                            }}
+                        >
                             {sDate.format('MMM YYYY')}
                         <IconButton
                             icon="chevron-down"
-                            color="black"
+                            color="#fff"
                             size={24}
                             style={{ width: 28, height: 20, }}
                         />
                         </Title>
-                    </Pressable>
-                </View>
-                <View style={{justifyContent: 'center'}}>
-                    <View>
-                        <Caption>Total Hours</Caption>
-                    </View>
-                    <View>
-                        <Title style={{lineHeight: 22, textAlign: 'center'}}>{formatFloat(timesheets?.['total'])}</Title>
-                    </View>
-                </View>
-            </View>
+                    </TouchableRipple>}  
+                />
+                <Appbar.Content title={
+                        <View style={{justifyContent: 'center'}}>
+                        <View>
+                            <Caption style={{color: '#fff'}}>Total Hours</Caption>
+                        </View>
+                        <View>
+                            <Title style={{lineHeight: 22, textAlign: 'center', color: '#fff'}}>{formatFloat(timesheets?.['total'])}</Title>
+                        </View>
+                    </View>}
+                    titleStyle={{marginLeft: 'auto'}} 
+                />
+            </Appbar.Header>
             <View style={styles.pageView}>
                 <FlatList
                     data={timesheets?.['data']?.['milestones']?? []}
@@ -142,16 +151,71 @@ const MonthlyTimesheet =({navigation}) =>{
                     refreshing={fetching}
                 />
             </View>
-            <FAB
+            {longPressed ? <ColView  justify='space-between'>
+                    <Button
+                        mode="contained"
+                        uppercase={false}
+                        raised 
+                        color='green'
+                        style={{
+                            marginLeft: '5%',
+                            marginBottom:15,
+                            width: '42%',
+                            borderRadius: 2
+                        }}
+                        size="large"
+                        disabled={fetching}
+                        onPress={()=>actionTimeSheet('Delete')}
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                        mode="contained"
+                        uppercase={false}
+                        raised 
+                        style={{
+                            marginRight: '5%',
+                            marginBottom:15,
+                            width: '42%',
+                            borderRadius: 2
+                        }}
+                        // color="#ff4d4f"
+                        color="red"
+                        // labelStyle={{color: '#fff'}}
+                        disabled={fetching}
+                        size="large"
+                        onPress={()=> actionTimeSheet('Submit') }
+                    >
+                        Delete
+                    </Button>
+                </ColView> 
+            :
+                <Button 
+                
+                    mode="contained"
+                    uppercase={false}
+                    raised 
+                    color='#1890ff'
+                    style={{
+                        marginHorizontal: 15, 
+                        marginBottom:15,
+                        borderRadius: 2,
+                    }}
+                    size="large"
+                    disabled={fetching}
+                    onPress={()=>actionTimeSheet('Add')}
+                >
+                    Add Timesheet
+                </Button>
+            }
+            {/* <FAB
                 style={styles.fab(longPressed)}
                 color="white"
                 icon={longPressed ? 'delete' : 'plus'}
-                disabled={fetching}
                 size="large"
                 animated
-                onPress={()=>actionTimeSheet(longPressed? 'Delete': 'Add')}
-            />
-            {longPressed && <FAB
+            /> */}
+            {/* {longPressed && <FAB
                 style={[styles.fabsubmit]}
                 color="white"
                 icon={'check-decagram'}
@@ -159,36 +223,26 @@ const MonthlyTimesheet =({navigation}) =>{
                 size="large"
                 animated
                 onPress={()=> actionTimeSheet('Submit') }
-            />}
-            {/* {dateTime && (
-                <DateTimePicker
-                mode={'date'}
-                value={formatDate(sDate).toDate()}
-                onChange={(event, dateValue) => {
-                    setDateTime(false)
-                    if (event?.type === 'set' && dateValue){
-                        setDate(formatDate(dateValue));
-                    }
-                }}
-                />
-            )} */}
+            />} */}
             {dateTime && 
-                <Pressable android_ripple={{color: '#f47749', borderless: true}} onPress={()=>setDateTime(false)} style={{height: 50, backgroundColor: 'grey'}}>
-                    
-                </Pressable>
-            }
-            {dateTime && 
-            
-            <DatePicker
-                mode="monthYear"
-                // current={"2022-01-01"}
-                // value="07 2022"
-                selectorStartingYear={2000}
-                onMonthYearChange={selectedDate => {
-                    setDate(formatDate(selectedDate, 'YYYY MM'))
-                    setDateTime(false)
-                }}
-            />
+                <Portal >
+                    <Modal  visible={dateTime} onDismiss={()=>setDateTime(false)}   
+                    contentContainerStyle={{
+                        marginTop: deviceHeight -380
+                    }}>
+                        <DatePicker
+                            mode="monthYear"
+                            // current={"2022-01-01"}
+                            // value="07 2022"
+                            style={{zIndex: 3000, elevation: 2}}
+                            selectorStartingYear={2000}
+                            onMonthYearChange={selectedDate => {
+                                setDate(formatDate(selectedDate, 'YYYY MM'))
+                                setDateTime(false)
+                            }}
+                            />
+                    </Modal>
+                </Portal>
             }
         </View>
     )

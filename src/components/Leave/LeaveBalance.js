@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     card: {
-        borderRadius: 10,  
+        borderRadius: 2,  
         margin:10,
         padding:10
     }

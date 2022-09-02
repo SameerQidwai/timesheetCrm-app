@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   card: (selectColor)=>({
-    borderRadius: 10,
+    borderRadius: 2,
     margin: 10,
     backgroundColor: selectColor ? "#727ef6b3" : "white"
     // padding: 10,
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderRadius: 15,
+    borderRadius: 2,
     padding: 5,
     borderColor: 'black',
   },
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   notesText: {color: '#bfbfbf'},
   statusCaption: {
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 2,
     marginLeft: 10,
     paddingHorizontal: 2,
     // color: 'grey',

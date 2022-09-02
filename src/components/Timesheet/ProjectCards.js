@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         paddingVertical:  5,
     },
     card: (selectColor)=> ({
-        borderRadius: 10,  
+        borderRadius: 2,  
         margin:10,
         backgroundColor: selectColor ? "#727ef6b3" : "white"
     }),

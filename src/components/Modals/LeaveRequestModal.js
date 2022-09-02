@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     },
     modalView: {
       // backgroundColor: 'white',
-      borderRadius: 20,
+      borderRadius: 2,
       // width: 325,
       paddingVertical: 0,
       marginVertical: 0,
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
       // paddingHorizontal: 20,
     },
     button: {
-      borderRadius: 20,
+      borderRadius: 2,
       padding: 10,
       elevation: 2,
       width: 90,
