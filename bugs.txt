@@ -42,6 +42,11 @@ week
     header left 
     Modal as web
     in card select overlay
+    month disable
+
+    //new
+        space after milestone when viewing the variable
+
 
     leave_request
         

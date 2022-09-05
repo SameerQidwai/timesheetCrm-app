@@ -8,7 +8,7 @@
 
 import React, {useState, useCallback, useEffect, useContext} from 'react';
 import { View, StyleSheet, FlatList, Pressable, } from 'react-native';
-import { Caption, FAB, IconButton, Title, } from 'react-native-paper';
+import { Appbar, Button, Caption, FAB, Headline, IconButton, List, Text, Title, TouchableRipple, } from 'react-native-paper';
 import {  CalendarProvider, WeekCalendar, } from 'react-native-calendars';
 import { lightThemeColor} from '../theme';
 import moment from 'moment';
@@ -20,7 +20,8 @@ import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
 import { deleteTimeEntryApi, getTimesheetApi } from '../services/timesheet-api';
 import { AppContext } from '../context/AppContext';
 import { formatDate, formatFloat, newFormatDate } from '../services/constant';
-import DatePicker from 'react-native-modern-datepicker';
+import DatePicker from '../components/DatePicker';
+// import DatePicker from 'react-native-modern-datepicker';
 
 const WeeklyTimesheet = ({route, navigation}) => {
   // console.log('param',formatDate(route?.params?.sDate))
@@ -36,24 +37,27 @@ const WeeklyTimesheet = ({route, navigation}) => {
   const [fetching, setFetching] = useState(false)
 
   useEffect(() => {
-    getData()
+    getData(sDate)
   }, [])
 
 
-  const getData = async() =>{
+  const getData = async(date) =>{
     const {id: userId, accessToken} = appStorage
     setFetching(true)
-    let keys = {startDate: formatDate(sDate).startOf('month').format('DD-MM-YYYY'),
-        endDate: formatDate(sDate).endOf('month').format('DD-MM-YYYY'),
+    let keys = {startDate: formatDate(date).startOf('month').format('DD-MM-YYYY'),
+        endDate: formatDate(date).endOf('month').format('DD-MM-YYYY'),
         userId: userId
     }
     try {
         let {success, data, setToken} = await getTimesheetApi(keys, accessToken)
         if(success){
-          const {daily_totalHour, grandTotal, newData, currItem} = restructure(data, sDate)
+          const {daily_totalHour, grandTotal, newData, currItem} = restructure(data, date)
           setTimesheet({timesheet_data: [...newData], total: grandTotal, dailyHour: {...daily_totalHour}})
           setItems({title: currItem.title, data: [...currItem.data]})
           setAppStorage(prev=> ({...prev, accessToken: setToken}))
+        }else{
+          setTimesheet({timesheet_data: [], total: 0, dailyHour: {}})
+          setItems({title: '', data: []})
         }
         setFetching(false)
     }catch (e){
@@ -61,20 +65,28 @@ const WeeklyTimesheet = ({route, navigation}) => {
     }
   }
 
-  const onDateChanged = day => {
-    let start = moment(sDate).utcOffset(0, true).startOf('month')
-    let end = moment(sDate).utcOffset(0, true).endOf('month')
-    // if (moment(day,'yyyy-M-DD').isBetween(start, end, 'day', '[]')){
-      setFetching(true)
-      const {timesheet_data} = timesheet
-      let entries = timesheet_data.find(el => el.title === day )?? {title: day, data: []}
-      setDate(formatDate(day, 'YYYY-MM-DD'));
-      setItems({title: entries.title, data: [...entries.data]})
-
-      setTimeout(() => {
-        setFetching(false)
-      }, 500);
-    // }
+  const onDateChanged = (day, onDayChange) => {
+    // console.log(day, onDayChange)
+    day = formatDate(day, ['YYYY-MM-DD','YYYY/MM/DD'])
+    if (day.isSame(sDate, 'month')){
+        setFetching(true)
+        const {timesheet_data} = timesheet
+        let entries = timesheet_data.find(el => el.title === formatDate(day, false, true) )?? {title: day, data: []}
+        setDate(day);
+        setItems({title: entries.title, data: [...entries.data]})
+  
+        setTimeout(() => {
+          setFetching(false)
+        }, 500);
+      
+    }else{
+      // if(onDayChange === 'update'){
+        setFetching(true)
+        getData(day)
+        setDate(day);
+      // }
+    }
+    
     // console.log(timesheet_data[index])
   };
 
@@ -111,10 +123,10 @@ const WeeklyTimesheet = ({route, navigation}) => {
         }, 
       });
     }
-    if (long && selectedItems === 0) {
-      setSelected({[key]: true});
-      setLongPress(true);
-    }
+    // if (long && selectedItems === 0) {
+    //   setSelected({[key]: true});
+    //   setLongPress(true);
+    // }
   };
 
   const renderItem = ({item, index}) => {
@@ -168,43 +180,62 @@ const WeeklyTimesheet = ({route, navigation}) => {
   
   return (
     <View style={styles.pageView}>
-      <View style={styles.containerView}>
-        <View>
-          <IconButton 
-            icon="arrow-left" 
-            color="black"
-            onPress={()=>navigation.navigate('Timesheet')} 
-          />
-        </View>
-        <View>
-          <Pressable 
-            android_ripple={{color: '#f8a587', borderless: true}}
-            onPressOut={() => setdateTime(!dateTime)}>
-            <Title>
-              {sDate.format('MMM YYYY')}
-              <IconButton
-                icon="chevron-down"
-                color="black"
-                size={24}
-                style={{ width: 28, height: 20, }}
-              />
-            </Title>
-          </Pressable>
-        </View>
-        <View>
-          <View>
-            <Caption>Total Hours</Caption>
-          </View>
-          <View>
-            <Title style={{lineHeight: 22}}>{formatFloat(timesheet['total'])}</Title>
-          </View>
-        </View>
-      </View>
+      <Appbar.Header style={styles.containerView}>
+        <IconButton
+          icon="arrow-left"
+          color="#fff"
+          size={30}
+          style={{width: 20, marginLeft: 0, paddingVertical:10}}
+          onPress={() => navigation.navigate('Timesheet')}
+        />
+
+        <Appbar.Content
+          titleStyle={{paddingHorizontal: 0, margin: 0}}
+          style={{paddingHorizontal: 0, marginLeft: 0}}
+          title={
+            // <View style={{flex: 1}}>
+            <TouchableRipple
+              onPress={() => setdateTime(!dateTime)}
+              rippleColor="rgba(0, 0, 0, .32)">
+              <Title
+                style={{
+                  textTransform: 'uppercase',
+                  color: '#fff',
+                }}>
+                {sDate.format('MMM YYYY')}
+                <IconButton
+                  icon="chevron-down"
+                  color="#fff"
+                  size={24}
+                  style={{width: 28, height: 20}}
+                />
+              </Title>
+            </TouchableRipple>
+            // </View>
+          }
+        />
+        <Appbar.Content
+          title={
+            <View style={{justifyContent: 'center'}}>
+              <View>
+                <Caption style={{color: '#fff'}}>Total Hours</Caption>
+              </View>
+              <View>
+                <Title
+                  style={{lineHeight: 22, textAlign: 'center', color: '#fff'}}>
+                  {formatFloat(timesheet?.['total'])}
+                </Title>
+              </View>
+            </View>
+          }
+          titleStyle={{marginLeft: 'auto'}}
+        />
+      </Appbar.Header>
       <CalendarProvider
         date={sDate.format('yyyy-MM-DD')}
         // date={'2022-08-25'}
         onDateChanged={onDateChanged}
-        onMonthChange={onMonthChange}
+        // onMonthChange={onMonthChange}
         // showTodayButton
         disabledOpacity={0.6}
         /** Extra testing */
@@ -217,11 +248,11 @@ const WeeklyTimesheet = ({route, navigation}) => {
         futureScrollRange={0}
         // hideExtraDays={true}
         /** Extra testing */
-        >
+      >
         <WeekCalendar
           current={sDate.format('yyyy-MM-DD')}
           // style={{backgroundColor: 'purple', height: 1000}}
-          theme={{ todayTextColor: 'blue', }}
+          theme={{todayTextColor: 'blue'}}
           // pastScrollRange={1}
           // futureScrollRange={1}
           /** Extra testing */
@@ -230,7 +261,8 @@ const WeeklyTimesheet = ({route, navigation}) => {
           // maxDate={formatDate(sDate).endOf('month').format('yyyy-MM-DD')}
           pastScrollRange={0}
           futureScrollRange={0}
-          disableMonthChange
+          disableMonthChange={true}
+          enableSwipeMonths={true}
           // hideExtraDays={true}
           /** Extra testing */
 
@@ -242,36 +274,81 @@ const WeeklyTimesheet = ({route, navigation}) => {
           firstDay={1}
           animateScroll
           markingType={'custom'}
-          markedDates={{ [sDate.format('yyyy-MM-DD')]: styles.calendarMarked, }}
+          markedDates={{[sDate.format('yyyy-MM-DD')]: styles.calendarMarked}}
           dayComponent={({date, state, marking, theme}) => (
-            <RenderDay 
-              date={date} 
-              state={state} 
-              marking={marking} 
-              theme={theme} 
-              onDateChanged={onDateChanged} 
-              dailyhours={timesheet['dailyHour']} 
+            <RenderDay
+              date={date}
+              state={state}
+              marking={marking}
+              theme={theme}
+              onDateChanged={onDateChanged}
+              dailyhours={timesheet['dailyHour']}
               sDate={sDate}
             />
           )}
         />
-        <FlatList
-          data={items?.data ?? []}
-          renderItem={renderItem}
-          keyExtractor={item => item.entryId}
-          extraData={selected}
-          onRefresh={getData}
-          refreshing={fetching}
-        />
+        {items?.data.length >0 ?
+          <FlatList
+            data={items?.data ?? []}
+            renderItem={renderItem}
+            keyExtractor={item => item.entryId}
+            extraData={selected}
+            onRefresh={getData}
+            refreshing={fetching}
+          />
+          :
+          <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+            <IconButton icon="archive-cancel-outline" size={40}/>
+            <Headline>No Record Found</Headline>
+            <Text></Text>
+          </View>
+        }
       </CalendarProvider>
-      <FAB
+      {/* <FAB
         style={styles.fab(longPressed)}
         icon={longPressed ? 'delete' : 'plus'}
         disabled={fetching}
         size="large"
         onPress={fabAction}
         // color={longPressed ? 'red' : 'green'}
-      />
+      /> */}
+      {!longPressed ? <Button        
+        mode="contained"
+        uppercase={false}
+        raised 
+        color='#1890ff'
+        style={{
+            marginHorizontal: 15, 
+            // marginBottom:15,
+            marginVertical: 8,
+            borderRadius: 2,
+        }}
+        size="large"
+        disabled={fetching}
+        onPress={fabAction}
+      >
+        Add Timesheet Entry
+      </Button>
+      :
+        <Button        
+          mode="contained"
+          uppercase={false}
+          raised 
+          color="#ff4d4f"
+          labelStyle={{color: '#fff'}}
+          style={{
+              marginHorizontal: 15, 
+              // marginBottom:15,
+              marginVertical: 10,
+              borderRadius: 2,
+          }}
+          size="large"
+          disabled={fetching}
+          // onPress={()=>actionTimeSheet('Add')}
+        >
+          Delete Timesheet Entry
+        </Button>
+        }
       {openModal['visible'] && (
         <TimeEntryModal
           visible={openModal['visible']}
@@ -282,36 +359,16 @@ const WeeklyTimesheet = ({route, navigation}) => {
           onClose={() => setOpenModal({visible: false})}
         />
       )}
-      {/* {dateTime && (
-        <DateTimePicker
-          mode={'date'}
-          value={formatDate(sDate).toDate()}
-          onChange={(event, dateValue) => {
-            setdateTime(false)
-            if (event?.type === 'set' && dateValue){
-              setDate(formatDate(dateValue));
-            }
-          }}
-        />
-      )} */}
       {dateTime && (
         <DatePicker
-          current="2022-07-13"
-          selected={formatDate(sDate ,false ,true)}
+          visible={dateTime}
+          selected={formatDate(sDate, false, true)}
           mode="calendar"
-          minuteInterval={30}
-          selectorStartingYear={2000}
-          onDateChange={(dateValue) => {
-            setdateTime(false)
-            if (dateValue){
-              console.log(dateValue)
-              setDate(formatDate(dateValue, 'YYYY-MM-DD'));
-            }
+          onDismiss={() => setdateTime(false)}
+          onDateChange={selectedDate => {
+            onDateChanged(selectedDate)
+            setdateTime(false);
           }}
-          // onMonthYearChange={selectedDate => {
-          //     setDate(formatDate(selectedDate, 'YYYY-MM-DD'))
-          //     setdateTime(false)
-          // }}
         />
       )}
     </View>
@@ -323,14 +380,15 @@ export default WeeklyTimesheet;
 const styles = StyleSheet.create({
   pageView: {
     flex: 1, 
-    backgroundColor: 'white'
+    backgroundColor: '#f6f4f1'
   },
   containerView:{
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: '#1890ff',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingRight: 10,
+    paddingHorizontal: 15,
+    paddingLeft: 0
   },
   theme: {
     weekContainer: {
@@ -342,7 +400,7 @@ const styles = StyleSheet.create({
       container: {
         borderRadius: 2,
         paddingVertical:2,
-        backgroundColor: '#2e44fc',
+        backgroundColor: '#1890ff'
       },
       text: {
         color: 'white',
@@ -376,6 +434,7 @@ function useRegex(input) {
 }
 
 function restructure (data, date) {
+  console.log(data)
   let year = moment(date).format('YYYY')
   let date_index = {}
   let daily_totalHour ={}
@@ -388,8 +447,22 @@ function restructure (data, date) {
     Object.entries(el).forEach(([key, value], e_index) => {
         if (useRegex(key)){
             let keySplit = key.split('/')
-            let newKey = formatDate(`${year}-${keySplit[1]}-${keySplit[0]}`, 'YYYY-M-D').format('YYYY-MM-DD')
-            value = {
+            let newKey = formatDate(`${year}-${keySplit[1]}-${keySplit[0]}`, 'YYYY-M-D', true)
+            console.log(newKey)
+            if (el.leaveRequest){
+              value = {
+                ...value,
+                entryId: 'l'+ e_index,
+                project: el['project'],
+                projectType: el['projectType'],
+                leaveRequest: el['leaveRequest'],
+                leaveType: el['leaveType'],
+                typeId: el['typeId'],
+                projectId: el['workId'],
+                totalHours: el['totalHours']
+            }
+            }else{
+              value = {
                 ...value,
                 milestone: el['milestone'],
                 project: el['project'],
@@ -398,28 +471,38 @@ function restructure (data, date) {
                 milestoneId: el['milestoneId'],
                 projectId: el['projectId'],
                 milestoneEntryId: el['milestoneEntryId'],
+              }
             }
-            if (date_index[newKey]){
+            
+            if (date_index[newKey] >= 0){
+              console.log(date_index[newKey], newKey)
               if(!el.leaveRequest){
                 newData[date_index[newKey]]['data'].push(value)
                 daily_totalHour[newKey] += value['actualHours']
                 grandTotal += el['totalHours']
+              }else{
+                newData[date_index[newKey]]['data'].push(value)
               }
             }else{
+              console.log(date_index[newKey], newKey, 'NotFound')
               if(!el.leaveRequest){
                 date_index[newKey] = count
                 newData.push({title: newKey, data: [value]})
                 daily_totalHour[newKey] = value['actualHours']
                 grandTotal = el['totalHours']
                 count++
+              }else{
+                date_index[newKey] = count
+                newData.push({title: newKey, data: [value]})
+                count++
               }
             }
         }
     })
   })
-
-  if (date_index[formatDate(date).format('YYYY-MM-DD')]){
-    currItem = newData[date_index[formatDate(date).format('YYYY-MM-DD')]] ?? {}
+  console.log(newData)
+  if (date_index[formatDate(date, false, true)] >=0){
+    currItem = newData[date_index[formatDate(date, false, true)]] ?? {}
   } 
 
   return {daily_totalHour, grandTotal, newData, currItem}

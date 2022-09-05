@@ -17,7 +17,7 @@ import Stacks from './src/components/Navigation/Stacks';
 const App= () => {
   return (
     <AppProvider>
-      <View style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={{flex: 1, backgroundColor: '#f6f4f1'}}>
       <NavigationContainer>
         <Stacks/>
       </NavigationContainer>

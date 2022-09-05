@@ -52,7 +52,7 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                         </Text>
                     </View>
                     <View>
-                        <Text style={[styles.renderDayText(state),marking?.['customStyles']?.text]}>
+                        <Text style={[styles.renderDayText(state),marking?.['customStyles']?.text, {fontSize: 12}]}>
                             {formatFloat(dailyhours?.[getDate(state)])}
                         </Text>
                     </View>

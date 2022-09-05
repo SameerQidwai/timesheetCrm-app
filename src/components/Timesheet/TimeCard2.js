@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react';
 import moment from 'moment';
 import { View , StyleSheet, Pressable } from 'react-native';
-import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline } from 'react-native-paper';
+import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline, TouchableRipple } from 'react-native-paper';
 import { formatFloat, status_color } from '../../services/constant';
 import { ColView } from '../ConstantComponent';
 
@@ -18,34 +18,63 @@ export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
   }
 
   return (
-    <Card 
-        style={styles.card(selected)} 
-        elevation={10} 
-        mode="elevated"
-    >
-      <Pressable
-        android_ripple={{color: '#747474', borderless: true}}
+    <Card style={styles.card(selected)} elevation={5} mode="elevated">
+      <TouchableRipple
         onLongPress={onLongPress}
         onPress={onPress}
-      >
-        {/* style={{paddingVertical: 10}} */}
-      <Card.Content >
-        <ColView justify={'space-between'} >
-          <View style={styles.detailView}>
-              <Text style={styles.headline}>{timeEntry.project}</Text>
-              <Subheading style={styles.subheading}>{timeEntry.projectType === 1 ? timeEntry.milestone: ''}</Subheading>
-              <Paragraph >{moment(timeEntry["startTime"], ["HH:mm"]).format("h:mm A")} To {moment(timeEntry["endTime"], ["HH:mm"]).format("h:mm A")} With {getBreakTime(timeEntry.breakHours)} Hour Break</Paragraph>
-              <Caption >{timeEntry.notes}</Caption>
-          </View>
-          <View style={[styles.hourView, status_color[timeEntry.status]]
-          }
-          >
-              <Title style={{fontWeight: '900', color: statusColor,}}>{formatFloat(timeEntry.actualHours)}</Title>
-              <Subheading style={{color: statusColor}}>hours</Subheading>
-          </View>
-        </ColView>
-      </Card.Content>
-      </Pressable>
+        rippleColor="rgba(0, 0, 0, .32)">
+        <Card.Content style={{paddingRight: 0}}>
+          {!timeEntry['leaveRequest'] ? (
+            <ColView justify={'space-between'}>
+              <View style={styles.detailView}>
+                <Text style={styles.headline}>{timeEntry.project}</Text>
+                <Caption style={styles.subheading}>
+                  {timeEntry.projectType === 1
+                    ? `${timeEntry.milestone}`
+                    : '\n'}
+                </Caption>
+                <Text>
+                  {moment(timeEntry['startTime'], ['HH:mm']).format('h:mm A')}{' '}
+                  To {moment(timeEntry['endTime'], ['HH:mm']).format('h:mm A')}
+                  {timeEntry.breakHours
+                    ? ` With ${getBreakTime(timeEntry.breakHours)} Hour Break`
+                    : '\n'}{' '}
+                </Text>
+                {/* <Caption >{timeEntry.notes}</Caption> */}
+              </View>
+              <View style={[styles.hourView, status_color[timeEntry.status]]}>
+                <Title style={{fontWeight: '900', color: statusColor}}>
+                  {formatFloat(timeEntry.actualHours)}
+                </Title>
+                <Subheading style={{color: statusColor}}>hours</Subheading>
+              </View>
+            </ColView>
+          ) : (
+            <ColView justify={'space-between'}>
+              <View style={styles.detailView}>
+                <View>
+                  <Text style={styles.headline}>{timeEntry.leaveType}</Text>
+                  <Caption style={styles.subheading}>
+                  {timeEntry.project 
+                    ? `${timeEntry.project}\n`
+                    : '\n'}
+                  </Caption>
+                  <Text >{'\n' }</Text>
+                </View>
+                {/* <View>
+                  <Caption>{status_name[timeEntry.status]}</Caption>
+                </View> */}
+              </View>
+              <View style={[styles.hourView, status_color[timeEntry.status]]}>
+                <Title style={{fontWeight: '900', color: statusColor}}>
+                  {timeEntry.totalHours}
+                </Title>
+                <Subheading style={{color: statusColor}}>hours</Subheading>
+              </View>
+            </ColView>
+          )}
+        </Card.Content>
+      </TouchableRipple>
     </Card>
   );
 };
@@ -58,28 +87,30 @@ const styles = StyleSheet.create({
   card: selectColor => ({
     borderRadius: 2,
     margin: 10,
+    marginBottom: 0,
     backgroundColor: selectColor ? '#727ef6b3' : 'white',
   }),
-  detailView: {width: '75%', paddingTop: 10, paddingRight: 5},
+  detailView: {
+    width: '75%', 
+    paddingRight: 5, 
+    paddingVertical: 5
+  },
   subheading: {
     color: '#747474',
-    lineHeight: 18,
+    lineHeight: 14,
     marginVertical: 0,
-    marginBottom: 5,
+    // marginBottom: 5,
   },
   headline: {
     lineHeight: 22, 
-    marginVertical: 0
+    marginVertical: 0,
+    fontWeight: 'bold'
   },
   hourView: {
     width: '25%',
-    height: 100,
+    // height: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor :'#edf5ff', 
-    borderColor: '#8fb2eb', 
-    borderWidth: 1, 
-    color: '#476ba6'
   }
 });
 

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FlatList,  Dimensions, StyleSheet, View } from 'react-native'
-import { Appbar, Button, Caption, Card, FAB, IconButton, Modal, Portal, Surface, Title, TouchableRipple } from 'react-native-paper'
+import { Appbar, Button, Caption, Card, Dialog, FAB, IconButton, Modal, Portal, Surface, Title, TouchableRipple } from 'react-native-paper'
 import ProjectCards from '../components/Timesheet/ProjectCards'
 import { AppContext } from '../context/AppContext'
 import { getTimesheetApi, reviewTimeSheet } from '../services/timesheet-api'
 import { formatDate, formatFloat } from '../services/constant';
-import DatePicker from 'react-native-modern-datepicker';
 import { ColView } from '../components/ConstantComponent'
+import DatePicker from '../components/DatePicker'
 const deviceHeight = Dimensions.get('window').height
 
 const MonthlyTimesheet =({navigation}) =>{
@@ -77,7 +77,7 @@ const MonthlyTimesheet =({navigation}) =>{
             <ProjectCards 
               timesheet={item} 
               selected={selected[index]} 
-              onLongPress={() => onPressItem(index, true)}
+            //   onLongPress={() => onPressItem(index, true)}
               onPress={() => onPressItem(index)}
             />
         );
@@ -165,6 +165,7 @@ const MonthlyTimesheet =({navigation}) =>{
                         }}
                         size="large"
                         disabled={fetching}
+                        labelStyle={{color: '#fff'}}
                         onPress={()=>actionTimeSheet('Delete')}
                     >
                         Submit
@@ -179,9 +180,9 @@ const MonthlyTimesheet =({navigation}) =>{
                             width: '42%',
                             borderRadius: 2
                         }}
-                        // color="#ff4d4f"
-                        color="red"
-                        // labelStyle={{color: '#fff'}}
+                        color="#ff4d4f"
+                        // color="red"
+                        labelStyle={{color: '#fff'}}
                         disabled={fetching}
                         size="large"
                         onPress={()=> actionTimeSheet('Submit') }
@@ -208,41 +209,17 @@ const MonthlyTimesheet =({navigation}) =>{
                     Add Timesheet
                 </Button>
             }
-            {/* <FAB
-                style={styles.fab(longPressed)}
-                color="white"
-                icon={longPressed ? 'delete' : 'plus'}
-                size="large"
-                animated
-            /> */}
-            {/* {longPressed && <FAB
-                style={[styles.fabsubmit]}
-                color="white"
-                icon={'check-decagram'}
-                disabled={fetching}
-                size="large"
-                animated
-                onPress={()=> actionTimeSheet('Submit') }
-            />} */}
             {dateTime && 
-                <Portal >
-                    <Modal  visible={dateTime} onDismiss={()=>setDateTime(false)}   
-                    contentContainerStyle={{
-                        marginTop: deviceHeight -380
-                    }}>
-                        <DatePicker
-                            mode="monthYear"
-                            // current={"2022-01-01"}
-                            // value="07 2022"
-                            style={{zIndex: 3000, elevation: 2}}
-                            selectorStartingYear={2000}
-                            onMonthYearChange={selectedDate => {
-                                setDate(formatDate(selectedDate, 'YYYY MM'))
-                                setDateTime(false)
-                            }}
-                            />
-                    </Modal>
-                </Portal>
+                <DatePicker
+                    visible={dateTime}
+                    selected={formatDate(sDate,false, true)}
+                    mode="monthYear"
+                    onDismiss={()=>setDateTime(false)}
+                    onMonthChage={selectedDate => {
+                        setDate(formatDate(selectedDate, 'YYYY MM'))
+                        setDateTime(false)
+                    }}
+                />
             }
         </View>
     )
@@ -253,7 +230,7 @@ export default MonthlyTimesheet
 const styles =  StyleSheet.create({
     pageView: {
         flex: 1, 
-        backgroundColor: 'white'
+        backgroundColor: '#f6f4f1'
     },
     containerView:{
         flexDirection: 'row',
