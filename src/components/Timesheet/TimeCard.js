@@ -8,7 +8,7 @@ export default TimeCard = ({timeEntry, selected}) =>{
     
 
     useEffect(() => {
-      console.log({selected})
+    //   console.log({selected})
     }, [])
     return (
         <Card 

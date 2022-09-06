@@ -19,7 +19,6 @@ function DatePicker({visible, mode, current, selected,  minDate, maxDate, interv
             <ReactNativeModernDatepicker
                 mode={mode}
                 current={date??current}
-                // selected={date}
                 selected={date}
                 selectorStartingYear={2000}
                 selectorEndingYear={3000}
@@ -31,6 +30,9 @@ function DatePicker({visible, mode, current, selected,  minDate, maxDate, interv
                 onSelectedChange={select=>{onSelectedChange &&onSelectedChange(select)}}
                 onTimeChange={selectedTime=>{onTimeChange && onTimeChange(selectedTime)}}
                 style={[{borderRadius: 5},dateStyle]}
+                options={{
+                    mainColor: '#1890ff',
+                  }}
             />
         </Dialog>
     </Portal>

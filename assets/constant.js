@@ -1,33 +1,24 @@
 export const projects_timesheet = [
   {
-    id: 1,
+    milestoneEntryId: 1,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
     hours: '131.00',
-    status: 'SB',
+    status: 'SV',
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id: 2,
+    milestoneEntryId: 2,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
     hours: '131.00',
-    status: 'SB',
+    status: 'SV',
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id: 3,
-    projectName: 'One LM',
-    type:  1,
-    milestoneName: 'Milestone 1',
-    hours: '131.00',
-    status: 'RJ',
-    notes:  'As a cross platform UI Toolkit,'
-  },
-  {
-    id:4,
+    milestoneEntryId: 3,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
@@ -36,16 +27,25 @@ export const projects_timesheet = [
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id:5,
+    milestoneEntryId:4,
+    projectName: 'One LM',
+    type:  1,
+    milestoneName: 'Milestone 1',
+    hours: '131.00',
+    status: 'RJ',
+    notes:  'As a cross platform UI Toolkit,'
+  },
+  {
+    milestoneEntryId:5,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
     hours: '20',
-    status: 'SB',
+    status: 'SV',
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id:6,
+    milestoneEntryId:6,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
@@ -54,7 +54,7 @@ export const projects_timesheet = [
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id:7,
+    milestoneEntryId:7,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
@@ -63,7 +63,7 @@ export const projects_timesheet = [
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id:8,
+    milestoneEntryId:8,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
@@ -72,7 +72,7 @@ export const projects_timesheet = [
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id:9,
+    milestoneEntryId:9,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',
@@ -81,7 +81,7 @@ export const projects_timesheet = [
     notes:  'As a cross platform UI Toolkit,'
   },
   {
-    id:10,
+    milestoneEntryId:10,
     projectName: 'One LM',
     type:  1,
     milestoneName: 'Milestone 1',

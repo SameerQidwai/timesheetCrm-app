@@ -1,6 +1,6 @@
 import React from 'react';
 import { View , StyleSheet, Pressable} from 'react-native';
-import {Card, Headline, Subheading, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
+import {Card, Headline, Subheading, Title, Caption, Text, TouchableRipple, IconButton } from 'react-native-paper';
 import { formatFloat, status_color, status_name } from '../../services/constant';
 import { ColView } from '../ConstantComponent';
 
@@ -13,7 +13,7 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
             mode="elevated"
         >
             <TouchableRipple
-                onLongPress={onLongPress}
+                // onLongPress={onLongPress}
                 onPress={()=>!timesheet['leaveRequest'] && onPress()}
                 rippleColor={!timesheet['leaveRequest'] ?"rgba(0, 0, 0, .32)": ''}
             >
@@ -49,8 +49,15 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
                         </View>
                         <View style={[styles.hourView, status_color[timesheet.status]] }
                         >
-                            <Title style={{fontWeight: '900', color: statusColor, }}>{formatFloat(timesheet.actualHours)}</Title>
+                            <Title style={{fontWeight: '900', color: statusColor, }}>{formatFloat(timesheet.totalHours)}</Title>
                             <Subheading style={{color: statusColor}}>hours</Subheading>
+                            {selected&&<View style={[styles.overlay]} />}                               
+                            {selected&& <IconButton
+                                icon="check"
+                                size={30}
+                                color="white"
+                                style={[styles.iconOverlay]}
+                            />}
                         </View>
                       </ColView>
                     //     :
@@ -86,7 +93,6 @@ const styles = StyleSheet.create({
         borderRadius: 2,  
         margin: 10,
         marginBottom: 0,
-        backgroundColor: selectColor ? "#727ef6b3" : "white"
     }),
     detailView: {
         width: '75%', 
@@ -108,14 +114,27 @@ const styles = StyleSheet.create({
     },
     hourView:{
         width: '25%',
-        // height: 80,
         justifyContent: 'center',
         alignItems: 'center',
-        // marginVertical: 10,
         backgroundColor :'#edf5ff', 
         borderColor: '#8fb2eb', 
-        borderWidth: 1, 
-        color: '#c4c4c4'
-    } 
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: 'black',
+        opacity: 0.5
+    },
+    iconOverlay: {
+        position: 'absolute',
+        // top: 0,
+        right: 0,
+        bottom: 0,
+        // left: 0,
+        margin: 0,
+    }  
 })
  

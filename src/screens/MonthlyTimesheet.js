@@ -7,7 +7,8 @@ import { getTimesheetApi, reviewTimeSheet } from '../services/timesheet-api'
 import { formatDate, formatFloat } from '../services/constant';
 import { ColView } from '../components/ConstantComponent'
 import DatePicker from '../components/DatePicker'
-const deviceHeight = Dimensions.get('window').height
+import NoRecords from '../components/Common/NoRecords'
+import { projects_timesheet } from '../../assets/constant'
 
 const MonthlyTimesheet =({navigation}) =>{
     const { appStorage, setAppStorage } = useContext(AppContext)
@@ -17,6 +18,7 @@ const MonthlyTimesheet =({navigation}) =>{
     const [longPressed, setLongPress] = useState(false)
     const [fetching, setFetching] = useState(false)
     const [timesheets, setTimesheets] = useState({})
+    const [disableAction, setDisableAction] = useState(true)
 
     useEffect(() => {
         getData()
@@ -28,7 +30,6 @@ const MonthlyTimesheet =({navigation}) =>{
             endDate: formatDate(sDate).endOf('month').format('DD-MM-YYYY'),
             userId: appStorage['id']
         }
-        console.log(keys)
         try {
             let {success, data, setToken} = await getTimesheetApi(keys, appStorage['accessToken'])
             if(success){
@@ -36,9 +37,7 @@ const MonthlyTimesheet =({navigation}) =>{
                 setAppStorage(prev=> ({...prev, accessToken: setToken}))
                 setTimesheets({data: data, total: grandtotal})
                 setFetching(false)
-                console.log('if condition')
             }else{
-                console.log('else condition')
                 setTimesheets({data: [], total: 0})
                 setFetching(false)
             }
@@ -48,37 +47,64 @@ const MonthlyTimesheet =({navigation}) =>{
     
     }
 
-    const onPressItem = (key, long)=>{
+    const onPressItem = (key, item)=>{
         let newSelected = selected
         let selectedItems = Object.keys(selected).length
-        if (longPressed && selectedItems > 0){
+        if (longPressed){
             if (newSelected[key]){
                 delete newSelected[key]
                 if (selectedItems === 1){
                     setLongPress(false)
+                    setDisableAction(true)
                 }
             }else{
-                newSelected[key] = true
+                if (item.status === 'SV'){
+                    newSelected[key] = true
+                    setDisableAction(false)
+                }
             }
             setSelected({...newSelected})
         }
-        if (!long && selectedItems === 0) {
-            // setOpenModal(true);
-        }
+        // if (!long && selectedItems === 0) {
+        //     // setOpenModal(true);
+        // }
         
-        if (long && selectedItems === 0){
-            setSelected({[key]: true})
-            setLongPress(true)
+        // if (long && selectedItems === 0){
+        //     setSelected({[key]: true})
+        //     setLongPress(true)
+        // }
+    }
+
+    const onSelectAll = () =>{
+        if (timesheets?.['data']?.['milestones'].length > 0){
+        // if (projects_timesheet.length > 0){
+            let select= {}
+            let disable = true
+            timesheets?.['data']?.['milestones'].forEach(el=>{
+                // projects_timesheet.forEach(el=>{
+                if(el.status === 'SV'){
+                    select[el.milestoneEntryId] = true
+                    disable = false
+                }
+            })
+            setSelected(select)
+            setDisableAction(disable)
         }
+    }
+
+    const onUnselectAll = () =>{
+        setLongPress(false)
+        setSelected({})
+        setDisableAction(true)
     }
 
     const renderItem = ({item, index}) => {
         return (
             <ProjectCards 
               timesheet={item} 
-              selected={selected[index]} 
+              selected={selected[item.milestoneEntryId]}
             //   onLongPress={() => onPressItem(index, true)}
-              onPress={() => onPressItem(index)}
+              onPress={() => onPressItem(item.milestoneEntryId, item)}
             />
         );
     };
@@ -88,18 +114,21 @@ const MonthlyTimesheet =({navigation}) =>{
             navigation.navigate('Timesheet-Details', {sDate: formatDate(sDate).format('YYYY-MM-DD')})
         }else{
             const { id: userId, accessToken}= appStorage
-            const  keys  = Object.keys(selected)
+            const  keys  = Object.keys(selected).map(el => parseInt(el))
+            console.log(keys)
             const query= {
                 userId, startDate: 
                 formatDate(sDate).startOf('month').format('DD-MM-YYYY'), 
                 endDate: formatDate(sDate).endOf('month').format('DD-MM-YYYY') 
             }
             const data = {milestoneEntries: keys}
-            reviewTimeSheet(query, 'Submit', data, accessToken).then(res=>{
-                getData()
-                setAppStorage(prev=> ({...prev, accessToken: setToken}))
-                setLongPress(false);
-                setSelected({});
+            reviewTimeSheet(query, stage, data, accessToken).then(res=>{
+                if(res.success){
+                    getData()
+                    setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+                    setLongPress(false);
+                    setSelected({});
+                }
             })
         }
     };
@@ -110,8 +139,7 @@ const MonthlyTimesheet =({navigation}) =>{
                 <Appbar.Content 
                     title={
                      <TouchableRipple
-                            onPress={() => setDateTime(!dateTime)}
-                            rippleColor="rgba(0, 0, 0, .32)"
+                            onPress={() => !longPressed  && setDateTime(!dateTime)}
                         >
                         <Title
                             style={{
@@ -141,55 +169,98 @@ const MonthlyTimesheet =({navigation}) =>{
                     titleStyle={{marginLeft: 'auto'}} 
                 />
             </Appbar.Header>
+            {/* {projects_timesheet?.length >0 ?  */}
+            {timesheets?.['data']?.['milestones']?.length >0 ? 
             <View style={styles.pageView}>
+                {<View style={{justifyContent:'flex-end', flexDirection: 'row', marginHorizontal: 10, marginTop: 7}}>
+                {!longPressed ?<Button
+                mode="outlined"
+                    compact
+                    uppercase={false}
+                    color="#1890ff"
+                    labelStyle={{marginVertical:2, marginHorizontal: 5, fontWeight: 'normal'}}
+                    onPress={()=>setLongPress(true)}
+                >
+                    Select
+                </Button>
+                :
+                <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
+                    <Button 
+                    mode="outlined"
+                    compact
+                    uppercase={false}
+                    color="#1890ff"
+                    labelStyle={{marginVertical:2, marginHorizontal: 5, fontWeight: 'normal'}}
+                    onPress={onSelectAll}
+                    >
+                        Select All
+                    </Button>
+                    <Button 
+                    mode="outlined"
+                    compact
+                    uppercase={false}
+                    color="#1890ff"
+                    labelStyle={{marginVertical:2, marginHorizontal: 5, fontWeight: 'normal'}}
+                    onPress={onUnselectAll}
+                    >
+                        Cancel
+                    </Button>
+                </View>
+                }
+                </View>}
                 <FlatList
                     data={timesheets?.['data']?.['milestones']?? []}
+                    // data={projects_timesheet?? []}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index}
                     extraData={selected}
                     onRefresh={getData}
                     refreshing={fetching}
                 />
-            </View>
+            </View>:
+                <NoRecords/>
+            }
             {longPressed ? <ColView  justify='space-between'>
-                    <Button
-                        mode="contained"
-                        uppercase={false}
-                        raised 
-                        color='green'
-                        style={{
-                            marginLeft: '5%',
-                            marginBottom:15,
-                            width: '42%',
-                            borderRadius: 2
-                        }}
-                        size="large"
-                        disabled={fetching}
-                        labelStyle={{color: '#fff'}}
-                        onPress={()=>actionTimeSheet('Delete')}
-                    >
-                        Submit
-                    </Button>
-                    <Button
-                        mode="contained"
-                        uppercase={false}
-                        raised 
-                        style={{
-                            marginRight: '5%',
-                            marginBottom:15,
-                            width: '42%',
-                            borderRadius: 2
-                        }}
-                        color="#ff4d4f"
-                        // color="red"
-                        labelStyle={{color: '#fff'}}
-                        disabled={fetching}
-                        size="large"
-                        onPress={()=> actionTimeSheet('Submit') }
-                    >
-                        Delete
-                    </Button>
-                </ColView> 
+                <Button
+                    mode="contained"
+                    uppercase={false}
+                    raised 
+                    color='#4caf50'
+                    style={{
+                        marginLeft: '5%',
+                        marginBottom:15,
+                        marginVertical: 8,
+                        width: '42%',
+                        borderRadius: 2
+                    }}
+                    size="large"
+                    disabled={fetching || disableAction}
+                    labelStyle={{color: '#fff'}}
+                    onPress={()=>actionTimeSheet('Submit')}
+                >
+                    Submit
+                </Button>
+                <Button
+                    mode="contained"
+                    uppercase={false}
+                    raised 
+                    style={{
+                        marginRight: '5%',
+                        marginBottom:15,
+                        marginVertical: 8,
+                        width: '42%',
+                        borderRadius: 2
+                    }}
+                    color="#ff4d4f"
+                    // color="red"
+                    labelStyle={{color: '#fff'}}
+                    disabled={fetching||  disableAction}
+                    size="large"
+                    onPress={()=> actionTimeSheet('Delete') }
+                >
+                    Delete
+                </Button>
+            </ColView> 
             :
                 <Button 
                 
@@ -197,11 +268,7 @@ const MonthlyTimesheet =({navigation}) =>{
                     uppercase={false}
                     raised 
                     color='#1890ff'
-                    style={{
-                        marginHorizontal: 15, 
-                        marginBottom:15,
-                        borderRadius: 2,
-                    }}
+                    style={styles.bottomButton}
                     size="large"
                     disabled={fetching}
                     onPress={()=>actionTimeSheet('Add')}
@@ -251,7 +318,12 @@ const styles =  StyleSheet.create({
         margin: 16,
         right: 70,
         bottom: 0,
-        backgroundColor: 'green',
+        backgroundColor: '#4caf50',
+    },
+    bottomButton: {
+        marginHorizontal: 15, 
+        marginVertical: 8,
+        borderRadius: 2,
     }
 })
 

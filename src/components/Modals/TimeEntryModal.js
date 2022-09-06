@@ -1,13 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Dialog, TextInput, Portal, Button, Title, } from 'react-native-paper';
+import { Dialog, TextInput, Portal, Button, Title, IconButton, Text, Subheading, } from 'react-native-paper';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {Pressable, ScrollView, StyleSheet} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import { addTimeEntryApi, editTimeEntryApi } from '../../services/timesheet-api';
 import { userMilestonesApi } from '../../services/constant-api';
 import { AppContext } from '../../context/AppContext';
 import MDropDown from '../MUI-dropdown';
 import { formatDate } from '../../services/constant';
+import DatePicker from '../DatePicker';
+import { ColView } from '../ConstantComponent';
 
 export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => {
   const { appStorage, setAppStorage } = useContext( AppContext )
@@ -38,11 +40,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
     if (dateTime['open']) {
       setdateTime(prev => ({...prev, open: false}));
       if (key !== 'breakHours'){
-        if (key !== 'date'){
-          value = moment(value); //this should be change to utc
-        }else{
-          value = formatDate(value)
-        }
+        value = moment(value, ["HH:mm"]); //this should be change to utc
       }
     }
     setFormData(prev => ({...prev, [key]: value}));
@@ -92,14 +90,14 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
 
   const editing = (editEntry, token) =>{
     onSuccess(editEntry)
-    // editTimeEntryApi(editEntry, token)
-    // .then(res =>{
-    //   if(res?.success){
-    //     setLoading(false)
-    //     // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
-    //     onSuccess(res.data)
-    //   }
-    // })
+    editTimeEntryApi(editEntry, token)
+    .then(res =>{
+      if(res?.success){
+        setLoading(false)
+        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+        onSuccess(res.data)
+      }
+    })
   }
 
   const getBreakTime = (date) =>{
@@ -111,37 +109,48 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
   return (
     <Portal>
       <Dialog
-        visible={modalVisible}
-        style={styles.modalView}
-        onDismiss={hideDialog}>
-        <Dialog.Title style={[styles.modalHeader, styles.headerText]}>
-          {'Add Entry'}
-        </Dialog.Title>
+          visible={modalVisible}
+          style={styles.modalView}
+          onDismiss={hideDialog}>
+        <View
+          style={styles.modalHeader}
+        >
+          <View>
+            <Title style={styles.headerText}>{`${formData['entryId']? 'Edit': 'Add' } Entry`}</Title>
+          </View>
+          <View >
+            <IconButton 
+              color='#fff' 
+              icon="close" 
+              size={20} 
+              onPress={onClose}
+            />
+          </View>
+        </View>
         <Dialog.Content style={styles.modalBody}>
-          <Pressable
-            onPressOut={() => {
-              openDateTime(true, 'date', 'date');
-            }}
-          >
-            <Title style={styles.subheading}>
-              {formData['date'].format('dddd - DD MMM YYYY')}
-            </Title>
-          </Pressable>
+          <Subheading style={styles.subheading}>
+            {formatDate( formData['date'], false, 'dddd - DD MMM YYYY')}
+          </Subheading>
           <Dialog.ScrollArea style={styles.fieldView}>
             <ScrollView>
               <MDropDown
                 placeholder={'Select Project...'}
+                dense
                 label="Projects"
                 value={formData['milestoneId']}
-                data={[{"label": "Non-Project Hours", "value": 15}]}
-                onSelect={(item) => {setFieldValue('milestoneId', item.value)}}
+                data={[{label: 'Non-Project Hours', value: 15}]}
+                onSelect={item => {
+                  setFieldValue('milestoneId', item.value);
+                }}
               />
               <TextInput
                 value={formData['startTime'].format('LT')}
                 mode="outlined"
+                activeOutlineColor="#909090"
                 label="Start Time"
                 placeholder="Set Time"
                 keyboardType="decimal-pad"
+                dense
                 onFocus={() => {
                   openDateTime(true, 'startTime', 'time');
                 }}
@@ -149,10 +158,13 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
                   openDateTime(true, 'startTime', 'time');
                 }}
                 showSoftInputOnFocus={false}
+                style={styles.textInput}
               />
               <TextInput
                 value={formData['endTime'].format('LT')}
                 mode="outlined"
+                dense
+                activeOutlineColor="#909090"
                 label="End Time"
                 placeholder="Set Time"
                 onFocus={() => {
@@ -162,21 +174,13 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
                   openDateTime(true, 'endTime', 'time');
                 }}
                 showSoftInputOnFocus={false}
+                style={styles.textInput}
               />
-              {/* <TextInput
-                value={formData['breakHours']}
-                // value={'01:08'}
-                mode="outlined"
-                label="Break Hours"
-                placeholder="set hours"
-                keyboardType="decimal-pad"
-                onChangeText={(text) =>
-                  setFieldValue('breakHours', text)
-                }
-              /> */}
               <TextInput
                 value={getBreakTime(formData['breakHours'])}
                 mode="outlined"
+                dense
+                activeOutlineColor="#909090"
                 label="Break Hours"
                 placeholder="set hours"
                 onFocus={() => {
@@ -186,42 +190,44 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
                   openDateTime(true, 'breakHours', 'time', true);
                 }}
                 showSoftInputOnFocus={false}
+                style={styles.textInput}
               />
               <TextInput
                 value={formData['notes']}
+                dense
+                activeOutlineColor="#909090"
                 mode="outlined"
                 label="Notes"
                 placeholder="Enter Note.."
                 multiline
                 numberOfLines={4}
-                onChangeText={(text) =>
-                  setFieldValue('notes', text)
-                }
+                onChangeText={text => setFieldValue('notes', text)}
                 returnKeyType="next"
+                style={styles.textInput}
               />
             </ScrollView>
           </Dialog.ScrollArea>
           <Dialog.Actions style={styles.actionView}>
             <Button
-              mode={"contained"}
-              color="#f47b4e"
+              mode={'contained'}
+              color="#909090"
               compact
               loading={loading}
-              disabled={(fetching || loading)}
+              disabled={fetching || loading}
+              style={{width: '45%', borderRadius: 2}}
               labelStyle={{color: '#fff'}}
-              onPress={hideDialog}
-            >
+              onPress={hideDialog}>
               Cancel
             </Button>
             <Button
-              mode={"contained"}
-              color="#4356fa"
+              mode={'contained'}
+              color="#1890ff"
               compact
               loading={loading}
-              disabled={(fetching || loading)}
+              disabled={fetching || loading}
               labelStyle={{color: '#fff'}}
-              onPress={onSubmit}
-            >
+              style={{width: '45%', borderRadius: 2}}
+              onPress={onSubmit}>
               Save
             </Button>
           </Dialog.Actions>
@@ -231,23 +237,38 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
         <RNDateTimePicker
           mode={dateTime['mode']}
           is24Hour={dateTime['is24Hour']}
+          minuteInterval={15}
           // display={dateTime['is24Hour']? 'spinner':'default'}
-          display={dateTime['key'] !== 'date' ? 'spinner' :'default'}
+          display={dateTime['key'] !== 'date' ? 'spinner' : 'default'}
           themeVariant="dark"
           value={
-            formData[dateTime['key']] ? 
-              dateTime['key'] !== 'date'?
-              moment(formData[dateTime['key']]).toDate()
-              :
-              formatDate(formData['date']).toDate()
+            formData[dateTime['key']]
+              ? dateTime['key'] !== 'date'
+                ? moment(formData[dateTime['key']]).toDate()
+                : formatDate(formData['date']).toDate()
               : new Date()
           }
           onChange={(event, dateValue) => {
-            if (event?.type === 'set' && dateValue){
+            if (event?.type === 'set' && dateValue) {
               setFieldValue(dateTime.key, dateValue);
             }
           }}
         />
+        // <DatePicker
+        //   visible={dateTime.open}
+        //   // selected={formData[dateTime['key']] ?
+        //   //   moment(formData[dateTime['key']]).toDate()
+        //   //   : new Date()
+        //   // }
+        //   mode={dateTime['mode']}
+        //   interval={15}
+        //   onDismiss={() => setdateTime(prev => ({...prev, open: false}))}
+        //   onTimeChange={selectedTime => {
+        //     console.log(selectedTime)
+        //     setFieldValue(dateTime.key, selectedTime)
+        //     // setdateTime(false);
+        //   }}
+        // />
       )}
     </Portal>
   );
@@ -297,7 +318,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   actionView: {
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
+    paddingHorizontal: 0,
+  },
+  subheading:{
+    paddingVertical: 10
   },
   divider: {
     marginVertical: 10,
@@ -318,11 +343,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalHeader: {
-    paddingVertical: 15,
+    paddingVertical: 5,
     paddingHorizontal: 10,
-    backgroundColor: '#4356fa',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    backgroundColor: '#1890ff',
+    justifyContent: 'space-between', 
+    flexDirection: 'row',
+    // borderTopLeftRadius: 20,
+    // borderTopRightRadius: 20,
     marginHorizontal: 0,
     marginTop: 0,
     marginVertical: 0,
@@ -345,6 +372,7 @@ const styles = StyleSheet.create({
     // padding: 0,
     // resize: 'none',
   },
+  textInput: {marginVertical: 2}
 });
 
 //======================HELPER=================

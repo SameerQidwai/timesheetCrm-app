@@ -37,8 +37,8 @@ function TabScreen () {
         tabBarInactiveTintColor: 'gray',
         tabBarIcon: ({ color, size }) => {
           const icons = {
-            TimesheetStack: 'calendar-blank',
-            Leave: 'clock-time-four-outline',
+            TimesheetStack: 'clock-time-four-outline',
+            Leave: 'calendar-blank-outline',
             Profile: 'cog',
           };
     

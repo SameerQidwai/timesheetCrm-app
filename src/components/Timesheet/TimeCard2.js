@@ -2,7 +2,7 @@
 import React, {useEffect} from 'react';
 import moment from 'moment';
 import { View , StyleSheet, Pressable } from 'react-native';
-import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline, TouchableRipple } from 'react-native-paper';
+import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline, TouchableRipple, IconButton } from 'react-native-paper';
 import { formatFloat, status_color } from '../../services/constant';
 import { ColView } from '../ConstantComponent';
 
@@ -20,11 +20,11 @@ export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
   return (
     <Card style={styles.card(selected)} elevation={5} mode="elevated">
       <TouchableRipple
-        onLongPress={onLongPress}
-        onPress={onPress}
+        onLongPress={!timeEntry.leaveRequest && onLongPress}
+        onPress={!timeEntry.leaveRequest && onPress}
         rippleColor="rgba(0, 0, 0, .32)">
         <Card.Content style={{paddingRight: 0}}>
-          {!timeEntry['leaveRequest'] ? (
+          {!timeEntry.leaveRequest ? (
             <ColView justify={'space-between'}>
               <View style={styles.detailView}>
                 <Text style={styles.headline}>{timeEntry.project}</Text>
@@ -67,7 +67,7 @@ export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
               </View>
               <View style={[styles.hourView, status_color[timeEntry.status]]}>
                 <Title style={{fontWeight: '900', color: statusColor}}>
-                  {timeEntry.totalHours}
+                  {formatFloat(timeEntry.hours)}
                 </Title>
                 <Subheading style={{color: statusColor}}>hours</Subheading>
               </View>
@@ -86,9 +86,10 @@ const styles = StyleSheet.create({
   },
   card: selectColor => ({
     borderRadius: 2,
-    margin: 10,
-    marginBottom: 0,
-    backgroundColor: selectColor ? '#727ef6b3' : 'white',
+    marginHorizontal: 10,
+    marginTop:0,
+    marginBottom: 10
+    // backgroundColor: selectColor ? '#727ef6b3' : 'white',
   }),
   detailView: {
     width: '75%', 

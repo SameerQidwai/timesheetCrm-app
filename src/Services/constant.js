@@ -11,12 +11,11 @@ export const status_color = StyleSheet.create({
     'SB': {backgroundColor :'#edf5ff', borderColor: '#8fb2eb', borderWidth: 0, color: '#476ba6' },
     'SV': {backgroundColor :'#f5f5f5', borderColor: '#c4c4c4', borderWidth: 0, color: '#c4c4c4' },
 })
-
 export const status_name = {
   'AP': 'Approved',
   'RJ': 'Rejected',
   'SB': 'Submitted',
-  'SV': 'Submitted'
+  'SV': ''
 }
 
 export const formatFloat = (number) => {

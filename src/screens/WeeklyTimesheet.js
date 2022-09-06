@@ -21,11 +21,10 @@ import { deleteTimeEntryApi, getTimesheetApi } from '../services/timesheet-api';
 import { AppContext } from '../context/AppContext';
 import { formatDate, formatFloat, newFormatDate } from '../services/constant';
 import DatePicker from '../components/DatePicker';
+import NoRecords from '../components/Common/NoRecords';
 // import DatePicker from 'react-native-modern-datepicker';
 
 const WeeklyTimesheet = ({route, navigation}) => {
-  // console.log('param',formatDate(route?.params?.sDate))
-  // console.log('new',formatDate(new Date()))
   const {appStorage,setAppStorage} = useContext(AppContext)
   const [timesheet, setTimesheet] = useState({timesheet_data: timesheet_data, total: 0, dailyHour: {}});
   const [openModal, setOpenModal] = useState({visible: false});
@@ -48,6 +47,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
         endDate: formatDate(date).endOf('month').format('DD-MM-YYYY'),
         userId: userId
     }
+    console.log(keys)
     try {
         let {success, data, setToken} = await getTimesheetApi(keys, accessToken)
         if(success){
@@ -66,8 +66,9 @@ const WeeklyTimesheet = ({route, navigation}) => {
   }
 
   const onDateChanged = (day, onDayChange) => {
-    // console.log(day, onDayChange)
+    console.log(day)
     day = formatDate(day, ['YYYY-MM-DD','YYYY/MM/DD'])
+    console.log({day, bol:day.isSame(sDate, 'month'),sDate})
     if (day.isSame(sDate, 'month')){
         setFetching(true)
         const {timesheet_data} = timesheet
@@ -81,13 +82,13 @@ const WeeklyTimesheet = ({route, navigation}) => {
       
     }else{
       // if(onDayChange === 'update'){
+        console.log('e;se')
         setFetching(true)
         getData(day)
         setDate(day);
       // }
     }
     
-    // console.log(timesheet_data[index])
   };
 
   const onMonthChange = useCallback(month => {
@@ -132,7 +133,8 @@ const WeeklyTimesheet = ({route, navigation}) => {
   const renderItem = ({item, index}) => {
     return (
         <TimeCard2 
-          timeEntry={item} selected={selected[item.entryId]} 
+          timeEntry={item} 
+          selected={selected[item.entryId]} 
           // onLongPress={() => onPressItem(item.entryId, true)}
           onPress={() => onPressItem(item.entryId, false, item, index)}
         />
@@ -146,7 +148,6 @@ const WeeklyTimesheet = ({route, navigation}) => {
       let { accessToken } = appStorage
       deleteTimeEntryApi(entryId, accessToken)
       .then(res=>{
-        console.log(res)
         if(res?.success){
           getData()
           setLongPress(false);
@@ -170,11 +171,12 @@ const WeeklyTimesheet = ({route, navigation}) => {
 
   const onSuccess = (data) =>{
     // getData()
-    setDate(formatDate(data.date, 'DD-MM-YYYY'))
+    // setDate(formatDate(data.date, 'DD-MM-YYYY'))
     setOpenModal({visible: false})
-    const {currItem, ...rest} = timesheet_update(data, timesheet, openModal)
-    setTimesheet({...rest})
-    setItems({title: currItem.title, data: [...currItem.data]})
+    getData(sDate)
+    // const {currItem, ...rest} = timesheet_update(data, timesheet, openModal)
+    // setTimesheet({...rest})
+    // setItems({title: currItem.title, data: [...currItem.data]})
   }
 
   
@@ -288,20 +290,19 @@ const WeeklyTimesheet = ({route, navigation}) => {
           )}
         />
         {items?.data.length >0 ?
-          <FlatList
-            data={items?.data ?? []}
-            renderItem={renderItem}
-            keyExtractor={item => item.entryId}
-            extraData={selected}
-            onRefresh={getData}
-            refreshing={fetching}
-          />
-          :
-          <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-            <IconButton icon="archive-cancel-outline" size={40}/>
-            <Headline>No Record Found</Headline>
-            <Text></Text>
+          <View style={{flex:1}}>
+            <FlatList
+              data={items?.data ?? []}
+              renderItem={renderItem}
+              keyExtractor={item => item.entryId}
+              extraData={selected}
+              onRefresh={getData}
+              refreshing={fetching}
+              style={{paddingVertical: 20}}
+            />
           </View>
+          :
+          <NoRecords/>
         }
       </CalendarProvider>
       {/* <FAB
@@ -312,42 +313,18 @@ const WeeklyTimesheet = ({route, navigation}) => {
         onPress={fabAction}
         // color={longPressed ? 'red' : 'green'}
       /> */}
-      {!longPressed ? <Button        
+      {!longPressed && <Button        
         mode="contained"
         uppercase={false}
         raised 
         color='#1890ff'
-        style={{
-            marginHorizontal: 15, 
-            // marginBottom:15,
-            marginVertical: 8,
-            borderRadius: 2,
-        }}
+        style={styles.bottomButton}
         size="large"
         disabled={fetching}
         onPress={fabAction}
       >
         Add Timesheet Entry
       </Button>
-      :
-        <Button        
-          mode="contained"
-          uppercase={false}
-          raised 
-          color="#ff4d4f"
-          labelStyle={{color: '#fff'}}
-          style={{
-              marginHorizontal: 15, 
-              // marginBottom:15,
-              marginVertical: 10,
-              borderRadius: 2,
-          }}
-          size="large"
-          disabled={fetching}
-          // onPress={()=>actionTimeSheet('Add')}
-        >
-          Delete Timesheet Entry
-        </Button>
         }
       {openModal['visible'] && (
         <TimeEntryModal
@@ -423,6 +400,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: pressed ? 'red' : '#f8a587',
   }),
+  bottomButton:{
+    marginHorizontal: 15, 
+    // marginBottom:15,
+    marginVertical: 8,
+    borderRadius: 2,
+}
 });
 
 
@@ -434,7 +417,6 @@ function useRegex(input) {
 }
 
 function restructure (data, date) {
-  console.log(data)
   let year = moment(date).format('YYYY')
   let date_index = {}
   let daily_totalHour ={}
@@ -448,7 +430,6 @@ function restructure (data, date) {
         if (useRegex(key)){
             let keySplit = key.split('/')
             let newKey = formatDate(`${year}-${keySplit[1]}-${keySplit[0]}`, 'YYYY-M-D', true)
-            console.log(newKey)
             if (el.leaveRequest){
               value = {
                 ...value,
@@ -475,7 +456,6 @@ function restructure (data, date) {
             }
             
             if (date_index[newKey] >= 0){
-              console.log(date_index[newKey], newKey)
               if(!el.leaveRequest){
                 newData[date_index[newKey]]['data'].push(value)
                 daily_totalHour[newKey] += value['actualHours']
@@ -484,7 +464,6 @@ function restructure (data, date) {
                 newData[date_index[newKey]]['data'].push(value)
               }
             }else{
-              console.log(date_index[newKey], newKey, 'NotFound')
               if(!el.leaveRequest){
                 date_index[newKey] = count
                 newData.push({title: newKey, data: [value]})
@@ -500,7 +479,6 @@ function restructure (data, date) {
         }
     })
   })
-  console.log(newData)
   if (date_index[formatDate(date, false, true)] >=0){
     currItem = newData[date_index[formatDate(date, false, true)]] ?? {}
   } 
@@ -558,7 +536,6 @@ function timesheet_update (data, timesheet, openModal){
       }
     }
   })
-  console.log(updateTimesheet)
   if (!added){ // if timesheet is not found
     currItem = {title: addDate, data:[data]}
     updateTimesheet = [currItem]

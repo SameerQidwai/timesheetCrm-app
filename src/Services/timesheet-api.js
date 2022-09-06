@@ -31,6 +31,7 @@ export const reviewTimeSheet = (keys, stage, data, token) => {
             return {success, data, setToken};
         })
         .catch((err) => {
+            console.log(err)
             return {
                 error: "Please login again!",
                 status: false,
@@ -40,8 +41,6 @@ export const reviewTimeSheet = (keys, stage, data, token) => {
 };
 
 export const addTimeEntryApi = (keys ,data, token) => {
-    console.log(`${keys.startDate}&${keys.endDate}&${keys.userId}`)
-    console.log(data)
     return axios
         .post(url +`${keys.startDate}&${keys.endDate}&${keys.userId}`, data, {headers:headers(token)})
         .then((res) => {

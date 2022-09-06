@@ -84,3 +84,47 @@
     }
     }}
 />}
+
+
+//select UnSelect 
+{<View style={{justifyContent:'flex-end', flexDirection: 'row', marginHorizontal: 10}}>
+    {!longPressed ?<Button
+        compact
+        uppercase={false}
+        labelStyle={{marginVertical:2, marginHorizontal: 2}}
+        onPress={()=>setLongPress(true)}
+      >
+        Select
+      </Button>
+    :
+      <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
+        <Button 
+          compact
+          uppercase={false}
+          labelStyle={{marginVertical:2, marginHorizontal: 2}}
+          onPress={()=>setLongPress(false)}
+        >
+          Unselect
+        </Button>
+        {/* <Button 
+          compact
+          uppercase={false}
+          
+          labelStyle={{marginVertical:2}}
+        >
+          Select All
+        </Button> */}
+      </View>
+    }
+  </View>}
+
+// BackGound Imag
+
+<ImageBackground 
+            source={require('../../assets/images/Z-avatar.png')} 
+            resizeMode="contain" 
+            style={ {
+                flex: 1,
+                justifyContent: "center"
+            }}
+></ImageBackground>

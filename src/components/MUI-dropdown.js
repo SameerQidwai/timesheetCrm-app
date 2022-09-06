@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { TextInput } from 'react-native-paper';
 
-const MDropDown =({value, data, placeholder, onSelect, inputStyle, label, zIndex, zIndexInverse,schema, disabled}) =>{
+const MDropDown =({value, data, placeholder, onSelect, inputStyle, label, zIndex, zIndexInverse,dense ,schema, disabled}) =>{
     schema = schema?? { label: 'label',  value: 'value'}
     const [open, setOpen] = useState(false);
     const [select, setSelect] = useState(value);
@@ -28,6 +28,8 @@ const MDropDown =({value, data, placeholder, onSelect, inputStyle, label, zIndex
                 value={valueLabel}
                 mode="outlined"
                 label={label}
+                dense={dense}
+                activeOutlineColor="#909090"
                 placeholder={placeholder}
                 disabled={disabled}
                 showSoftInputOnFocus={false}
