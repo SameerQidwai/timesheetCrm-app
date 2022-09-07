@@ -2,7 +2,7 @@ import React from 'react';
 import { View , StyleSheet, Pressable} from 'react-native';
 import {Card, Headline, Subheading, Title, Caption, Text, TouchableRipple, IconButton } from 'react-native-paper';
 import { formatFloat, status_color, status_name } from '../../services/constant';
-import { ColView } from '../ConstantComponent';
+import { ColView } from '../Common/ConstantComponent';
 
 const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
     const statusColor = status_color[timesheet.status]?.['color'] ?? '#476ba6'

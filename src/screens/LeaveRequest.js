@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, View, VirtualizedList } from "react-native";
 import { Caption, Card, FAB, Headline, Paragraph, Subheading, Text, Title } from "react-native-paper";
 import { leave_request, leave_request_balance } from "../../assets/constant";
-import { ColView } from "../components/ConstantComponent";
+import { ColView } from "../components/Common/ConstantComponent";
 import LeaveBalance from "../components/Leave/LeaveBalance";
 import LeaveRequestModal from "../components/Modals/LeaveRequestModal";
 import { AppContext } from "../context/AppContext";

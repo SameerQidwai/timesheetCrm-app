@@ -22,9 +22,9 @@ LeaveRequest
 project
     //hour detail :  full innerHeight
     //status: show
-    select on corner_of card
-    select all, unselect all, 
-    in card select overlay
+    //select on corner_of card
+    //select all, unselect all, 
+    //in card select overlay
     //buttons as mock 
     //card border raduis 2
     //header height
@@ -35,8 +35,8 @@ project
 week
     //Modal header same as tiese
     //hour detail :  full innerHeight
-    select on corner_of card
-    select all, unselect all, 
+    //select on corner_of card
+    //select all, unselect all, 
     //buttons as mock 
     //card border raduis 2
     //header height
@@ -45,7 +45,7 @@ week
     //in card select overlay
     //month disable
     //date render on weekScroll"
-    
+
 
     //new
         space after milestone when viewing the variable

@@ -119,7 +119,7 @@
   </View>}
 
 // BackGound Imag
-
+{
 <ImageBackground 
             source={require('../../assets/images/Z-avatar.png')} 
             resizeMode="contain" 
@@ -128,3 +128,80 @@
                 justifyContent: "center"
             }}
 ></ImageBackground>
+}
+
+
+//WeeklyTimeSheet Flat List
+{<View style={styles.pageView}>
+  <FlatList
+    data={timesheets?.['data']?.['milestones'] ?? []}
+    // data={projects_timesheet?? []}
+    renderItem={renderItem}
+    keyExtractor={(item, index) => index}
+    extraData={selected}
+    onRefresh={getData}
+    refreshing={fetching}
+    ListEmptyComponent={<NoRecords waiting={fetching} />}
+    ListHeaderComponent={
+      timesheets?.['data']?.['milestones']?.length > 0 && (
+        <View
+          style={{
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+            marginHorizontal: 10,
+            marginTop: 7,
+          }}>
+          {!longPressed ? (
+            <Button
+              mode="outlined"
+              compact
+              uppercase={false}
+              color="#1890ff"
+              labelStyle={{
+                marginVertical: 2,
+                marginHorizontal: 5,
+                fontWeight: 'normal',
+              }}
+              onPress={() => setLongPress(true)}>
+              Select
+            </Button>
+          ) : (
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+              }}>
+              <Button
+                mode="outlined"
+                compact
+                uppercase={false}
+                color="#1890ff"
+                labelStyle={{
+                  marginVertical: 2,
+                  marginHorizontal: 5,
+                  fontWeight: 'normal',
+                }}
+                onPress={onSelectAll}>
+                Select All
+              </Button>
+              <Button
+                mode="outlined"
+                compact
+                uppercase={false}
+                color="#1890ff"
+                labelStyle={{
+                  marginVertical: 2,
+                  marginHorizontal: 5,
+                  fontWeight: 'normal',
+                }}
+                onPress={onUnselectAll}>
+                Cancel
+              </Button>
+            </View>
+          )}
+        </View>
+      )
+    }
+  />
+</View>;}

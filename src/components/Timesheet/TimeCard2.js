@@ -4,7 +4,7 @@ import moment from 'moment';
 import { View , StyleSheet, Pressable } from 'react-native';
 import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline, TouchableRipple, IconButton } from 'react-native-paper';
 import { formatFloat, status_color } from '../../services/constant';
-import { ColView } from '../ConstantComponent';
+import { ColView } from '../Common/ConstantComponent';
 
 export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
   const statusColor = status_color[timeEntry.status]?.['color'] ?? '#476ba6'

@@ -30,10 +30,10 @@ const Tab = createBottomTabNavigator();
 function TabScreen () {
   return (
     <Tab.Navigator 
-      screenOptions={({ route }) => ({
+      screenOptions={({ route, navigation }) => ({
         headerShown: false, 
         tabBarShowLabel:false,
-        // tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: '#1890ff',
         tabBarInactiveTintColor: 'gray',
         tabBarIcon: ({ color, size }) => {
           const icons = {
@@ -43,11 +43,14 @@ function TabScreen () {
           };
     
           return (
-            <IconButton
-              icon={icons[route.name]}
-              color={color}
-              size={size}
-            />
+            <View>
+              <IconButton
+                icon={icons[route.name]}
+                color={color}
+                size={size}
+                onPress={()=> navigation.navigate(route.name)}
+              />
+            </View>
           );
         },
       })}

@@ -15,13 +15,14 @@ import moment from 'moment';
 import TimeCard2 from '../components/Timesheet/TimeCard2';
 import TimeEntryModal from '../components/Modals/TimeEntryModal';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { RenderDay } from '../components/ConstantComponent';
+import { RenderDay } from '../components/Common/ConstantComponent';
 import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
 import { deleteTimeEntryApi, getTimesheetApi } from '../services/timesheet-api';
 import { AppContext } from '../context/AppContext';
-import { formatDate, formatFloat, newFormatDate } from '../services/constant';
-import DatePicker from '../components/DatePicker';
+import { formatDate, formatFloat } from '../services/constant';
+import DatePicker from '../components/Common/DatePicker';
 import NoRecords from '../components/Common/NoRecords';
+import Actions from '../components/Common/Actions';
 // import DatePicker from 'react-native-modern-datepicker';
 
 const WeeklyTimesheet = ({route, navigation}) => {
@@ -31,9 +32,10 @@ const WeeklyTimesheet = ({route, navigation}) => {
   const [dateTime, setdateTime] = useState(false);
   const [sDate, setDate] = useState(formatDate(route?.params?.sDate) ??formatDate(new Date()));
   const [items, setItems] = useState({title: '', data: []});
-  const [selected, setSelected] = useState({});
+  const [selected, setSelected] = useState(false);
   const [longPressed, setLongPress] = useState(false);
-  const [fetching, setFetching] = useState(false)
+  const [fetching, setFetching] = useState(true)
+  const [action, setAction] = useState(true)
 
   useEffect(() => {
     getData(sDate)
@@ -47,7 +49,6 @@ const WeeklyTimesheet = ({route, navigation}) => {
         endDate: formatDate(date).endOf('month').format('DD-MM-YYYY'),
         userId: userId
     }
-    console.log(keys)
     try {
         let {success, data, setToken} = await getTimesheetApi(keys, accessToken)
         if(success){
@@ -66,10 +67,10 @@ const WeeklyTimesheet = ({route, navigation}) => {
   }
 
   const onDateChanged = (day, onDayChange) => {
-    console.log(day)
-    day = formatDate(day, ['YYYY-MM-DD','YYYY/MM/DD'])
-    console.log({day, bol:day.isSame(sDate, 'month'),sDate})
-    if (day.isSame(sDate, 'month')){
+   
+    if (onDayChange !== 'weekScroll'){
+      day = formatDate(day, ['YYYY-MM-DD','YYYY/MM/DD'])
+      if (day.isSame(sDate, 'month')){
         setFetching(true)
         const {timesheet_data} = timesheet
         let entries = timesheet_data.find(el => el.title === formatDate(day, false, true) )?? {title: day, data: []}
@@ -79,16 +80,17 @@ const WeeklyTimesheet = ({route, navigation}) => {
         setTimeout(() => {
           setFetching(false)
         }, 500);
-      
+      }else{
+        // if(onDayChange === 'update'){
+          getData(day)
+          setDate(day);
+        // }
+      }
     }else{
-      // if(onDayChange === 'update'){
-        console.log('e;se')
-        setFetching(true)
-        getData(day)
-        setDate(day);
-      // }
+      // console.log(day, onDayChange, 'what', sDate.format('YYYY-MM-DD'))
+      // day = formatDate(day, ['YYYY-MM-DD','YYYY/MM/DD'])
+      // console.log({day, bol:day.isSame(sDate, 'month'),sDate})
     }
-    
   };
 
   const onMonthChange = useCallback(month => {
@@ -97,37 +99,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
   }, []);
 
   const onPressItem = (key, long, item, index) => {
-    let newSelected = selected;
-    let selectedItems = Object.keys(selected).length;
-    if (longPressed && selectedItems > 0) {
-      if (newSelected[key]) {
-        delete newSelected[key];
-        if (selectedItems === 1) {
-          setLongPress(false);
-        }
-      } else {
-        newSelected= {[key]: true}
-      }
-      setSelected({...newSelected});
-    }
-    if (!long && selectedItems === 0) {
-      let duration = moment.duration(item['breakHours'], 'hours')
-      setOpenModal({
-        visible: true, 
-        index,
-        entryData: {
-          ...item,
-          date: sDate,
-          startTime: moment(item['startTime'], ["HH:mm"]), 
-          endTime: moment(item['endTime'], ["HH:mm"]), 
-          breakHours: duration ? moment().hours(duration.hours()).minutes(duration.minutes()): new Date ().setHours(0, 0, 0, 0)
-        }, 
-      });
-    }
-    // if (long && selectedItems === 0) {
-    //   setSelected({[key]: true});
-    //   setLongPress(true);
-    // }
+      setSelected({...item, listIndex: index});
   };
 
   const renderItem = ({item, index}) => {
@@ -141,44 +113,62 @@ const WeeklyTimesheet = ({route, navigation}) => {
     );
   }
 
-  const fabAction = () =>{
-    if (longPressed) {
-      setFetching(true)
-      let entryId = Object.keys(selected)[0]
-      let { accessToken } = appStorage
-      deleteTimeEntryApi(entryId, accessToken)
-      .then(res=>{
-        if(res?.success){
-          getData()
-          setLongPress(false);
-          setSelected({});
-          // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
-        }
-      })
-      
-    } else {
-      setOpenModal({
-        visible: !openModal['visible'], 
-        entryData: {
-          date: moment(sDate).utcOffset(0, true), 
-          startTime: moment('9:00', ["HH:mm"]), 
-          endTime: moment('18:00', ["HH:mm"]),
-          breakHours: new Date ().setHours(0, 0, 0, 0)
-        }
-      });
-    }
+  const onNewEntry = () =>{
+    setOpenModal({
+      visible: !openModal['visible'], 
+      entryData: {
+        date: moment(sDate).utcOffset(0, true), 
+        startTime: moment('9:00', ["HH:mm"]), 
+        endTime: moment('18:00', ["HH:mm"]),
+        breakHours: new Date ().setHours(0, 0, 0, 0)
+      }
+    });
+  }
+
+  const onDelete = (entryId) =>{
+    setFetching(true)
+    let { accessToken } = appStorage
+    deleteTimeEntryApi(entryId, accessToken)
+    .then(res=>{
+      if(res?.success){
+        getData()
+        setLongPress(false);
+        setSelected(false);
+        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+      }
+    })
+  }
+
+  const onView = (item) =>{
+    let duration = moment.duration(item['breakHours'], 'hours')
+    setSelected(false);
+    setOpenModal({
+      visible: true, 
+      index: item.listIndex,
+      entryData: {
+        ...item,
+        date: sDate,
+        startTime: moment(item['startTime'], ["HH:mm"]), 
+        endTime: moment(item['endTime'], ["HH:mm"]), 
+        breakHours: duration ? moment().hours(duration.hours()).minutes(duration.minutes()): new Date ().setHours(0, 0, 0, 0)
+      }, 
+    })
   }
 
   const onSuccess = (data) =>{
     // getData()
     // setDate(formatDate(data.date, 'DD-MM-YYYY'))
     setOpenModal({visible: false})
+    setSelected(false)
     getData(sDate)
     // const {currItem, ...rest} = timesheet_update(data, timesheet, openModal)
     // setTimesheet({...rest})
     // setItems({title: currItem.title, data: [...currItem.data]})
   }
-
+  //To avoid selecting multiple entries aganist single milestones
+  const gettingCreatedMilestones = () =>{
+    return items?.data.map(el => el.milestoneId)
+  }
   
   return (
     <View style={styles.pageView}>
@@ -264,7 +254,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
           pastScrollRange={0}
           futureScrollRange={0}
           disableMonthChange={true}
-          enableSwipeMonths={true}
+          enableSwipeMonths={false}
           // hideExtraDays={true}
           /** Extra testing */
 
@@ -302,18 +292,10 @@ const WeeklyTimesheet = ({route, navigation}) => {
             />
           </View>
           :
-          <NoRecords/>
+          <NoRecords waiting={fetching}/>
         }
       </CalendarProvider>
-      {/* <FAB
-        style={styles.fab(longPressed)}
-        icon={longPressed ? 'delete' : 'plus'}
-        disabled={fetching}
-        size="large"
-        onPress={fabAction}
-        // color={longPressed ? 'red' : 'green'}
-      /> */}
-      {!longPressed && <Button        
+      <Button        
         mode="contained"
         uppercase={false}
         raised 
@@ -321,11 +303,10 @@ const WeeklyTimesheet = ({route, navigation}) => {
         style={styles.bottomButton}
         size="large"
         disabled={fetching}
-        onPress={fabAction}
+        onPress={onNewEntry}
       >
         Add Timesheet Entry
       </Button>
-        }
       {openModal['visible'] && (
         <TimeEntryModal
           visible={openModal['visible']}
@@ -334,6 +315,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
           data={openModal['entryData']}
           edit={openModal['index']} //checking if oPress on existing entry
           onClose={() => setOpenModal({visible: false})}
+          disabledKeys={gettingCreatedMilestones()}
         />
       )}
       {dateTime && (
@@ -348,6 +330,13 @@ const WeeklyTimesheet = ({route, navigation}) => {
           }}
         />
       )}
+      {selected &&<Actions 
+        visible={selected} 
+        onDismiss={()=>setSelected(false)}
+        onOption1={onView}
+        onOption2={onDelete}
+        select={selected}
+      />}
     </View>
   );
 };

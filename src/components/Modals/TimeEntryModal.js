@@ -6,18 +6,20 @@ import {Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import { addTimeEntryApi, editTimeEntryApi } from '../../services/timesheet-api';
 import { userMilestonesApi } from '../../services/constant-api';
 import { AppContext } from '../../context/AppContext';
-import MDropDown from '../MUI-dropdown';
+import MDropDown from '../Common/MUI-dropdown';
 import { formatDate } from '../../services/constant';
-import DatePicker from '../DatePicker';
-import { ColView } from '../ConstantComponent';
 
-export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => {
+export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disabledKeys}) => {
   const { appStorage, setAppStorage } = useContext( AppContext )
   const [modalVisible, setModalVisible] = useState(visible);
   const [dateTime, setdateTime] = useState({ open: false, key: '', mode: 'date', });
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [formData, setFormData] = useState(data);
+  const [MILESTONES, setMILESTONES] = useState([])
+  
+  //defualt Value
+  let disable = edit && data['status'] !== 'SV'
 
   useEffect(() => {
     
@@ -27,10 +29,23 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
       const {success, data, setToken} = res
       if(success){
         setAppStorage(prev=> ({...prev, accessToken: setToken}))
+        setMILESTONES(enableMilestones(data))
         setFetching(false)
       }
     })
   }, [])
+
+  const enableMilestones = (data) =>{
+    if(disabledKeys?.length >0){
+      return data.map(el => {
+        if (disabledKeys.includes(el.value)){
+          el['disabled'] = true   
+        }
+        return el
+      })
+    }
+    return data
+  }
 
   const openDateTime = (open, key, mode, is24Hour) => {
     setdateTime({open, key, mode, is24Hour});
@@ -138,7 +153,8 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
                 dense
                 label="Projects"
                 value={formData['milestoneId']}
-                data={[{label: 'Non-Project Hours', value: 15}]}
+                disabled={disable}
+                data={MILESTONES}
                 onSelect={item => {
                   setFieldValue('milestoneId', item.value);
                 }}
@@ -147,6 +163,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
                 value={formData['startTime'].format('LT')}
                 mode="outlined"
                 activeOutlineColor="#909090"
+                disabled={disable}
                 label="Start Time"
                 placeholder="Set Time"
                 keyboardType="decimal-pad"
@@ -162,6 +179,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
               />
               <TextInput
                 value={formData['endTime'].format('LT')}
+                disabled={disable}
                 mode="outlined"
                 dense
                 activeOutlineColor="#909090"
@@ -178,6 +196,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
               />
               <TextInput
                 value={getBreakTime(formData['breakHours'])}
+                disabled={disable}
                 mode="outlined"
                 dense
                 activeOutlineColor="#909090"
@@ -194,6 +213,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
               />
               <TextInput
                 value={formData['notes']}
+                disabled={disable}
                 dense
                 activeOutlineColor="#909090"
                 mode="outlined"
@@ -213,7 +233,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
               color="#909090"
               compact
               loading={loading}
-              disabled={fetching || loading}
+              disabled={fetching || loading }
               style={{width: '45%', borderRadius: 2}}
               labelStyle={{color: '#fff'}}
               onPress={hideDialog}>
@@ -224,7 +244,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit}) => 
               color="#1890ff"
               compact
               loading={loading}
-              disabled={fetching || loading}
+              disabled={fetching || loading || disable}
               labelStyle={{color: '#fff'}}
               style={{width: '45%', borderRadius: 2}}
               onPress={onSubmit}>
@@ -328,7 +348,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   buttonOpen: {
-    backgroundColor: '#4356fa',
+    backgroundColor: '#1890ff',
   },
   buttonClose: {
     backgroundColor: '#f47b4e',

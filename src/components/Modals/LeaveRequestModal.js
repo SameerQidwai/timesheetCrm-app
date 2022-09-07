@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Dialog, Portal, TextInput } from 'react-native-paper'
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MDropDown from '../MUI-dropdown';
+import MDropDown from '../Common/MUI-dropdown';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
 import { addLeaveApi, editLeaveApi, getLeaveApi, getUserLeaveType } from '../../services/leaveRequest-api';
@@ -280,7 +280,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           <Button
             mode={"contained"}
             loading={loading}
-            color="#f47b4e"
+            color="#1890ff"
             disabled={(fetching|| loading)}
             compact
             labelStyle={{color: (loading) ? '#000' :'#fff'}}
@@ -290,7 +290,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           <Button
             mode={ "contained"}
             loading={loading}
-            color="#4356fa"
+            color=""
             disabled={(fetching|| loading)}
             compact
             labelStyle={{color: (loading|| fetching) ? '#000' :'#fff'}}
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
     modalHeader: {
       paddingVertical: 15,
       paddingHorizontal: 10,
-      backgroundColor: '#4356fa',
+      backgroundColor: '#1890ff',
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       marginHorizontal: 0,
