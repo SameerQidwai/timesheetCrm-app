@@ -5,7 +5,7 @@ import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline, Touc
 import { formatFloat, status_color } from '../../services/constant';
 import { ColView } from '../Common/ConstantComponent';
 
-export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
+export default TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
   const statusColor = status_color[timeEntry.status]?.['color'] ?? '#476ba6'
   useEffect(() => {
       // console.log(selected)

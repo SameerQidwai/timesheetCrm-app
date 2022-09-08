@@ -10,20 +10,19 @@ import React, {useState, useCallback, useEffect, useContext} from 'react';
 import {View, StyleSheet, FlatList, Pressable} from 'react-native';
 import { Appbar, Button, Caption, FAB, Headline, IconButton, List, Text, Title, TouchableRipple, } from 'react-native-paper';
 import {CalendarProvider, WeekCalendar} from 'react-native-calendars';
-import {lightThemeColor} from '../theme';
 import moment from 'moment';
-import TimeCard2 from '../components/Timesheet/TimeCard2';
-import TimeEntryModal from '../components/Modals/TimeEntryModal';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {RenderDay} from '../components/Common/ConstantComponent';
-import {timesheet_dailyhours, timesheet_data} from '../../assets/constant';
-import {deleteTimeEntryApi, getTimesheetApi} from '../services/timesheet-api';
-import {AppContext} from '../context/AppContext';
-import {formatDate, formatFloat} from '../services/constant';
-import DatePicker from '../components/Common/DatePicker';
-import NoRecords from '../components/Common/NoRecords';
-import Actions from '../components/Common/Actions';
-import Confirm from '../components/Common/Confirm';
+import TimeCard2 from '../../components/Cards/TimeCard';
+import TimeEntryModal from '../../components/Modals/TimeEntryModal';
+import {RenderDay} from '../../components/Common/ConstantComponent';
+import {timesheet_dailyhours, timesheet_data} from '../../../assets/constant';
+import {deleteTimeEntryApi, getTimesheetApi} from '../../services/timesheet-api';
+import {AppContext} from '../../context/AppContext';
+import {formatDate, formatFloat} from '../../services/constant';
+import DatePicker from '../../components/Common/DatePicker';
+import NoRecords from '../../components/Common/NoRecords';
+import Actions from '../../components/Common/Actions';
+import Confirm from '../../components/Common/Confirm';
+import { colors } from '../../components/Common/theme';
 // import DatePicker from 'react-native-modern-datepicker';
 
 const WeeklyTimesheet = ({route, navigation}) => {
@@ -302,7 +301,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
               renderItem={renderItem}
               keyExtractor={item => item.entryId}
               extraData={selected}
-              onRefresh={getData}
+              onRefresh={()=>getData(sDate)}
               refreshing={fetching}
               style={{paddingBottom: 10}}
             />
@@ -315,7 +314,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
         mode="contained"
         uppercase={false}
         raised
-        color="#1890ff"
+        color={colors['primary']}
         style={styles.bottomButton}
         size="large"
         disabled={fetching}
@@ -372,11 +371,11 @@ export default WeeklyTimesheet;
 const styles = StyleSheet.create({
   pageView: {
     flex: 1,
-    backgroundColor: '#f6f4f1',
+    backgroundColor: colors['display'],
   },
   containerView: {
     flexDirection: 'row',
-    backgroundColor: '#1890ff',
+    backgroundColor: colors['primary'],
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
@@ -404,7 +403,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   section: {
-    backgroundColor: lightThemeColor,
+    backgroundColor: '#f2f7f7',
     color: 'grey',
     textTransform: 'capitalize',
   },
@@ -439,6 +438,7 @@ function restructure(data, date) {
   let leaveData = [];
   let currItem = {data: []};
   let count = 0;
+  console.log(data['milestones'])
   data['milestones'].forEach((el, p_index) => {
     Object.entries(el).forEach(([key, value], e_index) => {
       if (useRegex(key)) {
@@ -468,12 +468,10 @@ function restructure(data, date) {
             milestoneEntryId: el['milestoneEntryId'],
           };
         }
-
         if (date_index[newKey] >= 0) {
           if (!el.leaveRequest) {
             newData[date_index[newKey]]['data'].push(value);
             daily_totalHour[newKey] += value['actualHours'];
-            grandTotal += el['totalHours'];
           } else {
             newData[date_index[newKey]]['data'].push(value);
           }
@@ -482,7 +480,6 @@ function restructure(data, date) {
             date_index[newKey] = count;
             newData.push({title: newKey, data: [value]});
             daily_totalHour[newKey] = value['actualHours'];
-            grandTotal = el['totalHours'];
             count++;
           } else {
             date_index[newKey] = count;
@@ -492,10 +489,15 @@ function restructure(data, date) {
         }
       }
     });
+    //For Total Hours in Month
+    if (!el.leaveRequest){
+      grandTotal += el['totalHours'];
+    }
   });
   if (date_index[formatDate(date, false, true)] >= 0) {
     currItem = newData[date_index[formatDate(date, false, true)]] ?? {};
   }
+  console.log(grandTotal)
 
   return {daily_totalHour, grandTotal, newData, currItem};
 }

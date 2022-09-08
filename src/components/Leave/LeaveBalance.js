@@ -3,6 +3,7 @@ import { FlatList, ScrollView, StyleSheet, View } from 'react-native'
 import { Card, Subheading, Text } from 'react-native-paper'
 import { leave_request_balance } from '../../../assets/constant'
 import { formatFloat } from '../../services/constant'
+import { colors } from '../Common/theme'
 
 
 export default LeaveBalance= ({leave_balnce})=> {
@@ -46,7 +47,7 @@ export default LeaveBalance= ({leave_balnce})=> {
 
     return (
         <View>
-            <Subheading style={{paddingLeft:10, color: 'grey'}}>Leave Balance</Subheading>
+            <Subheading style={{paddingLeft:10, color: colors['light']}}>Leave Balance</Subheading>
             <FlatList
                 horizontal
                 data={Leave_Balance}

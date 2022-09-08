@@ -1,13 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Dialog, TextInput, Portal, Button, Title, IconButton, Text, Subheading, } from 'react-native-paper';
+import { Dialog, Portal, Button, Title, IconButton, Text, Subheading, } from 'react-native-paper';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import { addTimeEntryApi, editTimeEntryApi } from '../../services/timesheet-api';
 import { userMilestonesApi } from '../../services/constant-api';
 import { AppContext } from '../../context/AppContext';
-import MDropDown from '../Common/MUI-dropdown';
 import { formatDate } from '../../services/constant';
+import { TextField, MDropDown } from '../Common/InputFields';
+import { colors } from '../Common/theme';
 
 export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disabledKeys}) => {
   const { appStorage, setAppStorage } = useContext( AppContext )
@@ -150,7 +151,6 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
             <ScrollView>
               <MDropDown
                 placeholder={'Select Project...'}
-                dense
                 label="Projects"
                 value={formData['milestoneId']}
                 disabled={disable}
@@ -159,15 +159,12 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
                   setFieldValue('milestoneId', item.value);
                 }}
               />
-              <TextInput
+              <TextField
                 value={formData['startTime'].format('LT')}
-                mode="outlined"
-                activeOutlineColor="#909090"
                 disabled={disable}
                 label="Start Time"
                 placeholder="Set Time"
                 keyboardType="decimal-pad"
-                dense
                 onFocus={() => {
                   openDateTime(true, 'startTime', 'time');
                 }}
@@ -175,14 +172,10 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
                   openDateTime(true, 'startTime', 'time');
                 }}
                 showSoftInputOnFocus={false}
-                style={styles.textInput}
               />
-              <TextInput
+              <TextField
                 value={formData['endTime'].format('LT')}
                 disabled={disable}
-                mode="outlined"
-                dense
-                activeOutlineColor="#909090"
                 label="End Time"
                 placeholder="Set Time"
                 onFocus={() => {
@@ -192,14 +185,10 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
                   openDateTime(true, 'endTime', 'time');
                 }}
                 showSoftInputOnFocus={false}
-                style={styles.textInput}
               />
-              <TextInput
+              <TextField
                 value={getBreakTime(formData['breakHours'])}
                 disabled={disable}
-                mode="outlined"
-                dense
-                activeOutlineColor="#909090"
                 label="Break Hours"
                 placeholder="set hours"
                 onFocus={() => {
@@ -209,28 +198,23 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
                   openDateTime(true, 'breakHours', 'time', true);
                 }}
                 showSoftInputOnFocus={false}
-                style={styles.textInput}
               />
-              <TextInput
+              <TextField
                 value={formData['notes']}
                 disabled={disable}
-                dense
-                activeOutlineColor="#909090"
                 mode="outlined"
                 label="Notes"
                 placeholder="Enter Note.."
-                multiline
-                numberOfLines={4}
+                textarea
                 onChangeText={text => setFieldValue('notes', text)}
                 returnKeyType="next"
-                style={styles.textInput}
               />
             </ScrollView>
           </Dialog.ScrollArea>
           <Dialog.Actions style={styles.actionView}>
             <Button
               mode={'contained'}
-              color="#909090"
+              color={colors['light']}
               compact
               loading={loading}
               disabled={fetching || loading }
@@ -241,7 +225,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
             </Button>
             <Button
               mode={'contained'}
-              color="#1890ff"
+              color={colors['primary']}
               compact
               loading={loading}
               disabled={fetching || loading || disable}
@@ -347,12 +331,6 @@ const styles = StyleSheet.create({
   divider: {
     marginVertical: 10,
   },
-  buttonOpen: {
-    backgroundColor: '#1890ff',
-  },
-  buttonClose: {
-    backgroundColor: '#f47b4e',
-  },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
@@ -365,7 +343,7 @@ const styles = StyleSheet.create({
   modalHeader: {
     paddingVertical: 5,
     paddingHorizontal: 10,
-    backgroundColor: '#1890ff',
+    backgroundColor: colors['primary'],
     justifyContent: 'space-between', 
     flexDirection: 'row',
     // borderTopLeftRadius: 20,
@@ -381,18 +359,6 @@ const styles = StyleSheet.create({
   bText: {
     color: '#fff',
   },
-  select: {
-    // appearance: 'none',
-    // backgroundColor: '#fff',
-    // borderRadius: 0,
-    // border: '0px solid black',
-    // boxSizing: 'border-box',
-    // font: 14,
-    // margin: 0,
-    // padding: 0,
-    // resize: 'none',
-  },
-  textInput: {marginVertical: 2}
 });
 
 //======================HELPER=================

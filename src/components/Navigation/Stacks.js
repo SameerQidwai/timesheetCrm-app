@@ -4,11 +4,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { IconButton } from 'react-native-paper';
 import { View } from 'react-native';
 import Login from '../../screens/Login';
-import WeeklyTimesheet from '../../screens/WeeklyTimesheet';
+import WeeklyTimesheet from '../../screens/Timesheet/WeeklyTimesheet';
 import Profile from '../../screens/Profile';
 import LeaveRequest from '../../screens/LeaveRequest';
-import MonthlyTimesheet from '../../screens/MonthlyTimesheet';
+import MonthlyTimesheet from '../../screens/Timesheet/MonthlyTimesheet';
 import { AppContext } from '../../context/AppContext';
+import { colors } from '../Common/theme';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,8 +34,16 @@ function TabScreen () {
       screenOptions={({ route, navigation }) => ({
         headerShown: false, 
         tabBarShowLabel:false,
-        tabBarActiveTintColor: '#1890ff',
+       
+        tabBarActiveTintColor: '#fff',
+        tabBarActiveBackgroundColor: colors['primary'],
+       
+        // tabBarInactiveBackgroundColor
         tabBarInactiveTintColor: 'gray',
+       
+        tabBarItemStyle: { borderColor: colors['light'], borderWidth: 1},
+        // tabBarStyle: {}
+        tabBarHideOnKeyboard: true,
         tabBarIcon: ({ color, size }) => {
           const icons = {
             TimesheetStack: 'clock-time-four-outline',

@@ -7,7 +7,7 @@ function NoRecords({waiting}) {
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
         {waiting?
             // <Button style={{width: 100, height:100}} disabled loading />
-            <ActivityIndicator size="large" color="#909090" />
+            <ActivityIndicator size="large" color="#969696" />
             :
             <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
                 <IconButton icon="archive-cancel-outline" size={40}/>

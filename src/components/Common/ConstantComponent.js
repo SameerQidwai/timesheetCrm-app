@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Text } from 'react-native-paper';
 import { formatDate, formatFloat } from '../../services/constant';
+import { colors } from './theme';
 
 export const ColView = ({children, flex,justify, padding, style,}) =>{
     return <View style={{...styles.main(flex, justify, padding, style)}}>
@@ -38,7 +39,7 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
             >
                 <Pressable
                     android_ripple={{
-                        color: state === 'selected' ? 'white' : '#1890ff',
+                        color: colors.primaryCondition(state, 'selected'),
                         borderless: true,
                         // foreground:  true
                     }}

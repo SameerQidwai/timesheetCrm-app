@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
 import { Appbar, Button, Caption, IconButton, Title, TouchableRipple } from 'react-native-paper'
-import ProjectCards from '../components/Timesheet/ProjectCards'
-import { AppContext } from '../context/AppContext'
-import { getTimesheetApi, reviewTimeSheet } from '../services/timesheet-api'
-import { formatDate, formatFloat } from '../services/constant';
-import { ColView } from '../components/Common/ConstantComponent'
-import DatePicker from '../components/Common/DatePicker'
-import NoRecords from '../components/Common/NoRecords'
-import Confirm from '../components/Common/Confirm'
+import ProjectCards from '../../components/Cards/ProjectCards'
+import { AppContext } from '../../context/AppContext'
+import { getTimesheetApi, reviewTimeSheet } from '../../services/timesheet-api'
+import { formatDate, formatFloat } from '../../services/constant';
+import { ColView } from '../../components/Common/ConstantComponent'
+import DatePicker from '../../components/Common/DatePicker'
+import NoRecords from '../../components/Common/NoRecords'
+import Confirm from '../../components/Common/Confirm'
+import { colors } from '../../components/Common/theme'
 
 const MonthlyTimesheet =({navigation}) =>{
     const { appStorage, setAppStorage } = useContext(AppContext)
@@ -194,7 +195,7 @@ const MonthlyTimesheet =({navigation}) =>{
                     mode="outlined"
                     compact
                     uppercase={false}
-                    color="#1890ff"
+                    color={colors['primary']}
                     labelStyle={{
                       marginVertical: 2,
                       marginHorizontal: 5,
@@ -214,7 +215,7 @@ const MonthlyTimesheet =({navigation}) =>{
                       mode="outlined"
                       compact
                       uppercase={false}
-                      color="#1890ff"
+                      color={colors['primary']}
                       labelStyle={{
                         marginVertical: 2,
                         marginHorizontal: 5,
@@ -227,7 +228,7 @@ const MonthlyTimesheet =({navigation}) =>{
                       mode="outlined"
                       compact
                       uppercase={false}
-                      color="#1890ff"
+                      color={colors['primary']}
                       labelStyle={{
                         marginVertical: 2,
                         marginHorizontal: 5,
@@ -259,7 +260,7 @@ const MonthlyTimesheet =({navigation}) =>{
               mode="contained"
               uppercase={false}
               raised
-              color="#4caf50"
+              color={colors['success']}
               style={{
                 marginLeft: '5%',
                 marginBottom: 15,
@@ -284,7 +285,7 @@ const MonthlyTimesheet =({navigation}) =>{
                 width: '42%',
                 borderRadius: 2,
               }}
-              color="#ff4d4f"
+              color={colors['danger']}
               // color="red"
               labelStyle={{color: '#fff'}}
               disabled={fetching || disableAction}
@@ -298,7 +299,7 @@ const MonthlyTimesheet =({navigation}) =>{
             mode="contained"
             uppercase={false}
             raised
-            color="#1890ff"
+            color={colors['primary']}
             style={styles.bottomButton}
             size="large"
             disabled={fetching}
@@ -336,11 +337,11 @@ export default MonthlyTimesheet
 const styles =  StyleSheet.create({
     pageView: {
         flex: 1, 
-        backgroundColor: '#f6f4f1'
+        backgroundColor: colors['display']
     },
     containerView:{
         flexDirection: 'row',
-        backgroundColor: '#1890ff',
+        backgroundColor: colors['primary'],
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 15,

@@ -1,6 +1,7 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, StyleSheet, View, Platform, StatusBar  } from 'react-native'
 import { Button, Card, Headline, Snackbar, TextInput } from 'react-native-paper'
+import { colors } from '../components/Common/theme'
 import { AppContext } from '../context/AppContext'
 import { loginApi } from '../services/login-api'
 
@@ -11,7 +12,7 @@ function Login() {
         visible: false,
         duration: 3000,
         label: 'Wrong Usernam or Password.',
-        wrapperStyle:{backgroundColor: 'red'}
+        wrapperStyle:{backgroundColor: colors['danger']}
     })
     const [eye, setEye]= useState(true)
     const {setAppStorage} = useContext(AppContext)
@@ -46,7 +47,7 @@ function Login() {
                 onChangeText={text =>
                   setFormData(prev => ({...prev, email: text}))
                 }
-                activeOutlineColor="#909090"
+                activeOutlineColor={colors['light']}
               />
               <TextInput
                 mode="outlined"
@@ -56,7 +57,7 @@ function Login() {
                 style={{marginVertical: 15}}
                 // keyboardType='visible-password'
                 secureTextEntry={eye}
-                activeOutlineColor="#909090"
+                activeOutlineColor={colors['light']}
                 right={
                   <TextInput.Icon
                     name={eye ? 'eye-off' : 'eye'}
@@ -73,7 +74,7 @@ function Login() {
               <Button 
                 mode="contained" 
                 onPress={signIn}
-                color="#1890ff"
+                color={colors['primary']}
                 style={{width: '50%'}}
               >
                 Sign In
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        backgroundColor: '#f6f4f1',
+        backgroundColor: colors['display'],
     },
     loginCard: {
         width: 300, 
