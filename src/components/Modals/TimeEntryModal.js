@@ -19,7 +19,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
   const [MILESTONES, setMILESTONES] = useState([])
   
   //defualt Value
-  let disable = edit && data['status'] !== 'SV'
+  let disable = edit && ['SB', 'AP'].includes(data['status'])
 
   useEffect(() => {
     
@@ -33,12 +33,12 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
         setFetching(false)
       }
     })
-  }, [])
+  }, [modalVisible])
 
   const enableMilestones = (data) =>{
     if(disabledKeys?.length >0){
       return data.map(el => {
-        if (disabledKeys.includes(el.value)){
+        if (el.value !== formData?.['milestoneId'] && disabledKeys.includes(el.value)){
           el['disabled'] = true   
         }
         return el

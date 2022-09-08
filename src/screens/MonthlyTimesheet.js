@@ -59,10 +59,10 @@ const MonthlyTimesheet =({navigation}) =>{
                     setDisableAction(true)
                 }
             }else{
-                if (item.status === 'SV'){
-                    newSelected[key] = true
-                    setDisableAction(false)
-                }
+              if (['SV', 'RJ'].includes(item.status)){
+                newSelected[key] = true
+                setDisableAction(false)
+              }
             }
             setSelected({...newSelected})
         }
@@ -83,7 +83,7 @@ const MonthlyTimesheet =({navigation}) =>{
             let disable = true
             timesheets?.['data']?.['milestones'].forEach(el=>{
                 // projects_timesheet.forEach(el=>{
-                if(el.status === 'SV'){
+                if(['SV', 'RJ'].includes(el.status)){
                     select[el.milestoneEntryId] = true
                     disable = false
                 }
@@ -322,7 +322,7 @@ const MonthlyTimesheet =({navigation}) =>{
           <Confirm
             visible={confirming}
             onDismiss={() => setConfirming(false)}
-            action={'Delete'}
+            action={confirming}
             entity={'Timesheet'}
             onConfirm={() => actionTimeSheet(confirming)}
           />

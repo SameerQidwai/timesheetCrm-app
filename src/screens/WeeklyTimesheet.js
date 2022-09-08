@@ -7,169 +7,180 @@
  */
 
 import React, {useState, useCallback, useEffect, useContext} from 'react';
-import { View, StyleSheet, FlatList, Pressable, } from 'react-native';
+import {View, StyleSheet, FlatList, Pressable} from 'react-native';
 import { Appbar, Button, Caption, FAB, Headline, IconButton, List, Text, Title, TouchableRipple, } from 'react-native-paper';
-import {  CalendarProvider, WeekCalendar, } from 'react-native-calendars';
-import { lightThemeColor} from '../theme';
+import {CalendarProvider, WeekCalendar} from 'react-native-calendars';
+import {lightThemeColor} from '../theme';
 import moment from 'moment';
 import TimeCard2 from '../components/Timesheet/TimeCard2';
 import TimeEntryModal from '../components/Modals/TimeEntryModal';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { RenderDay } from '../components/Common/ConstantComponent';
-import { timesheet_dailyhours, timesheet_data } from '../../assets/constant';
-import { deleteTimeEntryApi, getTimesheetApi } from '../services/timesheet-api';
-import { AppContext } from '../context/AppContext';
-import { formatDate, formatFloat } from '../services/constant';
+import {RenderDay} from '../components/Common/ConstantComponent';
+import {timesheet_dailyhours, timesheet_data} from '../../assets/constant';
+import {deleteTimeEntryApi, getTimesheetApi} from '../services/timesheet-api';
+import {AppContext} from '../context/AppContext';
+import {formatDate, formatFloat} from '../services/constant';
 import DatePicker from '../components/Common/DatePicker';
 import NoRecords from '../components/Common/NoRecords';
 import Actions from '../components/Common/Actions';
 // import DatePicker from 'react-native-modern-datepicker';
 
 const WeeklyTimesheet = ({route, navigation}) => {
-  const {appStorage,setAppStorage} = useContext(AppContext)
-  const [timesheet, setTimesheet] = useState({timesheet_data: timesheet_data, total: 0, dailyHour: {}});
+  const {appStorage, setAppStorage} = useContext(AppContext);
+  const [timesheet, setTimesheet] = useState({
+    timesheet_data: timesheet_data,
+    total: 0,
+    dailyHour: {},
+  });
   const [openModal, setOpenModal] = useState({visible: false});
   const [dateTime, setdateTime] = useState(false);
-  const [sDate, setDate] = useState(formatDate(route?.params?.sDate) ??formatDate(new Date()));
+  const [sDate, setDate] = useState(
+    formatDate(route?.params?.sDate) ?? formatDate(new Date()),
+  );
   const [items, setItems] = useState({title: '', data: []});
   const [selected, setSelected] = useState(false);
   const [longPressed, setLongPress] = useState(false);
-  const [fetching, setFetching] = useState(true)
-  const [action, setAction] = useState(true)
+  const [fetching, setFetching] = useState(true);
+  const [confirming, setConfirming] = useState(true);
 
   useEffect(() => {
-    getData(sDate)
-  }, [])
+    getData(sDate);
+  }, []);
 
-
-  const getData = async(date) =>{
-    const {id: userId, accessToken} = appStorage
-    setFetching(true)
-    let keys = {startDate: formatDate(date).startOf('month').format('DD-MM-YYYY'),
-        endDate: formatDate(date).endOf('month').format('DD-MM-YYYY'),
-        userId: userId
-    }
+  const getData = async date => {
+    const {id: userId, accessToken} = appStorage;
+    setFetching(true);
+    let keys = {
+      startDate: formatDate(date).startOf('month').format('DD-MM-YYYY'),
+      endDate: formatDate(date).endOf('month').format('DD-MM-YYYY'),
+      userId: userId,
+    };
     try {
-        let {success, data, setToken} = await getTimesheetApi(keys, accessToken)
-        if(success){
-          const {daily_totalHour, grandTotal, newData, currItem} = restructure(data, date)
-          setTimesheet({timesheet_data: [...newData], total: grandTotal, dailyHour: {...daily_totalHour}})
-          setItems({title: currItem.title, data: [...currItem.data]})
-          setAppStorage(prev=> ({...prev, accessToken: setToken}))
-        }else{
-          setTimesheet({timesheet_data: [], total: 0, dailyHour: {}})
-          setItems({title: '', data: []})
-        }
-        setFetching(false)
-    }catch (e){
-        console.log(e)
+      let {success, data, setToken} = await getTimesheetApi(keys, accessToken);
+      if (success) {
+        const {daily_totalHour, grandTotal, newData, currItem} = restructure( data, date, );
+        setTimesheet({
+          timesheet_data: [...newData],
+          total: grandTotal,
+          dailyHour: {...daily_totalHour},
+        });
+        setItems({title: currItem.title, data: [...currItem.data]});
+        setAppStorage(prev => ({...prev, accessToken: setToken}));
+      } else {
+        setTimesheet({timesheet_data: [], total: 0, dailyHour: {}});
+        setItems({title: '', data: []});
+      }
+      setFetching(false);
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
 
   const onDateChanged = (day, onDayChange) => {
-   
-    if (onDayChange !== 'weekScroll'){
-      day = formatDate(day, ['YYYY-MM-DD','YYYY/MM/DD'])
-      if (day.isSame(sDate, 'month')){
-        setFetching(true)
-        const {timesheet_data} = timesheet
-        let entries = timesheet_data.find(el => el.title === formatDate(day, false, true) )?? {title: day, data: []}
+    if (onDayChange !== 'weekScroll') {
+      day = formatDate(day, ['YYYY-MM-DD', 'YYYY/MM/DD']);
+      if (day.isSame(sDate, 'month')) {
+        setFetching(true);
+        const {timesheet_data} = timesheet;
+        let entries = timesheet_data.find( el => el.title === formatDate(day, false, true), ) ?? {title: day, data: []};
         setDate(day);
-        setItems({title: entries.title, data: [...entries.data]})
-  
+        setItems({title: entries.title, data: [...entries.data]});
+
         setTimeout(() => {
-          setFetching(false)
+          setFetching(false);
         }, 500);
-      }else{
+      } else {
         // if(onDayChange === 'update'){
-          getData(day)
-          setDate(day);
+        getData(day);
+        setDate(day);
         // }
       }
-    }else{
+    } else {
       // console.log(day, onDayChange, 'what', sDate.format('YYYY-MM-DD'))
       // day = formatDate(day, ['YYYY-MM-DD','YYYY/MM/DD'])
       // console.log({day, bol:day.isSame(sDate, 'month'),sDate})
     }
   };
 
-  const onMonthChange = useCallback(month => {
-    // console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
-    // setDate(moment(month));
-  }, []);
+  // const onMonthChange = useCallback(month => {
+  //   // console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
+  //   // setDate(moment(month));
+  // }, []);
 
-  const onPressItem = (key, long, item, index) => {
-      setSelected({...item, listIndex: index});
+  const onPressItem = (item, index) => {
+    setSelected(item, index);
   };
 
   const renderItem = ({item, index}) => {
     return (
-        <TimeCard2 
-          timeEntry={item} 
-          selected={selected[item.entryId]} 
-          // onLongPress={() => onPressItem(item.entryId, true)}
-          onPress={() => onPressItem(item.entryId, false, item, index)}
-        />
+      <TimeCard2
+        timeEntry={item}
+        selected={selected[item.entryId]}
+        // onLongPress={() => onPressItem(item.entryId, true)}
+        onPress={() => onPressItem(item, index)}
+      />
     );
-  }
+  };
 
-  const onNewEntry = () =>{
+  const onNewEntry = () => {
     setOpenModal({
-      visible: !openModal['visible'], 
+      visible: !openModal['visible'],
       entryData: {
-        date: moment(sDate).utcOffset(0, true), 
-        startTime: moment('9:00', ["HH:mm"]), 
-        endTime: moment('18:00', ["HH:mm"]),
-        breakHours: new Date ().setHours(0, 0, 0, 0)
-      }
+        date: moment(sDate).utcOffset(0, true),
+        startTime: moment('9:00', ['HH:mm']),
+        endTime: moment('18:00', ['HH:mm']),
+        breakHours: new Date().setHours(0, 0, 0, 0),
+      },
     });
-  }
+  };
 
-  const onDelete = (entryId) =>{
-    setFetching(true)
-    let { accessToken } = appStorage
-    deleteTimeEntryApi(entryId, accessToken)
-    .then(res=>{
-      if(res?.success){
-        getData()
+  const onDelete = () => {
+    setFetching(true);
+    let {accessToken} = appStorage;
+    let {entryId} = selected
+    deleteTimeEntryApi(entryId, accessToken).then(res => {
+      if (res?.success) {
+        getData();
         setLongPress(false);
         setSelected(false);
         // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
       }
-    })
-  }
+    });
+  };
 
-  const onView = (item) =>{
-    let duration = moment.duration(item['breakHours'], 'hours')
+  const onView = (item, index) =>{
+    let duration = moment.duration(item['breakHours'], 'hours');
     setSelected(false);
     setOpenModal({
-      visible: true, 
-      index: item.listIndex,
+      visible: true,
+      index,
       entryData: {
         ...item,
         date: sDate,
-        startTime: moment(item['startTime'], ["HH:mm"]), 
-        endTime: moment(item['endTime'], ["HH:mm"]), 
-        breakHours: duration ? moment().hours(duration.hours()).minutes(duration.minutes()): new Date ().setHours(0, 0, 0, 0)
-      }, 
-    })
-  }
+        startTime: moment(item['startTime'], ['HH:mm']),
+        endTime: moment(item['endTime'], ['HH:mm']),
+        breakHours: duration
+          ? moment().hours(duration.hours()).minutes(duration.minutes())
+          : new Date().setHours(0, 0, 0, 0),
+      },
+    });
+  };
 
-  const onSuccess = (data) =>{
+  const onSuccess = data => {
     // getData()
     // setDate(formatDate(data.date, 'DD-MM-YYYY'))
-    setOpenModal({visible: false})
-    setSelected(false)
-    getData(sDate)
+    setOpenModal({visible: false});
+    setSelected(false);
+    getData(sDate);
     // const {currItem, ...rest} = timesheet_update(data, timesheet, openModal)
     // setTimesheet({...rest})
     // setItems({title: currItem.title, data: [...currItem.data]})
-  }
+  };
   //To avoid selecting multiple entries aganist single milestones
-  const gettingCreatedMilestones = () =>{
-    return items?.data.map(el => el.milestoneId)
-  }
-  
+  const gettingCreatedMilestones = () => {
+    return items?.data.map(el => el.milestoneId);
+  };
+
   return (
     <View style={styles.pageView}>
       <Appbar.Header style={styles.containerView}>
@@ -177,7 +188,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
           icon="arrow-left"
           color="#fff"
           size={30}
-          style={{width: 20, marginLeft: 0, paddingVertical:10}}
+          style={{width: 20, marginLeft: 0, paddingVertical: 10}}
           onPress={() => navigation.navigate('Timesheet')}
         />
 
@@ -279,8 +290,11 @@ const WeeklyTimesheet = ({route, navigation}) => {
             />
           )}
         />
-        {items?.data.length >0 ?
-          <View style={{flex:1}}>
+        {items?.data.length > 0 ? (
+          <View style={{flex: 1}}>
+            <Caption style={{ textAlign: 'center', paddingVertical: 5 }}>
+              {formatDate(sDate, false, 'dddd - DD MMM YYYY')}
+            </Caption>
             <FlatList
               data={items?.data ?? []}
               renderItem={renderItem}
@@ -288,23 +302,22 @@ const WeeklyTimesheet = ({route, navigation}) => {
               extraData={selected}
               onRefresh={getData}
               refreshing={fetching}
-              style={{paddingVertical: 20}}
+              style={{paddingBottom: 10}}
             />
           </View>
-          :
-          <NoRecords waiting={fetching}/>
-        }
+        ) : (
+          <NoRecords waiting={fetching} />
+        )}
       </CalendarProvider>
-      <Button        
+      <Button
         mode="contained"
         uppercase={false}
-        raised 
-        color='#1890ff'
+        raised
+        color="#1890ff"
         style={styles.bottomButton}
         size="large"
         disabled={fetching}
-        onPress={onNewEntry}
-      >
+        onPress={onNewEntry}>
         Add Timesheet Entry
       </Button>
       {openModal['visible'] && (
@@ -325,18 +338,29 @@ const WeeklyTimesheet = ({route, navigation}) => {
           mode="calendar"
           onDismiss={() => setdateTime(false)}
           onDateChange={selectedDate => {
-            onDateChanged(selectedDate)
+            onDateChanged(selectedDate);
             setdateTime(false);
           }}
         />
       )}
-      {selected &&<Actions 
-        visible={selected} 
-        onDismiss={()=>setSelected(false)}
-        onOption1={onView}
-        onOption2={onDelete}
-        select={selected}
-      />}
+      {selected && (
+        <Actions
+          visible={selected}
+          onDismiss={() => setSelected(false)}
+          onOption1={onView}
+          onOption2={() => setConfirming('Delete')}
+          select={selected}
+        />
+      )}
+      {confirming && (
+          <Confirm
+            visible={confirming}
+            onDismiss={() => setConfirming(false)}
+            action={confirming}
+            entity={'Timesheet Entry'}
+            onConfirm={onDelete}
+          />
+        )}
     </View>
   );
 };
@@ -345,16 +369,16 @@ export default WeeklyTimesheet;
 
 const styles = StyleSheet.create({
   pageView: {
-    flex: 1, 
-    backgroundColor: '#f6f4f1'
+    flex: 1,
+    backgroundColor: '#f6f4f1',
   },
-  containerView:{
+  containerView: {
     flexDirection: 'row',
     backgroundColor: '#1890ff',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingLeft: 0
+    paddingLeft: 0,
   },
   theme: {
     weekContainer: {
@@ -365,8 +389,8 @@ const styles = StyleSheet.create({
     customStyles: {
       container: {
         borderRadius: 2,
-        paddingVertical:2,
-        backgroundColor: '#1890ff'
+        paddingVertical: 2,
+        backgroundColor: '#1890ff',
       },
       text: {
         color: 'white',
@@ -389,14 +413,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: pressed ? 'red' : '#f8a587',
   }),
-  bottomButton:{
-    marginHorizontal: 15, 
+  bottomButton: {
+    marginHorizontal: 15,
     // marginBottom:15,
     marginVertical: 8,
     borderRadius: 2,
-}
+  },
 });
-
 
 //--------Helping Function --------//
 
@@ -405,133 +428,135 @@ function useRegex(input) {
   return regex.test(input);
 }
 
-function restructure (data, date) {
-  let year = moment(date).format('YYYY')
-  let date_index = {}
-  let daily_totalHour ={}
-  let grandTotal = 0
-  let newData = []
-  let leaveData = []
-  let currItem = {data: []}
-  let count = 0
-  data['milestones'].forEach((el, p_index)=>{
+function restructure(data, date) {
+  let year = moment(date).format('YYYY');
+  let date_index = {};
+  let daily_totalHour = {};
+  let grandTotal = 0;
+  let newData = [];
+  let leaveData = [];
+  let currItem = {data: []};
+  let count = 0;
+  data['milestones'].forEach((el, p_index) => {
     Object.entries(el).forEach(([key, value], e_index) => {
-        if (useRegex(key)){
-            let keySplit = key.split('/')
-            let newKey = formatDate(`${year}-${keySplit[1]}-${keySplit[0]}`, 'YYYY-M-D', true)
-            if (el.leaveRequest){
-              value = {
-                ...value,
-                entryId: 'l'+ e_index,
-                project: el['project'],
-                projectType: el['projectType'],
-                leaveRequest: el['leaveRequest'],
-                leaveType: el['leaveType'],
-                typeId: el['typeId'],
-                projectId: el['workId'],
-                totalHours: el['totalHours']
-            }
-            }else{
-              value = {
-                ...value,
-                milestone: el['milestone'],
-                project: el['project'],
-                projectType: el['projectType'],
-                status: el['status'],
-                milestoneId: el['milestoneId'],
-                projectId: el['projectId'],
-                milestoneEntryId: el['milestoneEntryId'],
-              }
-            }
-            
-            if (date_index[newKey] >= 0){
-              if(!el.leaveRequest){
-                newData[date_index[newKey]]['data'].push(value)
-                daily_totalHour[newKey] += value['actualHours']
-                grandTotal += el['totalHours']
-              }else{
-                newData[date_index[newKey]]['data'].push(value)
-              }
-            }else{
-              if(!el.leaveRequest){
-                date_index[newKey] = count
-                newData.push({title: newKey, data: [value]})
-                daily_totalHour[newKey] = value['actualHours']
-                grandTotal = el['totalHours']
-                count++
-              }else{
-                date_index[newKey] = count
-                newData.push({title: newKey, data: [value]})
-                count++
-              }
-            }
+      if (useRegex(key)) {
+        let keySplit = key.split('/');
+        let newKey = formatDate( `${year}-${keySplit[1]}-${keySplit[0]}`, 'YYYY-M-D', true, );
+        if (el.leaveRequest) {
+          value = {
+            ...value,
+            entryId: 'l' + e_index,
+            project: el['project'],
+            projectType: el['projectType'],
+            leaveRequest: el['leaveRequest'],
+            leaveType: el['leaveType'],
+            typeId: el['typeId'],
+            projectId: el['workId'],
+            totalHours: el['totalHours'],
+          };
+        } else {
+          value = {
+            ...value,
+            milestone: el['milestone'],
+            project: el['project'],
+            projectType: el['projectType'],
+            status: el['status'],
+            milestoneId: el['milestoneId'],
+            projectId: el['projectId'],
+            milestoneEntryId: el['milestoneEntryId'],
+          };
         }
-    })
-  })
-  if (date_index[formatDate(date, false, true)] >=0){
-    currItem = newData[date_index[formatDate(date, false, true)]] ?? {}
-  } 
 
-  return {daily_totalHour, grandTotal, newData, currItem}
-}
-
-function timesheet_update (data, timesheet, openModal){
-  
-  let {timesheet_data, dailyHour: updateHours, total: updateTotal} = timesheet
-  let addDate = formatDate(data.date, 'DD-MM-YYYY').format('YYYY-MM-DD')
-  let added = false
-  let currItem = {} //set current Item to set new data
-  let updateTimesheet = timesheet_data.map((el, tIndex)=>{
-    if(el.title === addDate){ 
-      if(openModal['index'] >= 0){  //checking if the request is for edit
-
-         el.data = el.data.map((dataEl,index)=>{
-          if (index == openModal['index']){ // if edit is found
-            let hours = dataEl['actualHours'] - data['actualHours']
-            dataEl = data
-            updateHours[addDate] += hours // updating updateHourss
-            updateTotal += hours // updating monthly hours
-            added = true
-            return dataEl
-          }else{
-            return dataEl
+        if (date_index[newKey] >= 0) {
+          if (!el.leaveRequest) {
+            newData[date_index[newKey]]['data'].push(value);
+            daily_totalHour[newKey] += value['actualHours'];
+            grandTotal += el['totalHours'];
+          } else {
+            newData[date_index[newKey]]['data'].push(value);
           }
-        })
-        if (added){ 
-          currItem = el
+        } else {
+          if (!el.leaveRequest) {
+            date_index[newKey] = count;
+            newData.push({title: newKey, data: [value]});
+            daily_totalHour[newKey] = value['actualHours'];
+            grandTotal = el['totalHours'];
+            count++;
+          } else {
+            date_index[newKey] = count;
+            newData.push({title: newKey, data: [value]});
+            count++;
+          }
         }
-
-        return el
-      }else{ // if open['index'] is undefined the request is for ad
-        el.data.push(data)
-        updateHours[addDate] += data['actualHours'] // per day hour
-        updateTotal += data['actualHours'] // updateTotal hours of the month
-        added = true // test if key was found and has been added into app
-        currItem = el
-        return el
       }
-    }else{
-      if (!added && tIndex === timesheet_data.length -1){ // if day is not found
-
-        el.push({title: addDate, data:[data]})
-        updateHours[addDate] = data['actualHours'] // per day hour
-        updateTotal += data['actualHours'] // updateTotal hours of the month
-        added =true
-        currItem = el
-        return el
-
-      }else{
-        return el
-      }
-    }
-  })
-  if (!added){ // if timesheet is not found
-    currItem = {title: addDate, data:[data]}
-    updateTimesheet = [currItem]
-    updateHours[addDate] = data['actualHours'] // per day hour
-    updateTotal += data['actualHours'] // updateTotal hours of the month
-    added =true
+    });
+  });
+  if (date_index[formatDate(date, false, true)] >= 0) {
+    currItem = newData[date_index[formatDate(date, false, true)]] ?? {};
   }
 
-  return {timesheet_data: updateTimesheet, dailyHour: updateHours, total: updateTotal, currItem}
+  return {daily_totalHour, grandTotal, newData, currItem};
 }
+
+function timesheet_update(data, timesheet, openModal) {
+  let {timesheet_data, dailyHour: updateHours, total: updateTotal} = timesheet;
+  let addDate = formatDate(data.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+  let added = false;
+  let currItem = {}; //set current Item to set new data
+  let updateTimesheet = timesheet_data.map((el, tIndex) => {
+    if (el.title === addDate) {
+      if (openModal['index'] >= 0) {
+        //checking if the request is for edit
+
+        el.data = el.data.map((dataEl, index) => {
+          if (index == openModal['index']) {
+            // if edit is found
+            let hours = dataEl['actualHours'] - data['actualHours'];
+            dataEl = data;
+            updateHours[addDate] += hours; // updating updateHourss
+            updateTotal += hours; // updating monthly hours
+            added = true;
+            return dataEl;
+          } else {
+            return dataEl;
+          }
+        });
+        if (added) {
+          currItem = el;
+        }
+
+        return el;
+      } else {
+        // if open['index'] is undefined the request is for ad
+        el.data.push(data);
+        updateHours[addDate] += data['actualHours']; // per day hour
+        updateTotal += data['actualHours']; // updateTotal hours of the month
+        added = true; // test if key was found and has been added into app
+        currItem = el;
+        return el;
+      }
+    } else {
+      if (!added && tIndex === timesheet_data.length - 1) {
+        // if day is not found
+
+        el.push({title: addDate, data: [data]});
+        updateHours[addDate] = data['actualHours']; // per day hour
+        updateTotal += data['actualHours']; // updateTotal hours of the month
+        added = true;
+        currItem = el;
+        return el;
+      } else {
+        return el;
+      }
+    }
+  });
+  if (!added) {
+    // if timesheet is not found
+    currItem = {title: addDate, data: [data]};
+    updateTimesheet = [currItem];
+    updateHours[addDate] = data['actualHours']; // per day hour
+    updateTotal += data['actualHours']; // updateTotal hours of the month
+    added = true;
+  }
+
+  return { timesheet_data: updateTimesheet, dailyHour: updateHours, total: updateTotal, currItem, }; }

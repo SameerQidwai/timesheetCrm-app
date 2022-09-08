@@ -1,4 +1,3 @@
-  
 import React, {useEffect} from 'react';
 import moment from 'moment';
 import { View , StyleSheet, Pressable } from 'react-native';
@@ -18,16 +17,16 @@ export default TimeCard2 = ({timeEntry, selected, onLongPress, onPress}) => {
   }
 
   return (
-    <Card style={styles.card(selected)} elevation={5} mode="elevated">
+    <Card style={styles.card} elevation={5} mode="elevated">
       <TouchableRipple
-        onLongPress={!timeEntry.leaveRequest && onLongPress}
+        // onLongPress={!timeEntry.leaveRequest && onLongPress}
         onPress={!timeEntry.leaveRequest && onPress}
         rippleColor="rgba(0, 0, 0, .32)">
         <Card.Content style={{paddingRight: 0}}>
           {!timeEntry.leaveRequest ? (
             <ColView justify={'space-between'}>
               <View style={styles.detailView}>
-                <Text style={styles.headline}>{timeEntry.project}</Text>
+                <Text style={styles.headline} numberOfLines={1}>{timeEntry.project}</Text>
                 <Caption style={styles.subheading}>
                   {timeEntry.projectType === 1
                     ? `${timeEntry.milestone}`
@@ -84,13 +83,12 @@ const styles = StyleSheet.create({
   cardView: {
     paddingVertical: 5,
   },
-  card: selectColor => ({
+  card:{
     borderRadius: 2,
-    marginHorizontal: 10,
-    marginTop:0,
-    marginBottom: 10
+    margin: 10,
+    marginTop: 0,
     // backgroundColor: selectColor ? '#727ef6b3' : 'white',
-  }),
+  },
   detailView: {
     width: '75%', 
     paddingRight: 5, 

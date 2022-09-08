@@ -42,7 +42,7 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
                         // </ColView>
                         <ColView justify={'space-between'} >
                         <View style={styles.detailView}>
-                            <Text style={styles.headline}>{timesheet.project}</Text>
+                            <Text style={styles.headline} numberOfLines={1} >{timesheet.project}</Text>
                             <Caption style={styles.subheading}>{timesheet.projectType === 1 ? `${timesheet.milestone}` : '\n'}</Caption>
                             <Text >{'\n' + status_name[timesheet.status?? 'SV']}</Text>
                             {/* <Caption >{timeEntry.notes}</Caption> */}
@@ -137,4 +137,3 @@ const styles = StyleSheet.create({
         margin: 0,
     }  
 })
- 
