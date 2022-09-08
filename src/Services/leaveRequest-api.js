@@ -64,6 +64,7 @@ export const deleteLeaveApi = (entryId, token) => {
             return {success, data, setToken};
         })
         .catch((err) => {
+            console.log(err)
             return {
                 error: "Please login again!",
                 status: false,

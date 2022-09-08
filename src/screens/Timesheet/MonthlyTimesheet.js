@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StatusBar, StyleSheet, View } from 'react-native'
 import { Appbar, Button, Caption, IconButton, Title, TouchableRipple } from 'react-native-paper'
 import ProjectCards from '../../components/Cards/ProjectCards'
 import { AppContext } from '../../context/AppContext'
@@ -35,9 +35,9 @@ const MonthlyTimesheet =({navigation}) =>{
         try {
             let {success, data, setToken} = await getTimesheetApi(keys, appStorage['accessToken'])
             if(success){
-                const { grandtotal } = calculate_total(data)
+                const { grandtotal, newData } = restructure(data)
                 setAppStorage(prev=> ({...prev, accessToken: setToken}))
-                setTimesheets({data: data, total: grandtotal})
+                setTimesheets({data: newData, total: grandtotal})
                 setFetching(false)
             }else{
                 setTimesheets({data: [], total: 0})
@@ -137,7 +137,8 @@ const MonthlyTimesheet =({navigation}) =>{
 
     return (
       <View style={styles.pageView}>
-        <Appbar.Header style={styles.containerView}>
+        <StatusBar  backgroundColor={colors['primary']} />
+        <Appbar.Header style={styles.header}>
           <Appbar.Content
             title={
               <TouchableRipple onPress={() => setDateTime(!dateTime)}>
@@ -249,6 +250,7 @@ const MonthlyTimesheet =({navigation}) =>{
               extraData={selected}
               onRefresh={getData}
               refreshing={fetching}
+              style={{paddingBottom: 10}}
             />
           </View>
         ) : (
@@ -339,7 +341,7 @@ const styles =  StyleSheet.create({
         flex: 1, 
         backgroundColor: colors['display']
     },
-    containerView:{
+    header:{
         flexDirection: 'row',
         backgroundColor: colors['primary'],
         justifyContent: 'space-between',
@@ -377,10 +379,19 @@ const styles =  StyleSheet.create({
 })
 
 //------------helping Number ---------//
-function calculate_total (data){
+function restructure (data){
     let grandtotal  = 0
+    let timeEntries = []
     data['milestones'].forEach((el, p_index)=>{
+      //removing Leave Request
+      if (!el.leaveRequest){
+        timeEntries.push(el)
         grandtotal += el['totalHours']
+      }
     })
-    return { grandtotal }
+    let newData = {
+      ...data,
+      milestones: timeEntries
+    }
+    return { grandtotal, newData }
 }

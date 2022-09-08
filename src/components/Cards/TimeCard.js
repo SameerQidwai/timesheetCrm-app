@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import moment from 'moment';
-import { View , StyleSheet, Pressable } from 'react-native';
-import {Card, Text, Badge, Title, Subheading, Paragraph, Caption, Headline, TouchableRipple, IconButton } from 'react-native-paper';
+import { View , StyleSheet } from 'react-native';
+import {Card, Text, Title, Subheading, Caption, TouchableRipple } from 'react-native-paper';
 import { formatFloat, status_color } from '../../services/constant';
 import { ColView } from '../Common/ConstantComponent';
 

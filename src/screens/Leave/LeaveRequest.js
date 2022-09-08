@@ -1,21 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, View, VirtualizedList } from "react-native";
-import { Caption, Card, FAB, Headline, Paragraph, Subheading, Text, Title } from "react-native-paper";
-import { leave_request, leave_request_balance } from "../../assets/constant";
-import { ColView } from "../components/Common/ConstantComponent";
-import LeaveBalance from "../components/Leave/LeaveBalance";
-import LeaveRequestModal from "../components/Modals/LeaveRequestModal";
-import { AppContext } from "../context/AppContext";
-import { formatDate, status_color } from "../services/constant";
-import { deleteLeaveApi, getBalanceApi, getLeavesApi } from "../services/leaveRequest-api";
+import { Appbar, Button, Caption, Card, FAB, Headline, Paragraph, Subheading, Text, Title } from "react-native-paper";
+import { leave_request, leave_request_balance } from "../../../assets/constant";
+import Actions from "../../components/Common/Actions";
+import Confirm from "../../components/Common/Confirm";
+import { ColView } from "../../components/Common/ConstantComponent";
+import { colors } from "../../components/Common/theme";
+import LeaveBalance from "../../components/Leave/LeaveBalance";
+import LeaveRequestModal from "../../components/Modals/LeaveRequestModal";
+import { AppContext } from "../../context/AppContext";
+import { formatDate, status_color } from "../../services/constant";
+import { deleteLeaveApi, getBalanceApi, getLeavesApi } from "../../services/leaveRequest-api";
 
 const LeaveRequest = () =>{
   const { appStorage, setAppStorage } = useContext(AppContext)
   const [longPressed, setLongPress] = useState(false);
-  const [selected, setSelected] = useState({})
+  const [selected, setSelected] = useState(false)
   const [data, setData] = useState({leaves: [], balances: [{}]})
   const [fetching, setFetching] = useState(false)
   const [openModal, setOpenModal] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     getData()
@@ -40,9 +44,7 @@ const LeaveRequest = () =>{
 
   const onSuccess = ()=>{
     setOpenModal({visible: false})
-    setFetching(true)
-    setLongPress(false)
-    getData()
+    
   }
 
   const renderItem = ({item, index}) => {
@@ -51,7 +53,7 @@ const LeaveRequest = () =>{
         <Pressable
           android_ripple={{color: '#747474', borderless: true}}
           onLongPress={() => onPressItem(item.id, true)}
-          onPress={() => { onPressItem(item.id) }}
+          onPress={() => { onPressItem(item.id, index) }}
         >
           <Card.Content>
             <ColView>
@@ -96,8 +98,10 @@ const LeaveRequest = () =>{
         let id = Object.keys(selected)[0]
         let { accessToken } = appStorage
         deleteLeaveApi(id, accessToken).then(res=>{
+          console.log(res)
           if(res.success){
-            onSuccess()
+            setLongPress(false)
+            getData()
             setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
           }
         })
@@ -106,38 +110,39 @@ const LeaveRequest = () =>{
       }
   }
 
-  const onPressItem = (key, long)=>{
-    let newSelected = selected
-    let selectedItems = Object.keys(selected).length
-    if (longPressed && selectedItems > 0){
-        if (newSelected[key]){
-          delete newSelected[key]
-          if (selectedItems === 1){
-              setLongPress(false)
-          }
-        }else{
-          newSelected= {[key]: true}
-        }
-        setSelected({...newSelected})
-    }
-    if (!long && selectedItems === 0) {
-      setOpenModal({
-        visible: true, 
-        edit: key 
-      });
-    }
-    
-    if (long && selectedItems === 0){
-        setSelected({[key]: true})
-        setLongPress(true)
-    }
-}
+  const onDelete = () => {
+    let id = selected
+    setFetching(true);
+    setConfirming(false)
+    setSelected(false);
+    let {accessToken} = appStorage;
+    deleteLeaveApi(id, accessToken).then(res=>{
+      if(res?.success){
+        setOpenModal({visible: false})
+        getData()
+        setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+      }
+    })
+  };
+
+  const onPressItem = (item, index) => {
+    setSelected(item);
+  };
+
+  const onView = (key, index) =>{
+    setSelected(false);
+    setOpenModal({
+      visible: true, 
+      index,
+      edit: key
+    });
+  };
 
   return (
-    <View style={{flex: 1}}>
-      <ColView style={styles.header}>
-        <Title style={styles.headerTitle}>Leave</Title>
-      </ColView>
+    <View style={styles.pageView}>
+      <Appbar.Header style={styles.header}>
+        <Appbar.Content title={'Leaves'} />
+      </Appbar.Header>
       <LeaveBalance leave_balnce={data['balances']}/>
       <View style={{flex: 1}}>
         <Subheading style={{paddingLeft:10, color: 'grey'}}>Leave Request</Subheading>
@@ -152,21 +157,44 @@ const LeaveRequest = () =>{
           refreshing={fetching}
         />
       </View>
+        <Button
+          mode="contained"
+          uppercase={false}
+          raised
+          color={colors['primary']}
+          style={styles.bottomButton}
+          size="large"
+          disabled={fetching}
+          onPress={() => setOpenModal({visible: !openModal['visible']})}
+          >
+            Add Request
+        </Button>
       {openModal['visible'] && (
           <LeaveRequestModal
-          modalVisible={openModal['visible']}
-          edit={openModal['edit']}
-          onSuccess={onSuccess}
-          onClose={() => setOpenModal({visible: false})}
+            modalVisible={openModal['visible']}
+            edit={openModal['edit']}
+            onSuccess={onSuccess}
+            onClose={() => setOpenModal({visible: false})}
           />
       )}
-      <FAB
-          style={styles.fab(longPressed)}
-          icon={longPressed ? 'delete' : 'plus'}
-          disabled={fetching}
-          size="large"
-          onPress={fabAction}
-      />
+      {selected && (
+        <Actions
+          visible={selected}
+          onDismiss={() => setSelected(false)}
+          onOption1={onView}
+          onOption2={() => setConfirming('Delete')}
+          select={selected}
+        />
+      )}
+      {confirming && (
+          <Confirm
+            visible={confirming}
+            onDismiss={() => setConfirming(false)}
+            action={confirming}
+            entity={'Leave Request'}
+            onConfirm={onDelete}
+          />
+        )}
     </View>
   )
 }
@@ -174,12 +202,23 @@ const LeaveRequest = () =>{
 export default LeaveRequest
 
 const styles = StyleSheet.create({
-  header: {
-    justifyContent: 'center',
-    backgroundColor: '#2e44fc',
-    alignItems: 'baseline',
-    height: 48
+  pageView: {
+    flex: 1, 
+    backgroundColor: colors['display']
   },
+  header:{
+    flexDirection: 'row',
+    backgroundColor: colors['primary'],
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+  },
+  // header: {
+  //   justifyContent: 'center',
+  //   backgroundColor: '#2e44fc',
+  //   alignItems: 'baseline',
+  //   height: 48
+  // },
   headerTitle: {
     color: '#fff'
   },
@@ -219,6 +258,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     // color: 'grey',
   },
+  buttonView: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    marginHorizontal: 10,
+    marginTop: 7,
+  },
   fab: (pressed)=> ({
     position: 'absolute',
     margin: 16,
@@ -226,4 +271,18 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: pressed ? 'red' : '#f8a587'
   }),
+  bottomButton: {
+    marginHorizontal: 15, 
+    marginVertical: 8,
+    borderRadius: 2,
+},
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'black',
+    opacity: 0.5
+},
 });

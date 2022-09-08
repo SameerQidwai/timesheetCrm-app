@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { View } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { AppProvider } from './src/context/AppContext';
 import { NavigationContainer } from '@react-navigation/native';
 import Stacks from './src/components/Navigation/Stacks';

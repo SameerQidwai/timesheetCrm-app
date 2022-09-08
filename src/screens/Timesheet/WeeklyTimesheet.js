@@ -6,9 +6,9 @@
  * @flow strict-local
  */
 
-import React, {useState, useCallback, useEffect, useContext} from 'react';
-import {View, StyleSheet, FlatList, Pressable} from 'react-native';
-import { Appbar, Button, Caption, FAB, Headline, IconButton, List, Text, Title, TouchableRipple, } from 'react-native-paper';
+import React, {useState, useEffect, useContext} from 'react';
+import {View, StyleSheet, FlatList} from 'react-native';
+import { Appbar, Button, Caption, IconButton, Title, TouchableRipple, } from 'react-native-paper';
 import {CalendarProvider, WeekCalendar} from 'react-native-calendars';
 import moment from 'moment';
 import TimeCard2 from '../../components/Cards/TimeCard';
@@ -28,7 +28,7 @@ import { colors } from '../../components/Common/theme';
 const WeeklyTimesheet = ({route, navigation}) => {
   const {appStorage, setAppStorage} = useContext(AppContext);
   const [timesheet, setTimesheet] = useState({
-    timesheet_data: timesheet_data,
+    timesheet_data: [],
     total: 0,
     dailyHour: {},
   });

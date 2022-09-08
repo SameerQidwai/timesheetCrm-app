@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import Login from '../../screens/Login';
 import WeeklyTimesheet from '../../screens/Timesheet/WeeklyTimesheet';
 import Profile from '../../screens/Profile';
-import LeaveRequest from '../../screens/LeaveRequest';
+import LeaveRequest from '../../screens/Leave/LeaveRequest';
 import MonthlyTimesheet from '../../screens/Timesheet/MonthlyTimesheet';
 import { AppContext } from '../../context/AppContext';
 import { colors } from '../Common/theme';

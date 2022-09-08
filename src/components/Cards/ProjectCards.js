@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
         paddingVertical:  5,
     },
     card: (selectColor)=> ({
-        borderRadius: 2,  
-        margin: 10,
-        marginBottom: 0,
+        borderRadius: 2,
+        marginHorizontal: 10,
+        marginVertical: 5,
     }),
     detailView: {
         width: '75%', 
