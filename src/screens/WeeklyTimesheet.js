@@ -23,6 +23,7 @@ import {formatDate, formatFloat} from '../services/constant';
 import DatePicker from '../components/Common/DatePicker';
 import NoRecords from '../components/Common/NoRecords';
 import Actions from '../components/Common/Actions';
+import Confirm from '../components/Common/Confirm';
 // import DatePicker from 'react-native-modern-datepicker';
 
 const WeeklyTimesheet = ({route, navigation}) => {
@@ -41,7 +42,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
   const [selected, setSelected] = useState(false);
   const [longPressed, setLongPress] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [confirming, setConfirming] = useState(true);
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     getData(sDate);
@@ -135,14 +136,15 @@ const WeeklyTimesheet = ({route, navigation}) => {
   };
 
   const onDelete = () => {
-    setFetching(true);
-    let {accessToken} = appStorage;
     let {entryId} = selected
+    setFetching(true);
+    setConfirming(false)
+    setSelected(false);
+    let {accessToken} = appStorage;
     deleteTimeEntryApi(entryId, accessToken).then(res => {
       if (res?.success) {
-        getData();
+        getData(sDate);
         setLongPress(false);
-        setSelected(false);
         // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
       }
     });

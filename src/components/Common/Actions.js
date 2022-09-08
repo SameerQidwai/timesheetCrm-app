@@ -31,7 +31,7 @@ function Actions({visible, onDismiss, select, onOption1, onOption2}) {
           <Button
             mode="contained"
             color="#ff4d4f"
-            disabled={select.status !== 'SV'}
+            disabled={['SB', 'AP'].includes(select.status)}
             labelStyle={{color: '#fff'}}
             onPress={()=>onOption2(select.entryId)}
             style={{marginVertical: 10}}>
