@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Dialog, Portal, TextInput } from 'react-native-paper'
+import { Button, Dialog, IconButton, Portal, Subheading, Title } from 'react-native-paper'
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MDropDown from '../Common/MUI-dropdown';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
 import { addLeaveApi, editLeaveApi, getLeaveApi, getUserLeaveType } from '../../services/leaveRequest-api';
 import { formatDate } from '../../services/constant';
+import { colors } from '../Common/theme';
+import { MDropDown, TextField } from '../Common/InputFields';
 
 export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=> {
   const {appStorage, setAppStorage} = useContext(AppContext)
@@ -143,42 +144,60 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
             attachments: []
     }
     if(edit){
-        editLeaveApi(edit, newVal, accessToken).then((res) => {
-            setLoading(false)
-            if (res.success) {
-              setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
-              onSuccess()
-            }
-        });
+      editLeaveApi(edit, newVal, accessToken).then((res) => {
+          setLoading(false)
+          if (res.success) {
+            setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+            onSuccess()
+          }
+      });
     }else{
-        addLeaveApi(newVal, accessToken).then((res) => {
-            setLoading(false)
-            if (res.success) {
-              setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
-              onSuccess()
-            }
-        });
+      addLeaveApi(newVal, accessToken).then((res) => {
+          setLoading(false)
+          if (res.success) {
+            setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
+            onSuccess()
+          }
+      });
     }
   }
     
   return (
     <Portal>
       <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog}>
-        <Dialog.Title style={[styles.modalHeader, styles.headerText]}>
-          {'Leave Request'}
-        </Dialog.Title>
+        <View style={styles.modalHeader} >
+          <View>
+            <Title style={styles.headerText}>{`${formData['entryId']? 'Edit': 'Add' } Leave Request`}</Title>
+          </View>
+          <View >
+            <IconButton
+              color='#fff' 
+              icon="close" 
+              size={20} 
+              onPress={onClose}
+            />
+          </View>
+        </View>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <Dialog.Content style={styles.modalBody}>
+            <View style={styles.subHeader}>
+              <Subheading style={styles.subheading}>
+                {'Total Hours'}
+              </Subheading>
+              <Subheading style={styles.subheading}>
+                {'Number of Days'}
+              </Subheading>
+            </View>
             <Dialog.ScrollArea style={styles.fieldView}>
               <ScrollView>
                 <MDropDown
-                  value={formData['typeId']}
-                  data={OPTIONS['leaves']}
                   placeholder="Select Leave Types"
-                  disabled={edit}
                   label="Leave Type"
+                  value={formData['typeId']}
+                  disabled={edit}
+                  data={OPTIONS['leaves']}
                   onSelect={(item)=>{ 
                     setFieldValue('typeId', item.value)
                     setOtherData(prev => ({...prev, leavetype: item}))
@@ -191,31 +210,17 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                   }}
                 />
                 <MDropDown
+                  placeholder="Select Project"
+                  label="Projects"
                   value={formData['workId']}
                   data={OPTIONS['projects']}
-                  placeholder="Select Project"
                   disabled={edit}
-                  label="Projects"
                   onSelect={(item)=> setFieldValue('workId', item.value)}
                   zIndex={1000}
                   zIndexInverse={3000}
                 />
-                {/* <DropDown
-                  value={formData['leaveTypeId']}
-                  data={OPTIONS['leaves']}
-                  placeholder="Select Leave Types"
-                  onSelect={(item)=> setFormData(prev => ({...prev, leaveTypeId:item.id }))}
-                  inputStyle={{marginBottom: 5}}
-                />
-                <DropDown
-                  value={formData['projectId']}
-                  data={OPTIONS['projects']}
-                  placeholder="Select projects"
-                  onSelect={(item)=> setFormData(prev => ({...prev, projects:item.id }))}
-                /> */}
-                <TextInput
+                <TextField
                   value={otherData['startDate'].format('dddd - DD MMM YYYY')}
-                  mode="outlined"
                   label="start Date"
                   placeholder="Set Date"
                   onFocus={() => {
@@ -226,9 +231,8 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                   }}
                   showSoftInputOnFocus={false}
                 />
-                <TextInput
+                <TextField
                   value={otherData['endDate'].format('dddd - DD MMM YYYY')}
-                  mode="outlined"
                   label="End Date"
                   placeholder="Set Date"
                   onFocus={() => {
@@ -240,20 +244,13 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                   showSoftInputOnFocus={false}
                 />
                 <View
-                  style={{
-                    height: 150,
-                    borderLeftWidth: 2,
-                    padding: 5,
-                    margin: 5,
-                  }}>
+                  style={styles.timeFieldsView}>
                   <ScrollView>
                     {days.map((el, index)=>(
-                      <TextInput
+                      <TextField
                         key={el.key}
                         value={el.hours}
                         disabled={el.disabled}
-                        dense
-                        mode="outlined"
                         label={el.label}
                         placeholder="set hours"
                         keyboardType="decimal-pad"
@@ -262,13 +259,11 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                     }
                   </ScrollView>
                 </View>
-                <TextInput
+                <TextField
                   value={formData['description']}
-                  mode="outlined"
                   label="Notes"
-                  placeholder="Add Somre Reason.."
-                  multiline
-                  numberOfLines={4}
+                  placeholder="Add Some Reason.."
+                  textarea
                   onChangeText={text => setFieldValue('description', text)}
                   returnKeyType="next"
                 />
@@ -280,20 +275,22 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           <Button
             mode={"contained"}
             loading={loading}
-            color="#1890ff"
+            color={colors['light']}
             disabled={(fetching|| loading)}
             compact
-            labelStyle={{color: (loading) ? '#000' :'#fff'}}
+            style={{width: '45%', borderRadius: 2}}
+            labelStyle={{color: '#fff'}}
             onPress={hideDialog}>
             Cancel
           </Button>
           <Button
             mode={ "contained"}
             loading={loading}
-            color=""
+            color={colors['primary']}
             disabled={(fetching|| loading)}
             compact
-            labelStyle={{color: (loading|| fetching) ? '#000' :'#fff'}}
+            style={{width: '45%', borderRadius: 2}}
+            labelStyle={{color: '#fff'}}
             onPress={ getFormValues}
           >
             Save
@@ -342,11 +339,32 @@ const styles = StyleSheet.create({
       shadowRadius: 4,
       elevation: 5,
     },
+    modalHeader: {
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+      backgroundColor: colors['primary'],
+      justifyContent: 'space-between', 
+      flexDirection: 'row',
+      marginHorizontal: 0,
+      marginTop: 0,
+      marginVertical: 0,
+    },
+    headerText: {
+      color: '#fff',
+      fontWeight: '700',
+    },
+    subHeader:{
+      justifyContent: 'space-between', 
+      flexDirection: 'row',
+    },
     modalBody: {
       // paddingVertical: 10,
       paddingBottom: 10,
       paddingTop: 0,
-      // paddingHorizontal: 20,
+      paddingHorizontal: 20,
+    },
+    subheading:{
+      paddingVertical: 10
     },
     button: {
       borderRadius: 2,
@@ -379,32 +397,14 @@ const styles = StyleSheet.create({
       marginBottom: 15,
       textAlign: 'center',
     },
-    modalHeader: {
-      paddingVertical: 15,
-      paddingHorizontal: 10,
-      backgroundColor: '#1890ff',
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      marginHorizontal: 0,
-      marginTop: 0,
-      marginVertical: 0,
-    },
-    headerText: {
-      color: '#fff',
-      fontWeight: '700',
-    },
+    
     bText: {
       color: '#fff',
     },
-    select: {
-      // appearance: 'none',
-      // backgroundColor: '#fff',
-      // borderRadius: 0,
-      // border: '0px solid black',
-      // boxSizing: 'border-box',
-      // font: 14,
-      // margin: 0,
-      // padding: 0,
-      // resize: 'none',
-    },
+    timeFieldsView: {
+      height: 150,
+      borderLeftWidth: 2,
+      padding: 5,
+      margin: 5,
+    }
   });

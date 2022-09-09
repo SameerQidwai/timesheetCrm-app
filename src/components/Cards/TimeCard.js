@@ -5,7 +5,7 @@ import {Card, Text, Title, Subheading, Caption, TouchableRipple } from 'react-na
 import { formatFloat, status_color } from '../../services/constant';
 import { ColView } from '../Common/ConstantComponent';
 
-export default TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
+const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
   const statusColor = status_color[timeEntry.status]?.['color'] ?? '#476ba6'
   useEffect(() => {
       // console.log(selected)
@@ -77,7 +77,7 @@ export default TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
     </Card>
   );
 };
-
+export default TimeCard
 
 const styles = StyleSheet.create({
   cardView: {

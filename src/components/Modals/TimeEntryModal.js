@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { Dialog, Portal, Button, Title, IconButton, Text, Subheading, } from 'react-native-paper';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import { ScrollView, StyleSheet, View} from 'react-native';
 import { addTimeEntryApi, editTimeEntryApi } from '../../services/timesheet-api';
 import { userMilestonesApi } from '../../services/constant-api';
 import { AppContext } from '../../context/AppContext';
@@ -10,9 +10,9 @@ import { formatDate } from '../../services/constant';
 import { TextField, MDropDown } from '../Common/InputFields';
 import { colors } from '../Common/theme';
 
-export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disabledKeys}) => {
+export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disabledKeys}) => {
   const { appStorage, setAppStorage } = useContext( AppContext )
-  const [modalVisible, setModalVisible] = useState(visible);
+  const [visible, setVisible] = useState(modalVisible);
   const [dateTime, setdateTime] = useState({ open: false, key: '', mode: 'date', });
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
@@ -20,7 +20,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
   const [MILESTONES, setMILESTONES] = useState([])
   
   //defualt Value
-  let disable = edit && ['SB', 'AP'].includes(data['status'])
+  let disable = data['entryId'] && ['SB', 'AP'].includes(data['status'])
 
   useEffect(() => {
     
@@ -63,7 +63,7 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
   };
 
   const hideDialog = () => {
-    setModalVisible(false);
+    // setModalVisible(false);
     onClose();
   };
 
@@ -79,7 +79,8 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
       date: date.format('D/M/YYYY'),
       breakHours: breakHours ? moment.duration(moment(breakHours).format('HH:mm')).asHours(): 0
     }
-    if (edit >= 0){
+
+    if (entry['entryId'] > 0){
       editing(entry, accessToken)
     }else{
       adding(entry, userId, accessToken)
@@ -124,13 +125,8 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
 
   return (
     <Portal>
-      <Dialog
-          visible={modalVisible}
-          style={styles.modalView}
-          onDismiss={hideDialog}>
-        <View
-          style={styles.modalHeader}
-        >
+      <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog}>
+        <View style={styles.modalHeader} >
           <View>
             <Title style={styles.headerText}>{`${formData['entryId']? 'Edit': 'Add' } Entry`}</Title>
           </View>
@@ -202,7 +198,6 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
               <TextField
                 value={formData['notes']}
                 disabled={disable}
-                mode="outlined"
                 label="Notes"
                 placeholder="Enter Note.."
                 textarea
@@ -221,14 +216,14 @@ export default TimeEntryModal = ({ visible, data, onClose, onSuccess, edit, disa
               style={{width: '45%', borderRadius: 2}}
               labelStyle={{color: '#fff'}}
               onPress={hideDialog}>
-              Cancel
+                Cancel
             </Button>
             <Button
               mode={'contained'}
               color={colors['primary']}
               compact
               loading={loading}
-              disabled={fetching || loading || disable}
+              disabled={fetching || loading || disable || !formData?.['milestoneId']}
               labelStyle={{color: '#fff'}}
               style={{width: '45%', borderRadius: 2}}
               onPress={onSubmit}>
@@ -305,6 +300,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  modalHeader: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: colors['primary'],
+    justifyContent: 'space-between', 
+    flexDirection: 'row',
+    marginHorizontal: 0,
+    marginTop: 0,
+    marginVertical: 0,
+  },
+  headerText: {
+    color: '#fff',
+    fontWeight: '700',
+  },
   modalBody: {
     // paddingVertical: 10,
     paddingBottom: 10,
@@ -339,22 +348,6 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-  },
-  modalHeader: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    backgroundColor: colors['primary'],
-    justifyContent: 'space-between', 
-    flexDirection: 'row',
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
-    marginHorizontal: 0,
-    marginTop: 0,
-    marginVertical: 0,
-  },
-  headerText: {
-    color: '#fff',
-    fontWeight: '700',
   },
   bText: {
     color: '#fff',

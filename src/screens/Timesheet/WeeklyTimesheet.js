@@ -108,7 +108,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
   // }, []);
 
   const onPressItem = (item, index) => {
-    setSelected(item, index);
+    setSelected({...item, index});
   };
 
   const renderItem = ({item, index}) => {
@@ -323,7 +323,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
       </Button>
       {openModal['visible'] && (
         <TimeEntryModal
-          visible={openModal['visible']}
+          modalVisible={openModal['visible']}
           selectedDate={sDate}
           onSuccess={onSuccess}
           data={openModal['entryData']}
@@ -438,7 +438,6 @@ function restructure(data, date) {
   let leaveData = [];
   let currItem = {data: []};
   let count = 0;
-  console.log(data['milestones'])
   data['milestones'].forEach((el, p_index) => {
     Object.entries(el).forEach(([key, value], e_index) => {
       if (useRegex(key)) {
@@ -497,7 +496,6 @@ function restructure(data, date) {
   if (date_index[formatDate(date, false, true)] >= 0) {
     currItem = newData[date_index[formatDate(date, false, true)]] ?? {};
   }
-  console.log(grandTotal)
 
   return {daily_totalHour, grandTotal, newData, currItem};
 }

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, View, VirtualizedList } from "react-native";
 import { Appbar, Button, Caption, Card, FAB, Headline, Paragraph, Subheading, Text, Title } from "react-native-paper";
 import { leave_request, leave_request_balance } from "../../../assets/constant";
+import LeaveCard from "../../components/Cards/LeaveCard";
 import Actions from "../../components/Common/Actions";
 import Confirm from "../../components/Common/Confirm";
 import { ColView } from "../../components/Common/ConstantComponent";
@@ -49,45 +50,11 @@ const LeaveRequest = () =>{
 
   const renderItem = ({item, index}) => {
     return (
-      <Card elevation={3} style={styles.card(selected[item.id])}>
-        <Pressable
-          android_ripple={{color: '#747474', borderless: true}}
-          onLongPress={() => onPressItem(item.id, true)}
-          onPress={() => { onPressItem(item.id, index) }}
-        >
-          <Card.Content>
-            <ColView>
-              <View style={styles.dateView}>
-                {/* <Card mode='outlined'  style={styles.dateCard}> */}
-                <View style={styles.dateCard}>
-                  <Headline style={styles.dateText}>
-                    {formatDate(item.startDate, false, 'DD MMM')}
-                  </Headline>
-                </View>
-                {/* </Card> */}
-              </View>
-              <View>
-                <Card.Content>
-                  <ColView style={{alignItems: 'center'}}>
-                    <Title>{item.leaveRequestName}</Title>
-                    <Caption
-                      style={[styles.statusCaption, status_color[item.status]]}>
-                      {item.totalHours}hr -{' '}
-                      {formatDate(item.startDate).diff(
-                        formatDate(item.endDate),
-                        'days',
-                      )}{' '}
-                      days
-                    </Caption>
-                  </ColView>
-                  <Text style={styles.projectText}>{item.projectName}</Text>
-                  <Paragraph style={styles.notesText}>{item.notes}</Paragraph>
-                </Card.Content>
-              </View>
-            </ColView>
-          </Card.Content>
-        </Pressable>
-      </Card>
+      <LeaveCard
+        item={item}
+        index={index}
+        onPress={()=> console.log('sameer')}
+      />
     );
   };
 
