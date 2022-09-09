@@ -45,7 +45,6 @@ const LeaveRequest = () =>{
 
   const onSuccess = ()=>{
     setOpenModal({visible: false})
-    
   }
 
   const renderItem = ({item, index}) => {
@@ -53,30 +52,11 @@ const LeaveRequest = () =>{
       <LeaveCard
         item={item}
         index={index}
-        onPress={()=> console.log('sameer')}
+        onPress={()=> onPressItem(item, index)}
       />
     );
   };
-
-  const fabAction = () =>{
-      // console.log(true)
-      if (longPressed) {
-        setFetching(true)
-        let id = Object.keys(selected)[0]
-        let { accessToken } = appStorage
-        deleteLeaveApi(id, accessToken).then(res=>{
-          console.log(res)
-          if(res.success){
-            setLongPress(false)
-            getData()
-            setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
-          }
-        })
-      } else {
-        setOpenModal({visible: !openModal['visible']});
-      }
-  }
-
+  
   const onDelete = () => {
     let id = selected
     setFetching(true);
