@@ -41,7 +41,7 @@ function TabScreen () {
         // tabBarInactiveBackgroundColor
         tabBarInactiveTintColor: 'gray',
        
-        tabBarItemStyle: { borderColor: colors['light'], borderWidth: 1},
+        // tabBarItemStyle: { borderColor: colors['light'], borderWidth: 1},
         // tabBarStyle: {}
         tabBarHideOnKeyboard: true,
         tabBarIcon: ({ color, size }) => {

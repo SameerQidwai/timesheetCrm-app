@@ -306,7 +306,7 @@ const MonthlyTimesheet =({navigation}) =>{
             size="large"
             disabled={fetching}
             onPress={() => actionTimeSheet('Add')}>
-            Add Timesheet
+              View Timesheet
           </Button>
         )}
         {dateTime && (

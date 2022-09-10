@@ -28,7 +28,7 @@ import { colors } from '../../components/Common/theme';
 const WeeklyTimesheet = ({route, navigation}) => {
   const {appStorage, setAppStorage} = useContext(AppContext);
   const [timesheet, setTimesheet] = useState({
-    timesheet_data: [],
+    timesheet_data: {},
     total: 0,
     dailyHour: {},
   });
@@ -58,16 +58,19 @@ const WeeklyTimesheet = ({route, navigation}) => {
     try {
       let {success, data, setToken} = await getTimesheetApi(keys, accessToken);
       if (success) {
-        const {daily_totalHour, grandTotal, newData, currItem} = restructure( data, date, );
+        const {daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries} = restructure( data, date, );
+        console.log({daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries})
         setTimesheet({
-          timesheet_data: [...newData],
+          timesheet_data: {...newData},
           total: grandTotal,
           dailyHour: {...daily_totalHour},
+          emptyEntries,
+          leaveEntries
         });
         setItems({title: currItem.title, data: [...currItem.data]});
         setAppStorage(prev => ({...prev, accessToken: setToken}));
       } else {
-        setTimesheet({timesheet_data: [], total: 0, dailyHour: {}});
+        setTimesheet({timesheet_data: {}, total: 0, dailyHour: {}, emptyEntries: [], leaveEntries: {}});
         setItems({title: '', data: []});
       }
       setFetching(false);
@@ -81,8 +84,11 @@ const WeeklyTimesheet = ({route, navigation}) => {
       day = formatDate(day, ['YYYY-MM-DD', 'YYYY/MM/DD']);
       if (day.isSame(sDate, 'month')) {
         setFetching(true);
-        const {timesheet_data} = timesheet;
-        let entries = timesheet_data.find( el => el.title === formatDate(day, false, true), ) ?? {title: day, data: []};
+        const {timesheet_data, emptyEntries, leaveEntries} = timesheet;
+
+        //find if entries are already created
+        let entries =  getCurrentDateData(day, timesheet_data, emptyEntries, leaveEntries)
+
         setDate(day);
         setItems({title: entries.title, data: [...entries.data]});
 
@@ -125,12 +131,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
   const onNewEntry = () => {
     setOpenModal({
       visible: !openModal['visible'],
-      entryData: {
-        date: moment(sDate).utcOffset(0, true),
-        startTime: moment('9:00', ['HH:mm']),
-        endTime: moment('18:00', ['HH:mm']),
-        breakHours: new Date().setHours(0, 0, 0, 0),
-      },
+      
     });
   };
 
@@ -429,15 +430,16 @@ function useRegex(input) {
   return regex.test(input);
 }
 
+//possible error leave Request comes in between when first render on the screen
 function restructure(data, date) {
   let year = moment(date).format('YYYY');
   let date_index = {};
   let daily_totalHour = {};
   let grandTotal = 0;
   let newData = [];
-  let leaveData = [];
-  let currItem = {data: []};
-  let count = 0;
+  let leaveEntries = {};
+  let emptyEntries = [];
+
   data['milestones'].forEach((el, p_index) => {
     Object.entries(el).forEach(([key, value], e_index) => {
       if (useRegex(key)) {
@@ -455,7 +457,15 @@ function restructure(data, date) {
             projectId: el['workId'],
             totalHours: el['totalHours'],
           };
-        } else {
+
+          if (leaveEntries[newKey]){
+            leaveEntries[newKey].push(value)
+          }else{
+            leaveEntries[newKey] = [value]
+          }
+
+        }else{
+
           value = {
             ...value,
             milestone: el['milestone'],
@@ -466,38 +476,57 @@ function restructure(data, date) {
             projectId: el['projectId'],
             milestoneEntryId: el['milestoneEntryId'],
           };
-        }
-        if (date_index[newKey] >= 0) {
-          if (!el.leaveRequest) {
-            newData[date_index[newKey]]['data'].push(value);
-            daily_totalHour[newKey] += value['actualHours'];
+
+          if (newData[newKey]) {
+            //leave total hours are not included in timesheet hours
+              daily_totalHour[newKey] += value['actualHours'];
+              newData[newKey].push(value);
+  
           } else {
-            newData[date_index[newKey]]['data'].push(value);
-          }
-        } else {
-          if (!el.leaveRequest) {
-            date_index[newKey] = count;
-            newData.push({title: newKey, data: [value]});
             daily_totalHour[newKey] = value['actualHours'];
-            count++;
-          } else {
-            date_index[newKey] = count;
-            newData.push({title: newKey, data: [value]});
-            count++;
+            newData[newKey] = [value];
           }
         }
       }
     });
-    //For Total Hours in Month
+
+    //For Total Hours in Month without leave Request
     if (!el.leaveRequest){
       grandTotal += el['totalHours'];
+      emptyEntries.push({
+        entryId:  'empty' + p_index,
+        milestone: el['milestone'],
+        project: el['project'],
+        projectType: el['projectType'],
+        status: el['status'],
+        milestoneId: el['milestoneId'],
+        projectId: el['projectId'],
+        milestoneEntryId: el['milestoneEntryId']
+      })
     }
+    
   });
-  if (date_index[formatDate(date, false, true)] >= 0) {
-    currItem = newData[date_index[formatDate(date, false, true)]] ?? {};
-  }
 
-  return {daily_totalHour, grandTotal, newData, currItem};
+  let currItem = getCurrentDateData(date, newData, emptyEntries, leaveEntries)
+                                                          //new entry
+  return {daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries};
+}
+
+function getCurrentDateData(date, entriesData, emptyData, leaveData){
+  date = formatDate(date, false, true)
+  let dayEntries = entriesData[date]
+  let dayLeaves = leaveData[date] ?? []
+  if (dayEntries){
+    if ( emptyData.length > 0 || dayEntries.length === emptyData.length){
+      let createdEntriesIds = new Set(dayEntries.map(el => el['milestoneEntryId']))
+      let mergeEmptyCreated = [...dayEntries, ...emptyData.filter(el=> !createdEntriesIds.has(el['milestoneEntryId']))]
+      return {title: date, data: [...mergeEmptyCreated, ...dayLeaves ]}
+    }else{
+      return {title: date, data: [...dayEntries, ...dayLeaves ]}
+    }
+  }else{
+    return {title: date, data: [...emptyData, ...dayLeaves]}
+  }
 }
 
 function timesheet_update(data, timesheet, openModal) {
@@ -561,4 +590,5 @@ function timesheet_update(data, timesheet, openModal) {
     added = true;
   }
 
-  return { timesheet_data: updateTimesheet, dailyHour: updateHours, total: updateTotal, currItem, }; }
+  return { timesheet_data: updateTimesheet, dailyHour: updateHours, total: updateTotal, currItem, }; 
+}

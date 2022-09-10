@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import moment from 'moment';
 import { View , StyleSheet } from 'react-native';
-import {Card, Text, Title, Subheading, Caption, TouchableRipple } from 'react-native-paper';
+import {Card, Text, Title, Subheading, Caption, TouchableRipple, IconButton } from 'react-native-paper';
 import { formatFloat, status_color } from '../../services/constant';
 import { ColView } from '../Common/ConstantComponent';
 
@@ -32,20 +32,28 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
                     ? `${timeEntry.milestone}`
                     : '\n'}
                 </Caption>
-                <Text>
-                  {moment(timeEntry['startTime'], ['HH:mm']).format('h:mm A')}{' '}
-                  To {moment(timeEntry['endTime'], ['HH:mm']).format('h:mm A')}
-                  {timeEntry.breakHours
-                    ? ` With ${getBreakTime(timeEntry.breakHours)} Hour Break`
-                    : '\n'}{' '}
-                </Text>
+                {timeEntry['startTime'] ?
+                  <Text>
+                    {moment(timeEntry['startTime'], ['HH:mm']).format('h:mm A')}{' '}
+                    To {moment(timeEntry['endTime'], ['HH:mm']).format('h:mm A')}{'\n'}
+                    {timeEntry.breakHours ? `${getBreakTime(timeEntry.breakHours)} hours of break` : ' '}
+                  </Text>
+                  :
+                  <Text>
+                    Press To Add Time Entry {'\n'}{' '}
+                  </Text>
+                }
                 {/* <Caption >{timeEntry.notes}</Caption> */}
               </View>
               <View style={[styles.hourView, status_color[timeEntry.status]]}>
-                <Title style={{fontWeight: '900', color: statusColor}}>
-                  {formatFloat(timeEntry.actualHours)}
-                </Title>
-                <Subheading style={{color: statusColor}}>hours</Subheading>
+              {timeEntry['startTime'] ?<View>
+                  <Title style={{fontWeight: '900', color: statusColor}}>
+                    {formatFloat(timeEntry.actualHours)}
+                  </Title>
+                  <Subheading style={{color: statusColor}}>hours</Subheading>
+                </View> :
+                <IconButton icon="plus" color={statusColor} size={40} />
+                }
               </View>
             </ColView>
           ) : (

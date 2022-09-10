@@ -58,3 +58,12 @@ calanders overlay
 icons as web
 
 timesheet_ NAN problen on timer
+
+Changes
+    add Timesheet buttn -> View Timesheet
+
+
+outlook calendar
+    weekliyTimesheet 
+        + button add and will always found  in days if entered
+        don't show empty timesheet if Submitted or Approved
