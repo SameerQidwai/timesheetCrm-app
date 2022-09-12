@@ -89,6 +89,6 @@ const styles = StyleSheet.create({
     },
     renderDayText: (state)=>({
         textAlign: 'center',
-        color: state === 'disabled' ? 'gray' : 'black'
+        color: state === 'today'? '#1890ff' : state === 'disabled' ? 'gray' : 'black'
     })
 })
