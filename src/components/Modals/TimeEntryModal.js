@@ -20,7 +20,8 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
   const [MILESTONES, setMILESTONES] = useState([])
   
   //defualt Value
-  let disable = data['entryId'] && ['SB', 'AP'].includes(data['status'])
+  let disable = (data['entryId'] && ['SB', 'AP'].includes(data['status']))
+  let disableDropdown = (!data['entryId'] && data['milestoneId'])
 
   useEffect(() => {
     
@@ -149,7 +150,7 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
                 placeholder={'Select Project...'}
                 label="Projects"
                 value={formData['milestoneId']}
-                disabled={disable}
+                disabled={disable || disableDropdown}
                 data={MILESTONES}
                 onSelect={item => {
                   setFieldValue('milestoneId', item.value);

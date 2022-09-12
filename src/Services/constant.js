@@ -5,17 +5,35 @@ import moment from "moment";
 export const Api = "http://54.91.49.138:8000/api/v1"; //Test 
 
 
-export const status_color = StyleSheet.create({
-    'AP': {backgroundColor :'#f6ffed', borderColor: '#b7eb8f', borderWidth: 0, color: '#5da647' },
-    'RJ': {backgroundColor :'#ffeded', borderColor: '#eb8f8f', borderWidth: 0, color: '#a64747' },
-    'SB': {backgroundColor :'#edf5ff', borderColor: '#8fb2eb', borderWidth: 0, color: '#476ba6' },
-    'SV': {backgroundColor :'#f5f5f5', borderColor: '#c4c4c4', borderWidth: 0, color: '#c4c4c4' },
+export const status_background = StyleSheet.create({
+    'AP': {backgroundColor :'#f6ffed' },
+    'RJ': {backgroundColor :'#ffeded' },
+    'SB': {backgroundColor :'#edf5ff' },
+    'SV': {backgroundColor :'#f5f5f5' },
 })
+
+export const status_color = StyleSheet.create({
+    'AP': { color: '#5da647' },
+    'RJ': { color: '#a64747' },
+    // 'RJ': { color: '#cf1322' },
+    'SB': { color: '#476ba6' },
+    'SV': { color: '#000' },
+})
+
+
+export const status_border = StyleSheet.create({
+  'AP': { borderColor: '#b7eb8f', borderWidth: 1, borderRadius: 3, paddingHorizontal: 3 },
+  'RJ': { borderColor: '#ffa39e', borderWidth: 1, borderRadius: 3, paddingHorizontal: 3 },
+  'SB': { borderColor: '#8fb2eb', borderWidth: 1, borderRadius: 3, paddingHorizontal: 3 },
+  // 'SV': { borderColor: '#c4c4c4', borderWidth: 1, borderRadius: 3, paddingHorizontal: 3 },
+})
+
+
 export const status_name = {
   'AP': 'Approved',
   'RJ': 'Rejected',
   'SB': 'Submitted',
-  'SV': ''
+  'SV': ' '
 }
 
 export const formatFloat = (number) => {

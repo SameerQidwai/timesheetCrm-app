@@ -1,11 +1,11 @@
 import React from 'react';
 import { View , StyleSheet, Pressable} from 'react-native';
 import {Card, Headline, Subheading, Title, Caption, Text, TouchableRipple, IconButton } from 'react-native-paper';
-import { formatFloat, status_color, status_name } from '../../services/constant';
+import { formatFloat, status_background, status_color, status_name} from '../../services/constant';
 import { ColView } from '../Common/ConstantComponent';
+import StatusTag from '../Common/StatusTag';
 
 const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
-    const statusColor = status_color[timesheet.status]?.['color'] ?? '#476ba6'
     return( 
         <Card 
             style={styles.card(selected)} 
@@ -47,10 +47,13 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
                             <Text >{'\n' + status_name[timesheet.status?? 'SV']}</Text>
                             {/* <Caption >{timeEntry.notes}</Caption> */}
                         </View>
-                        <View style={[styles.hourView, status_color[timesheet.status]] }
+                        <View style={[styles.hourView, status_background[timesheet.status]] }
                         >
-                            <Title style={{fontWeight: '900', color: statusColor, }}>{formatFloat(timesheet.totalHours)}</Title>
-                            <Subheading style={{color: statusColor}}>hours</Subheading>
+                            <Title style={[{fontWeight: '900' },status_color[timesheet.status]]}>
+                                {formatFloat(timesheet.totalHours)}
+                            </Title>
+                            <Subheading style={status_color[timesheet.status]}>hours</Subheading>
+                            <StatusTag status={timesheet.status} />
                             {selected&&<View style={[styles.overlay]} />}                               
                             {selected&& <IconButton
                                 icon="check"

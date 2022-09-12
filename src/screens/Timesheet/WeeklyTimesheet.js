@@ -114,7 +114,11 @@ const WeeklyTimesheet = ({route, navigation}) => {
   // }, []);
 
   const onPressItem = (item, index) => {
-    setSelected({...item, index});
+    if (isNaN(item['entryId'])){
+      onNewEntry(item['milestoneId'])
+    }else{
+      setSelected({...item, index});
+    }
   };
 
   const renderItem = ({item, index}) => {
@@ -128,10 +132,18 @@ const WeeklyTimesheet = ({route, navigation}) => {
     );
   };
 
-  const onNewEntry = () => {
+  const onNewEntry = (selectedMilestone) => {
+    console.log(selectedMilestone)
     setOpenModal({
       visible: !openModal['visible'],
-      
+      entryData: {
+        date: moment(sDate).utcOffset(0, true),
+        startTime: moment('9:00', ['HH:mm']),
+        endTime: moment('18:00', ['HH:mm']),
+        breakHours: new Date().setHours(0, 0, 0, 0),
+        milestoneId: selectedMilestone
+      },
+
     });
   };
 
@@ -319,7 +331,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
         style={styles.bottomButton}
         size="large"
         disabled={fetching}
-        onPress={onNewEntry}>
+        onPress={()=>onNewEntry()}>
         Add Timesheet Entry
       </Button>
       {openModal['visible'] && (
@@ -493,16 +505,18 @@ function restructure(data, date) {
     //For Total Hours in Month without leave Request
     if (!el.leaveRequest){
       grandTotal += el['totalHours'];
-      emptyEntries.push({
-        entryId:  'empty' + p_index,
-        milestone: el['milestone'],
-        project: el['project'],
-        projectType: el['projectType'],
-        status: el['status'],
-        milestoneId: el['milestoneId'],
-        projectId: el['projectId'],
-        milestoneEntryId: el['milestoneEntryId']
-      })
+      if (['SV', 'RJ'].includes(el['status'])){
+        emptyEntries.push({
+          entryId:  'empty' + p_index,
+          milestone: el['milestone'],
+          project: el['project'],
+          projectType: el['projectType'],
+          status: el['status'],
+          milestoneId: el['milestoneId'],
+          projectId: el['projectId'],
+          milestoneEntryId: el['milestoneEntryId']
+        })
+      }
     }
     
   });

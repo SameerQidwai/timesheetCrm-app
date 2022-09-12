@@ -1,8 +1,9 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Caption, Card, Headline, Paragraph, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
-import { formatDate, formatFloat, status_color } from '../../services/constant'
+import { formatDate, formatFloat, status_background, status_color } from '../../services/constant'
 import { ColView } from '../Common/ConstantComponent'
+import StatusTag from '../Common/StatusTag'
 
 const LeaveCard = ({item, index, onPress}) => {
   return (
@@ -13,40 +14,33 @@ const LeaveCard = ({item, index, onPress}) => {
         >
           <Card.Content style={{paddingHorizontal: 0}}>
             <ColView justify={'space-between'}>
-              {/* <View style={styles.dateView}>
-                <View style={styles.dateCard}>
-                  <Headline style={styles.dateText}>
-                    {formatDate(item.startDate, false, 'DD MMM')}
-                  </Headline>
-                </View>
-              </View> */}
-              <View style={[styles.dateView, status_color[item.status]]}>
-                <Headline style={[styles.dateText, status_color[item.status]]}>
-                    {formatDate(item.startDate, false, 'DD')}
-                </Headline>
-                <Subheading style={[styles.monthText, status_color[item.status]]}>
-                    {formatDate(item.startDate, false, 'MMM')}
-                </Subheading>
-              </View>
               <View style={styles.detailView}>
                 <View style={styles.nameView}>
                     <Text 
-                        style={styles.headline}
-                        numberOfLines={1}
+                      style={styles.headline}
+                      numberOfLines={1}
                     >
                         {item.leaveRequestName}
                     </Text>
-                    <Caption
-                        style={[styles.statusCaption, status_color[item.status]]}>
-                        {formatFloat(item.totalHours)}hr -{' '}
-                        {formatDate(item.endDate).diff(
-                        formatDate(item.startDate),
-                        'days',
-                        )+1} {' '}days
-                    </Caption>
                 </View>
-                <Text style={styles.projectText}>{item.projectName}</Text>
-                <Paragraph style={styles.notesText}>{item.notes}</Paragraph>
+                <Caption style={styles.projectText} numberOfLines={1}>{item.project}</Caption>
+                <Caption style={{color: '#000'}}>
+                    {formatDate(item.startDate, false, 'ddd DD MMM YYYY') + ' to ' + formatDate(item.endDate, false, 'ddd DD MMM YYYY')}
+                </Caption>
+                <Caption style={{color: '#000'}}>
+                    {formatFloat(item.totalHours)}hr {' '}
+                </Caption>
+                
+                {/* <Paragraph style={styles.notesText}>{item.notes}</Paragraph> */}
+              </View>
+              <View style={[styles.dateView, status_background[item.status]]}>
+                <Title style={[styles.dateText, status_color[item.status]]}>
+                  {formatDate(item.endDate).diff( formatDate(item.startDate), 'days', )+1}
+                </Title>
+                <Subheading style={[styles.monthText, status_color[item.status]]}>
+                  Days
+                </Subheading>
+                <StatusTag status={item.status}/>
               </View>
             </ColView>
           </Card.Content>
@@ -65,12 +59,12 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   detailView: {
-    width: '80%',
-    paddingRight: 5,
+    width: '75%',
+    paddingLeft: 10,
     paddingVertical: 5,
   },
   dateView: {
-    width: '20%',
+    width: '25%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -88,15 +82,20 @@ const styles = StyleSheet.create({
     marginVertical: 0,
     fontWeight: '900',
     // color: 'grey',
-    textTransform: 'uppercase',
+    // textTransform: 'uppercase',
   },
   monthText: {
     // lineHeight: 21,
     // color: 'grey',
-    textTransform: 'uppercase',
+    // textTransform: 'uppercase',
   },
 
-  projectText: {lineHeight: 22, marginVertical: 0, color: 'grey'},
+  projectText: {
+    color: '#747474', 
+    lineHeight: 14, 
+    marginVertical: 0,
+    // color: 'grey'
+  },
   notesText: {color: '#bfbfbf'},
   headline: {
     lineHeight: 22,
@@ -114,6 +113,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 5,
+    // paddingHorizontal: 5,
   },
 });

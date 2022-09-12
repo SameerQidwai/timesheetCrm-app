@@ -1,8 +1,9 @@
 import React from 'react'
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native'
-import { Card, Subheading, Text } from 'react-native-paper'
+import { Caption, Card, Headline, Subheading, Text, Title } from 'react-native-paper'
 import { leave_request_balance } from '../../../assets/constant'
 import { formatFloat } from '../../services/constant'
+import { ColView } from '../Common/ConstantComponent'
 import { colors } from '../Common/theme'
 
 
@@ -25,25 +26,73 @@ export default LeaveBalance= ({leave_balnce})=> {
 
     // }
     /** Details */
-    const renderItem = ({item}) =>{ 
+    // const renderItem = ({item}) =>{ 
+    //     return <Card
+    //         style={styles.card}
+    //         elevation={10} 
+    //         mode="elevated"
+    //     >
+    //         {/* <View > */}
+    //             <Card.Title title={formatFloat(item.balanceHours)}/>
+    //             <View>
+    //                 {/* <Card.Title subtitle={item.name} /> */}
+    //                 <Subheading style={{paddingLeft:10, fontWeight: '700'}}>{item.name}</Subheading>
+    //                 <Text>Accured is {formatFloat(item.carryForward)}</Text>
+    //                 <Text>Earned YTD is {formatFloat(item.balanceHours - item.carryForward + item.used)}</Text>
+    //                 <Text>Used YTD is {formatFloat(item.used)}</Text>
+    //             </View>
+    //         {/* </View> */}
+    //     </Card>
+
+    // }
+
+     const renderItem = ({item}) =>{ 
         return <Card
             style={styles.card}
             elevation={10} 
             mode="elevated"
         >
-            {/* <View > */}
-                <Card.Title title={formatFloat(item.balanceHours)}/>
-                <View>
-                    {/* <Card.Title subtitle={item.name} /> */}
-                    <Subheading style={{paddingLeft:10, fontWeight: '700'}}>{item.name}</Subheading>
-                    <Text>Accured is {formatFloat(item.carryForward)}</Text>
-                    <Text>Earned YTD is {formatFloat(item.balanceHours - item.carryForward + item.used)}</Text>
-                    <Text>Used YTD is {formatFloat(item.used)}</Text>
-                </View>
-            {/* </View> */}
+            <Card.Content>
+                <Subheading numberOfLines={1} >{item.name}</Subheading>
+                    <View>
+                        <Headline style={{fontWeight: '700'}}>{formatFloat(item.balanceHours)}</Headline>
+                        <Text style={styles.caption}>hours</Text>
+                    </View>
+            </Card.Content>
         </Card>
-
     }
+
+    // const renderItem = ({item}) =>{ 
+    //     return <Card
+    //         style={styles.card}
+    //         elevation={10} 
+    //         mode="elevated"
+    //     >
+    //         <Card.Content>
+    //             <Title numberOfLines={1} >{item.name}</Title>
+    //             <ColView justify={'space-between'}>
+    //                 <View>
+    //                     <Caption style={{fontWeight: '700'}}>Balance</Caption>
+    //                     <Text>{formatFloat(item.balanceHours)}</Text>
+    //                 </View>
+    //                 <View>
+    //                     <Caption style={{fontWeight: '700'}}>Used YTD</Caption>
+    //                     <Text>{formatFloat(item.used)}</Text>
+    //                 </View>
+    //             </ColView>
+    //             <ColView justify={'space-between'}>
+    //                 <View>
+    //                     <Caption style={{fontWeight: '700'}}>Accured</Caption>
+    //                     <Text>{formatFloat(item.carryForward)}</Text>
+    //                 </View>
+    //                 <View>
+    //                     <Caption style={{fontWeight: '700'}}>Earned YTD</Caption>
+    //                     <Text>{formatFloat(item.balanceHours - item.carryForward + item.used)}</Text>
+    //                 </View>
+    //             </ColView>
+    //         </Card.Content>
+    //     </Card>
+    // }
 
     return (
         <View>
@@ -66,6 +115,12 @@ const styles = StyleSheet.create({
     card: {
         borderRadius: 2,  
         margin:10,
-        padding:10
+        width: 200
+    },
+    caption: {
+        fontSize: 12,
+        color: 'rgba(0,0,0,0.54)',
+        marginVertical: 2,
+        letterSpacing: 0.45
     }
 })
