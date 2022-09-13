@@ -31,6 +31,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
     timesheet_data: {},
     total: 0,
     dailyHour: {},
+    createdMiletones: []
   });
   const [openModal, setOpenModal] = useState({visible: false});
   const [dateTime, setdateTime] = useState(false);
@@ -58,14 +59,14 @@ const WeeklyTimesheet = ({route, navigation}) => {
     try {
       let {success, data, setToken} = await getTimesheetApi(keys, accessToken);
       if (success) {
-        const {daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries} = restructure( data, date, );
-        console.log({daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries})
+        const {daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries, createdMiletones} = restructure( data, date, );
         setTimesheet({
           timesheet_data: {...newData},
           total: grandTotal,
           dailyHour: {...daily_totalHour},
           emptyEntries,
-          leaveEntries
+          leaveEntries,
+          createdMiletones
         });
         setItems({title: currItem.title, data: [...currItem.data]});
         setAppStorage(prev => ({...prev, accessToken: setToken}));
@@ -133,7 +134,6 @@ const WeeklyTimesheet = ({route, navigation}) => {
   };
 
   const onNewEntry = (selectedMilestone) => {
-    console.log(selectedMilestone)
     setOpenModal({
       visible: !openModal['visible'],
       entryData: {
@@ -189,10 +189,6 @@ const WeeklyTimesheet = ({route, navigation}) => {
     // const {currItem, ...rest} = timesheet_update(data, timesheet, openModal)
     // setTimesheet({...rest})
     // setItems({title: currItem.title, data: [...currItem.data]})
-  };
-  //To avoid selecting multiple entries aganist single milestones
-  const gettingCreatedMilestones = () => {
-    return items?.data.map(el => el.milestoneId);
   };
 
   return (
@@ -342,7 +338,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
           data={openModal['entryData']}
           edit={openModal['index']} //checking if oPress on existing entry
           onClose={() => setOpenModal({visible: false})}
-          disabledKeys={gettingCreatedMilestones()}
+          disabledKeys={timesheet['createdMiletones']}
         />
       )}
       {dateTime && (
@@ -364,6 +360,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
           onOption1={onView}
           onOption2={() => setConfirming('Delete')}
           select={selected}
+          disableOption2={['SB', 'AP']}
         />
       )}
       {confirming && (
@@ -451,6 +448,7 @@ function restructure(data, date) {
   let newData = [];
   let leaveEntries = {};
   let emptyEntries = [];
+  let createdMiletones = []
 
   data['milestones'].forEach((el, p_index) => {
     Object.entries(el).forEach(([key, value], e_index) => {
@@ -505,6 +503,9 @@ function restructure(data, date) {
     //For Total Hours in Month without leave Request
     if (!el.leaveRequest){
       grandTotal += el['totalHours'];
+      //To avoid selecting multiple entries aganist single milestones
+      createdMiletones.push(el['milestoneId'])
+      //to add Empty data if timeEntry is not created against the project
       if (['SV', 'RJ'].includes(el['status'])){
         emptyEntries.push({
           entryId:  'empty' + p_index,
@@ -523,7 +524,7 @@ function restructure(data, date) {
 
   let currItem = getCurrentDateData(date, newData, emptyEntries, leaveEntries)
                                                           //new entry
-  return {daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries};
+  return {daily_totalHour, grandTotal, newData, currItem, emptyEntries, leaveEntries, createdMiletones};
 }
 
 function getCurrentDateData(date, entriesData, emptyData, leaveData){

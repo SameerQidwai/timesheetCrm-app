@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import ReactNativeModernDatepicker from 'react-native-modern-datepicker'
 import { Dialog, Portal } from 'react-native-paper'
@@ -18,7 +19,7 @@ function DatePicker({visible, mode, current, selected,  minDate, maxDate, interv
         >
             <ReactNativeModernDatepicker
                 mode={mode}
-                current={date??current}
+                current={date??moment()}
                 selected={date}
                 selectorStartingYear={2000}
                 selectorEndingYear={3000}

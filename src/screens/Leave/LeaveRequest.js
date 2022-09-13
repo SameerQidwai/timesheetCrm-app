@@ -73,14 +73,14 @@ const LeaveRequest = () =>{
   };
 
   const onPressItem = (item, index) => {
-    setSelected(item);
+    setSelected(item.id);
   };
 
   const onView = (key, index) =>{
     setSelected(false);
     setOpenModal({
       visible: true, 
-      index,
+      // index,
       edit: key
     });
   };
@@ -131,6 +131,7 @@ const LeaveRequest = () =>{
           onOption1={onView}
           onOption2={() => setConfirming('Delete')}
           select={selected}
+          disableOption2={['AP']}
         />
       )}
       {confirming && (

@@ -6,6 +6,20 @@ import { ColView } from '../Common/ConstantComponent'
 import StatusTag from '../Common/StatusTag'
 
 const LeaveCard = ({item, index, onPress}) => {
+
+  const getTotalDays = () =>{
+    let numberOfDays = formatDate(item.endDate).diff( formatDate(item.startDate), 'days', )+1
+    return (<View style={[styles.dateView, status_background[item.status]]}>
+      <Title style={[styles.dateText, status_color[item.status]]}>
+        {numberOfDays}
+      </Title>
+      <Subheading style={[styles.monthText, status_color[item.status]]}>
+        Day{numberOfDays >1 && 's' }
+      </Subheading>
+      <StatusTag status={item.status}/>
+    </View>)
+  }
+
   return (
     <Card elevation={5} mode="elevated" style={styles.card}>
         <TouchableRipple
@@ -33,15 +47,8 @@ const LeaveCard = ({item, index, onPress}) => {
                 
                 {/* <Paragraph style={styles.notesText}>{item.notes}</Paragraph> */}
               </View>
-              <View style={[styles.dateView, status_background[item.status]]}>
-                <Title style={[styles.dateText, status_color[item.status]]}>
-                  {formatDate(item.endDate).diff( formatDate(item.startDate), 'days', )+1}
-                </Title>
-                <Subheading style={[styles.monthText, status_color[item.status]]}>
-                  Days
-                </Subheading>
-                <StatusTag status={item.status}/>
-              </View>
+              {/* Show Hours at right corner of the card with days condition*/}
+              {getTotalDays()}
             </ColView>
           </Card.Content>
         </TouchableRipple>

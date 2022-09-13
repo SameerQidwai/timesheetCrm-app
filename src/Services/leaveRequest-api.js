@@ -112,7 +112,7 @@ export const getLeaveApi = (id, token) => {
         })
         .catch((err) => {
             const message = err?.response?.data?.message
-            messageAlert.error({ content: message, key: id})
+            console.log(message)
             return {
                 error: "Please login again!",
                 success: false,

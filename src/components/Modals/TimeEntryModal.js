@@ -36,7 +36,6 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
       }
     })
   }, [modalVisible])
-
   const enableMilestones = (data) =>{
     if(disabledKeys?.length >0){
       return data.map(el => {
@@ -67,7 +66,6 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
     // setModalVisible(false);
     onClose();
   };
-
 
   const onSubmit = () =>{
     setLoading(true)

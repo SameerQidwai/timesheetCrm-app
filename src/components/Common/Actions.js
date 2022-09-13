@@ -4,7 +4,7 @@ import { Button, Portal, Modal } from 'react-native-paper'
 import { colors } from './theme';
 const height = Dimensions.get('screen').height
 
-function Actions({visible, onDismiss, select, onOption1, onOption2}) {
+function Actions({visible, onDismiss, select, onOption1, onOption2, disableOption2}) {
 
   return (
     <Portal>
@@ -32,9 +32,9 @@ function Actions({visible, onDismiss, select, onOption1, onOption2}) {
           <Button
             mode="contained"
             color={colors['danger']}
-            disabled={['SB', 'AP'].includes(select.status)}
+            disabled={disableOption2.includes(select.status)}
             labelStyle={{color: '#fff'}}
-            onPress={()=>onOption2(select.entryId)}
+            onPress={()=>onOption2(select)}
             style={{marginVertical: 10}}>
             Delete
           </Button>

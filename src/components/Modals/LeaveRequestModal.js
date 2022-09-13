@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Dialog, IconButton, Portal, Subheading, Title } from 'react-native-paper'
-import DateTimePicker from '@react-native-community/datetimepicker';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
 import { addLeaveApi, editLeaveApi, getLeaveApi, getUserLeaveType } from '../../services/leaveRequest-api';
-import { formatDate } from '../../services/constant';
+import { formatDate, formatFloat } from '../../services/constant';
 import { colors } from '../Common/theme';
 import { MDropDown, TextField } from '../Common/InputFields';
+import DatePicker from '../Common/DatePicker';
 
 export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=> {
   const {appStorage, setAppStorage} = useContext(AppContext)
@@ -125,14 +126,14 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
     // setDaysHours({...hoursEntry})
     // return dayArray
   }
-
+  
   const getFormValues = () => {
     setLoading(true)
     const { description, workId,typeId } = formData;
-    const {accessToken} = appStorage    
+    const {accessToken} = appStorage  
     const newVal = {
             description: description ?? '',
-            typeId: typeId || 0,
+            typeId: typeId ?? 0,
             workId,
             entries: days,
             //this is for if I need a seperate variable for daysHours to stop reRendring
@@ -161,6 +162,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
       });
     }
   }
+
     
   return (
     <Portal>
@@ -184,10 +186,10 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           <Dialog.Content style={styles.modalBody}>
             <View style={styles.subHeader}>
               <Subheading style={styles.subheading}>
-                {'Total Hours'}
+                {getTotalHours(days)}{' Hours'}
               </Subheading>
               <Subheading style={styles.subheading}>
-                {'Number of Days'}
+                {getTotalDays(otherData)}
               </Subheading>
             </View>
             <Dialog.ScrollArea style={styles.fieldView}>
@@ -199,7 +201,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                   disabled={edit}
                   data={OPTIONS['leaves']}
                   onSelect={(item)=>{ 
-                    setFieldValue('typeId', item.value)
+                    setFieldValue('typeId', item.id)
                     setOtherData(prev => ({...prev, leavetype: item}))
                   }}
                   zIndex={3000}
@@ -297,7 +299,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           </Button>
         </Dialog.Actions>
       </Dialog>
-      {dateTime.open && (
+      {/* {dateTime.open && (
         <DateTimePicker
           mode={dateTime['mode']}
           value={
@@ -307,6 +309,17 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           }
           onChange={({type}, dateValue) => {
             setFieldValue(dateTime['key'], dateValue, type);
+          }}
+        />
+      )} */}
+      {dateTime.open && (
+        <DatePicker
+          visible={dateTime.open}
+          mode="calendar"
+          selected={formatDate(otherData[dateTime['key']] ?? new Date(), false, true) }
+          onDismiss={()=>setDateTime(prev => ({...prev, open: false}))}
+          onDateChange={(selectedDate) => {
+            setFieldValue(dateTime['key'], selectedDate, 'set');
           }}
         />
       )}
@@ -408,3 +421,15 @@ const styles = StyleSheet.create({
       margin: 5,
     }
   });
+
+
+//----------------------Helper function------------//
+function getTotalHours (days){
+  return formatFloat((days ?? []).reduce((previous, current) => previous + parseFloat(current['hours']??0) , 0))
+}
+
+function getTotalDays ({startDate, endDate}){
+  let numberOfDays = formatDate(endDate??startDate).diff( formatDate(startDate), 'days', )+1
+
+  return `${numberOfDays} ${numberOfDays >1 ? 'Days' : 'Day'}`
+}
