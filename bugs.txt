@@ -67,3 +67,6 @@ outlook calendar
     weekliyTimesheet 
         + button add and will always found  in days if entered
         don't show empty timesheet if Submitted or Approved
+
+shahbaz 
+    set height 57 to 74 in document attach

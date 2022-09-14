@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FlatList, StatusBar, StyleSheet, View } from 'react-native'
-import { Appbar, Button, Caption, IconButton, Title, TouchableRipple } from 'react-native-paper'
+import { Alert, FlatList, Image, StatusBar, StyleSheet, View } from 'react-native'
+import { Appbar, Button, Caption, Dialog, IconButton, Modal, Text, TextInput, Title, TouchableRipple } from 'react-native-paper'
 import ProjectCards from '../../components/Cards/ProjectCards'
 import { AppContext } from '../../context/AppContext'
 import { getTimesheetApi, reviewTimeSheet } from '../../services/timesheet-api'
-import { formatDate, formatFloat } from '../../services/constant';
+import { formatDate, formatFloat, thumbUrl } from '../../services/constant';
 import { ColView } from '../../components/Common/ConstantComponent'
 import DatePicker from '../../components/Common/DatePicker'
 import NoRecords from '../../components/Common/NoRecords'
 import Confirm from '../../components/Common/Confirm'
 import { colors } from '../../components/Common/theme'
+import { TextField } from '../../components/Common/InputFields'
+import TimesheetAttachment from '../../components/Modals/TimesheetAttachment'
+// const imagePick = ImagePicker;
 
 const MonthlyTimesheet =({navigation}) =>{
     const { appStorage, setAppStorage } = useContext(AppContext)
@@ -21,7 +24,10 @@ const MonthlyTimesheet =({navigation}) =>{
     const [timesheets, setTimesheets] = useState({})
     const [disableAction, setDisableAction] = useState(true)
     const [confirming, setConfirming] = useState(false)
-
+    //edited by shahbaz
+  const [fileModelEvent, setFileModelEvent] = useState(false);
+  
+  // end 
     useEffect(() => {
         getData()
     }, [sDate])
@@ -38,11 +44,13 @@ const MonthlyTimesheet =({navigation}) =>{
                 const { grandtotal, newData } = restructure(data)
                 setAppStorage(prev=> ({...prev, accessToken: setToken}))
                 setTimesheets({data: newData, total: grandtotal})
-                setFetching(false)
+                // setFetching(false)
             }else{
                 setTimesheets({data: [], total: 0})
-                setFetching(false)
-            }
+                // setFetching(false)
+          }
+          setFetching(false);
+          setFileModelEvent(false);
         }catch (e){
             console.log(e)
         }
@@ -50,33 +58,41 @@ const MonthlyTimesheet =({navigation}) =>{
     }
 
     const onPressItem = (key, item)=>{
-        let newSelected = selected
-        let selectedItems = Object.keys(selected).length
-        if (longPressed){
-            if (newSelected[key]){
-                delete newSelected[key]
-                if (selectedItems === 1){
-                    setLongPress(false)
-                    setDisableAction(true)
-                }
-            }else{
-              if (['SV', 'RJ'].includes(item.status)){
-                newSelected[key] = true
-                setDisableAction(false)
+      let newSelected = selected
+      let selectedItems = Object.keys(selected).length
+      if (longPressed){
+          if (newSelected[key]){
+              delete newSelected[key]
+              if (selectedItems === 1){
+                  setLongPress(false)
+                  setDisableAction(true)
               }
+          }else{
+            if (['SV', 'RJ'].includes(item.status)){
+              newSelected[key] = true
+              setDisableAction(false)
             }
-            setSelected({...newSelected})
-        }
-        // if (!long && selectedItems === 0) {
-        //     // setOpenModal(true);
-        // }
+          }
+        setSelected({ ...newSelected })
         
-        // if (long && selectedItems === 0){
-        //     setSelected({[key]: true})
-        //     setLongPress(true)
-        // }
-    }
+      } else {
+        setFileModelEvent(item);
+      }
 
+      // if (!long && selectedItems === 0) {
+      //     // setOpenModal(true);
+      // }
+      
+      // if (long && selectedItems === 0){
+      //     setSelected({[key]: true})
+      //     setLongPress(true)
+      // }
+  }  
+  
+  // edited by shahbaz
+
+  
+    // end
     const onSelectAll = () =>{
         if (timesheets?.['data']?.['milestones'].length > 0){
         // if (projects_timesheet.length > 0){
@@ -135,6 +151,10 @@ const MonthlyTimesheet =({navigation}) =>{
         }
     };
 
+  const onSuccess = () => {
+    getData();
+  }
+  
     return (
       <View style={styles.pageView}>
         <StatusBar  backgroundColor={colors['primary']} />
@@ -330,7 +350,11 @@ const MonthlyTimesheet =({navigation}) =>{
             onConfirm={() => actionTimeSheet(confirming)}
           />
         )}
-      </View>
+        
+        
+        {fileModelEvent && <TimesheetAttachment fileModelEvent={fileModelEvent} setFileModelEvent={setFileModelEvent} onSuccess={onSuccess} />}
+        
+        </View>
     );
 }
 
@@ -375,7 +399,8 @@ const styles =  StyleSheet.create({
         left: 0,
         backgroundColor: 'black',
         opacity: 0.5
-    },
+  },
+    
 })
 
 //------------helping Number ---------//

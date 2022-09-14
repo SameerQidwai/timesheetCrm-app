@@ -93,3 +93,22 @@ export const sorting = (data, key) => {
   );
   return sortData;
 };
+
+export const thumbUrl = (type) => {
+  console.log("type->",type);
+  if (type === 'pdf') {
+    return require('../../assets/icons/pdf.png');
+  } else if (type === 'doc' || type === 'docx') {
+    return require('../../assets/icons/doc.png');
+  } else if (type === 'xls' || type === 'xlsx') {
+    return require('../../assets/icons/xls.png');
+  } else if (type === 'ppt' || type === 'pptx') {
+    return require('../../assets/icons/ppt.png');
+  } else if (type === 'csv') {
+    return require('../../assets/icons/csv.png');
+  } else if (/(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico)$/i.test(type)) {
+    return require('../../assets/icons/img.png');
+  } else {
+    return require('../../assets/icons/default.png');
+  }
+};
