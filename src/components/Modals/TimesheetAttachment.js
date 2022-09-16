@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Alert, Image, StyleSheet, View, Dimensions } from 'react-native'
+import { Alert, Image, StyleSheet, View, Dimensions, Pressable} from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import { TextField } from '../Common/InputFields';
@@ -9,7 +9,7 @@ import { colors } from '../Common/theme';
 import { addAttachment } from '../../services/attachment-api';
 import { AppContext } from '../../context/AppContext';
 import { addTimesheetNote } from '../../services/timesheet-api';
-
+import { checkPermission } from '../../services/DownloadFile';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -155,8 +155,9 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
         }));
     };
    
-    const deleteFileEvent = () => {
-        setFormState(formState => ({
+  const deleteFileEvent = () => {
+      // Linking.openURL(url);  
+      setFormState(formState => ({
             ...formState,
             values: {
               ...formState.values,
@@ -171,11 +172,14 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
     let url = thumbUrl(file.type);
       return <>
           <View style={{display:"flex", justifyContent:"space-between", flexDirection:"row", alignItems:"center",borderWidth:1, borderColor:"#909090", borderStyle:"dotted", backgroundColor:"#fafafa", height:74}}>
-              <View style={{justifyContent:"flex-start", flexDirection:"row", alignItems:"center"}}>
-                <Image source={url} style={{width:34, height:34, marginLeft:5}} />
+          <Pressable onPress={()=> checkPermission(file.uri)}>
+          <View style={{ justifyContent: "flex-start", flexDirection: "row", alignItems: "center" }} >
+            {console.log("file",file.uri)}    
+            <Image source={url} style={{ width: 34, height: 34, marginLeft: 5 }} />
                 <Text style={{marginLeft:5}}>{file.name}</Text>
-              </View>
-              <View>
+          </View>
+          </Pressable>    
+          <View>
                 <IconButton
                         icon={"delete-outline"}
                         color={colors.danger}
@@ -232,7 +236,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
                             <View style={{justifyContent:"flex-start", flexDirection:"row", alignItems:"center", paddingLeft:5}}>
                           {console.log(formState.values?.file?.uri)}    
                           <Image source={{ uri: formState.values?.file?.uri, width:54, height:54}} />              
-                                <Text style={{marginLeft:5}}>hello</Text>
+                        <Text style={{ marginLeft: 5 }}>hello</Text>
                             </View>
                           </TouchableRipple>
                             <View>
@@ -279,7 +283,22 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
       </Dialog>
       <Portal>
         <Modal visible={showFullSize} style={styles.modalView} onDismiss={() => { setShowFullSize(false) }}>
-            <View style={{borderRadius: 10, width: windowWidth, height: windowHeight}}>
+        <TouchableRipple
+          style={styles.downloadIcon}
+          >
+            <IconButton icon={"download-outline"}
+              color={"white"}
+              size={30}
+              onPress={() => { checkPermission(formState.values?.file?.uri) }} />      
+        </TouchableRipple>
+        <TouchableRipple
+          style={styles.closeButton}>
+          <IconButton icon={"close"}
+            color={"white"}
+            size={25}
+            onPress={()=> setShowFullSize(false)}/>      
+        </TouchableRipple>
+          <View style={{ borderRadius: 10, width: windowWidth, height: windowHeight }}>
                 <Image source={{uri: formState.values?.file?.uri, width: windowWidth, height: windowHeight}} />              
             </View>
         </Modal>
@@ -314,5 +333,27 @@ const styles = StyleSheet.create({
   actionView: {
     justifyContent: 'space-between',
     paddingTop: 10,
+  },
+  downloadIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 30,
+    height: 30,
+    position: 'absolute',
+    top: 20,
+    left: 15,
+    zIndex: 1,
+  },
+  closeButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "red",
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    position: 'absolute',
+    top: 20,
+    right: 10,
+    zIndex: 1,
   },
 })
