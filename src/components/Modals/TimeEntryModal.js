@@ -97,7 +97,6 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
     .then(res =>{
       if(res?.success){
         setLoading(false)
-        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
         onSuccess(res.data)
       }
     })
@@ -109,7 +108,6 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
     .then(res =>{
       if(res?.success){
         setLoading(false)
-        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
         onSuccess(res.data)
       }
     })

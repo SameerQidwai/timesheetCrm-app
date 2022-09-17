@@ -157,7 +157,6 @@ const WeeklyTimesheet = ({route, navigation}) => {
       if (res?.success) {
         getData(sDate);
         setLongPress(false);
-        // setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
       }
     });
   };

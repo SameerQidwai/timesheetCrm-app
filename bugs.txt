@@ -93,3 +93,6 @@ New on 15
 web Applicaion bug
     timesheet_ NAN problen on timer
     on web open upload modal  on Approved and submitted but now edditable
+
+shahbaz 
+    set height 57 to 74 in document attach

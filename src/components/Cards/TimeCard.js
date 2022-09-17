@@ -8,7 +8,7 @@ import StatusTag from '../Common/StatusTag';
 
 const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
   const statusColor = status_color[timeEntry.status]?.['color'] ?? '#476ba6'
-  const overlay = (`${timeEntry['entryId']}`.includes('empty') && ['AP', 'SB'].includes(timeEntry['status']))
+  const overlay = timeEntry.leaveRequest ? (timeEntry['status'] === 'AP') : (['AP', 'SB'].includes(timeEntry['status']))
 
   useEffect(() => {
       // console.log(selected)
@@ -73,7 +73,7 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
             <ColView justify={'space-between'}>
               <View style={styles.detailView}>
                 <View>
-                  <Text style={styles.headline}>{timeEntry.leaveType}</Text>
+                  <Text style={styles.headline(overlay)}>{timeEntry.leaveType}</Text>
                   <Caption style={styles.subheading}>
                     {timeEntry.project ? `${timeEntry.project}\n` : '\n'}
                   </Caption>

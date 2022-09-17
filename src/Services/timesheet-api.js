@@ -98,3 +98,29 @@ export const deleteTimeEntryApi = (entryId, token) => {
             };
         });
 };
+
+export const addTimesheetNote = (id, data, token) => {
+    return axios
+        .patch(`${url}/milestoneEntriesUpdate`, data, {headers:headers(token)})
+        .then((res) => {
+            console.log("res-->", res);
+            const { success, message, data } = res.data;
+            if (success) {
+                let obj = {
+                    notes: data.notes,
+                    attachment: data.attachment
+                }
+                let setToken = (res.headers && res.headers.authorization)
+                return {success, data, setToken};
+            }
+            return {success};
+            
+        })
+        .catch((err) => {
+            return {
+                error: "Please login again!",
+                status: false,
+                message: err.message,
+            };
+        });
+};

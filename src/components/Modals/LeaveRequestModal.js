@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
-import { Button, Dialog, IconButton, List, Portal, Subheading, Text, Title } from 'react-native-paper'
+import { Button, Dialog, IconButton, List, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
@@ -65,9 +65,8 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
               startDate: formatDate(entries[0].date),
               endDate: formatDate(entries[entries.length-1].date)
             })
-          }, 600);
+          }, 300);
         }
-        setAppStorage(prev=> ({...prev, accessToken: setToken}))
         setFetching(false)
       })
   }
@@ -111,7 +110,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
       //cloning date
       startDate = formatDate(startDate)  // if we are not selecting endDate it will be startDate
       while(startDate.isSameOrBefore((endDate?? startDate), 'day')){
-        let day = formatDate(startDate, true, 'ddd - DD MMM')
+        let day = formatDate(startDate, true, 'ddd, DD MMM')
          // need key to push in the table
         const disabled = !include_off_days && ( (startDate.format('ddd') === 'Sun' || startDate.format('ddd') === 'Sat') && 'Weekend' || holidays[startDate.format('M/D/YYYY')] )                                              
         //hours are getting update on each call
@@ -150,7 +149,6 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
       editLeaveApi(edit, newVal, accessToken).then((res) => {
           setLoading(false)
           if (res.success) {
-            setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
             onSuccess()
           }
       });
@@ -158,7 +156,6 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
       addLeaveApi(newVal, accessToken).then((res) => {
           setLoading(false)
           if (res.success) {
-            setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
             onSuccess()
           }
       });
@@ -247,21 +244,24 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                   }}
                   showSoftInputOnFocus={false}
                 />
-                  <List.Accordion
-                    title={expanded? 'Collapse': 'Expanded'}
+                  {/* <List.Accordion
+                    title={expanded? 'Collapse': 'Expand'}
                     style={{padding: 0}}
                     titleStyle={{padding: 0, paddingVertical: 0, marginVertical: 0, fontSize:12, lineHeight: 14, color: '#000'}}
                     expanded={expanded}
                     onPress={()=> setExpanded(!expanded)}>
+                    <ScrollView style={styles.timeFieldsView}>
+                      {days.map((el, index)=>(
                   <List.Item 
-                    title={<View style={styles.timeFieldsView}>
-                  <ScrollView>
-                    {days.map((el, index)=>(
-                      <ColView key={el.key} style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+                    key={el.key}
+                    style={{padding: 0}}
+                    titleStyle={{width:'100%'}}
+                    title={<View style={{width: '100%'}}>
+                      <View  style={{flexDirection: 'row' ,alignItems: 'center',  justifyContent: 'space-between' }}>
                         <View>
                           <Text>{el.label}</Text>
                         </View>
-                        <View style={{marginHorizontal: 20}}>
+                        <View >
                           <TextField
                             value={el.hours}
                             disabled={el.disabled}
@@ -270,33 +270,48 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                             onChangeText={text => setFieldValue(el.key, text, false, index)}
                             />
                         </View>
-                      </ColView>
-                      ))
-                    }
-                  </ScrollView>
+                      </View>
                 </View>} />
-      </List.Accordion>
-                {/* <View style={styles.timeFieldsView}>
+                ))}
+                  </ScrollView>
+      </List.Accordion> */}
+                <TouchableRipple
+                  onPress={()=> setExpanded(!expanded)}
+                  rippleColor={"rgba(0, 0, 0, .12)"}
+                  style={styles.expandTouch}
+                >
+                  <ColView style={styles.colViewCenter}>
+                    <View>
+                      <Text>{expanded? 'Collapse': 'Expand'}</Text>
+                    </View>
+                    <View>
+                      <IconButton 
+                        style={styles.expandIcon}
+                        icon={expanded?'chevron-up':'chevron-down'}/>
+                    </View>
+                  </ColView>
+                </TouchableRipple>
+                {expanded && <View style={styles.timeFieldsView}>
                   <ScrollView>
                     {days.map((el, index)=>(
-                      <ColView key={el.key} style={{alignItems: 'center', justifyContent: 'flex-end' }}>
+                      <ColView key={el.key} style={styles.colViewCenter}>
                         <View>
                           <Text>{el.label}</Text>
                         </View>
-                        <View style={{marginHorizontal: 20}}>
+                        <View >
                           <TextField
+                            style={styles.hoursField}
                             value={el.hours}
                             disabled={el.disabled}
-                            placeholder="set hours"
                             keyboardType="decimal-pad"
                             onChangeText={text => setFieldValue(el.key, text, false, index)}
-                            />
+                          />
                         </View>
                       </ColView>
                       ))
                     }
                   </ScrollView>
-                </View> */}
+                </View>}
                 <TextField
                   value={formData['description']}
                   label="Notes"
@@ -413,7 +428,8 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20,
     },
     subheading:{
-      paddingVertical: 10
+      paddingVertical: 10,
+      fontWeight: '700'
     },
     button: {
       borderRadius: 2,
@@ -452,9 +468,22 @@ const styles = StyleSheet.create({
     },
     timeFieldsView: {
       height: 150,
-      borderLeftWidth: 2,
-      padding: 5,
-      margin: 5,
+      // borderLeftWidth: 2,
+      paddingHorizontal: 5,
+      marginHorizontal: 5,
+    },
+    hoursField: {
+      width: 100
+    },
+    expandIcon: {
+      margin: 0
+    },
+    colViewCenter: {
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    expandTouch:{
+      paddingHorizontal: 5,
     }
   });
 

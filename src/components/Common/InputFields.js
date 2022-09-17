@@ -21,7 +21,7 @@ export const TextField = ({value, disable, mode, label, placeholder, textarea, o
       onPressOut={onPressOut}
       showSoftInputOnFocus={showSoftInputOnFocus}
       keyboardType={keyboardType}
-      style={styles.textInput}
+      style={[styles.textInput, style]}
     />
   )
 }

@@ -10,6 +10,7 @@ import DatePicker from '../../components/Common/DatePicker'
 import NoRecords from '../../components/Common/NoRecords'
 import Confirm from '../../components/Common/Confirm'
 import { colors } from '../../components/Common/theme'
+import TimesheetAttachment from '../../components/Modals/TimesheetAttachment'
 
 const MonthlyTimesheet =({navigation}) =>{
     const { appStorage, setAppStorage } = useContext(AppContext)
@@ -21,7 +22,10 @@ const MonthlyTimesheet =({navigation}) =>{
     const [timesheets, setTimesheets] = useState({})
     const [disableAction, setDisableAction] = useState(true)
     const [confirming, setConfirming] = useState(false)
-
+    //edited by shahbaz
+  const [fileModelEvent, setFileModelEvent] = useState(false);
+  
+  // end 
     useEffect(() => {
         getData()
     }, [sDate])
@@ -38,11 +42,11 @@ const MonthlyTimesheet =({navigation}) =>{
                 const { grandtotal, newData } = restructure(data)
                 setAppStorage(prev=> ({...prev, accessToken: setToken}))
                 setTimesheets({data: newData, total: grandtotal})
-                setFetching(false)
             }else{
                 setTimesheets({data: [], total: 0})
-                setFetching(false)
-            }
+          }
+          setFetching(false);
+          setFileModelEvent(false);
         }catch (e){
             console.log(e)
         }
@@ -50,32 +54,35 @@ const MonthlyTimesheet =({navigation}) =>{
     }
 
     const onPressItem = (key, item)=>{
-        let newSelected = selected
-        let selectedItems = Object.keys(selected).length
-        if (longPressed){
-            if (newSelected[key]){
-                delete newSelected[key]
-                if (selectedItems === 1){
-                    setLongPress(false)
-                    setDisableAction(true)
-                }
-            }else{
-              if (['SV', 'RJ'].includes(item.status)){
-                newSelected[key] = true
-                setDisableAction(false)
+      let newSelected = selected
+      let selectedItems = Object.keys(selected).length
+      if (longPressed){
+          if (newSelected[key]){
+              delete newSelected[key]
+              if (selectedItems === 1){
+                  setLongPress(false)
+                  setDisableAction(true)
               }
+          }else{
+            if (['SV', 'RJ'].includes(item.status)){
+              newSelected[key] = true
+              setDisableAction(false)
             }
-            setSelected({...newSelected})
-        }
-        // if (!long && selectedItems === 0) {
-        //     // setOpenModal(true);
-        // }
-        
-        // if (long && selectedItems === 0){
-        //     setSelected({[key]: true})
-        //     setLongPress(true)
-        // }
-    }
+          }
+        setSelected({...newSelected})
+      } else {
+        console.log('fixed')
+        setFileModelEvent(item);
+      }
+      // if (!long && selectedItems === 0) {
+      //     // setOpenModal(true);
+      // }
+      
+      // if (long && selectedItems === 0){
+      //     setSelected({[key]: true})
+      //     setLongPress(true)
+      // }
+  }  
 
     const onSelectAll = () =>{
         if (timesheets?.['data']?.['milestones'].length > 0){
@@ -129,12 +136,15 @@ const MonthlyTimesheet =({navigation}) =>{
                     setLongPress(false);
                     setSelected({});
                     setConfirming(false)
-                    setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
                 }
             })
         }
     };
 
+  const onSuccess = () => {
+    getData();
+  }
+  
     return (
       <View style={styles.pageView}>
         <StatusBar  backgroundColor={colors['primary']} />
@@ -329,7 +339,13 @@ const MonthlyTimesheet =({navigation}) =>{
             entity={'Timesheet'}
             onConfirm={() => actionTimeSheet(confirming)}
           />
-        )}
+        )}     
+        {fileModelEvent && (
+          <TimesheetAttachment 
+              fileModelEvent={fileModelEvent} 
+              setFileModelEvent={setFileModelEvent} 
+              onSuccess={onSuccess} />
+          )}
       </View>
     );
 }
@@ -375,7 +391,7 @@ const styles =  StyleSheet.create({
         left: 0,
         backgroundColor: 'black',
         opacity: 0.5
-    },
+  },
 })
 
 //------------helping Number ---------//

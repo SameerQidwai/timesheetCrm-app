@@ -68,7 +68,6 @@ const LeaveRequest = () =>{
       if(res?.success){
         setOpenModal({visible: false})
         getData()
-        setAppStorage(prev=> ({...prev, accessToken: res.setToken}))
       }
     })
   };
