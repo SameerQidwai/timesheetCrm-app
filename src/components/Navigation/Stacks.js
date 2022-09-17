@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { IconButton } from 'react-native-paper';
@@ -10,6 +10,7 @@ import LeaveRequest from '../../screens/Leave/LeaveRequest';
 import MonthlyTimesheet from '../../screens/Timesheet/MonthlyTimesheet';
 import { AppContext } from '../../context/AppContext';
 import { colors } from '../Common/theme';
+import { storage } from '../../services/constant';
 
 const Stack = createNativeStackNavigator();
 
@@ -88,10 +89,23 @@ function SignInScreen() {
 
 
 function Stacks() {
-    const {appStorage} = useContext(AppContext)
+  const getLocalStorage = () =>{
+    const jsonUser = storage.getString('data')
+    const userObject = jsonUser ? JSON.parse(jsonUser): {}
+    return userObject
+  }
+
+    const {appStorage, setAppStorage} = useContext(AppContext)
+    const [localStorage, setLocalStorage ] = useState(getLocalStorage())
+    
+    useEffect(() => {
+      setAppStorage(localStorage)    
+    }, [localStorage])
+
+    
   return (
     <View style={{flex:1}}>
-        {appStorage['accessToken'] ? <TabScreen/>: <SignInScreen/>}
+        {appStorage?.['accessToken'] ? <TabScreen/>: <SignInScreen setLocalStorage={setLocalStorage}/>}
     </View>
   )
 }

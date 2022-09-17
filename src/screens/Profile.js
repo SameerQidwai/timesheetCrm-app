@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import { Appbar, Button, Headline, IconButton, Title, Text, Subheading } from 'react-native-paper'
 import { colors } from '../components/Common/theme'
 import { AppContext } from '../context/AppContext'
+import { storage } from '../services/constant'
 import { getEmployee } from '../services/profile-api'
 
 const Profile = () => {
@@ -25,6 +26,11 @@ const Profile = () => {
     }
   }
 
+  const signOut = () =>{
+    setAppStorage({})
+    storage.clearAll()
+  }
+
   return (
     <View style={{flex:1}}>
       <Appbar.Header style={styles.header}>
@@ -32,7 +38,7 @@ const Profile = () => {
       </Appbar.Header>
         <View style={styles.iconView}>
           <IconButton icon="account-circle" size={100} color={colors['primary']} animated onPress={()=>console.log('me')}/>
-          <Headline>{profile['firstName'] + profile['lastName']}</Headline>
+          <Headline>{profile?.['firstName']} {profile?.['lastName']}</Headline>
           <Subheading>{profile['username']}</Subheading>
         <Button
             mode={"contained"}
@@ -40,7 +46,7 @@ const Profile = () => {
             compact
             style={{width: '45%', borderRadius: 2}}
             labelStyle={{color: '#fff'}}
-            onPress={()=> setAppStorage({})}>
+            onPress={signOut}>
             Sign Out
           </Button>
         </View>

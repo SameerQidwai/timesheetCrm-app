@@ -8,7 +8,7 @@
 
 import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
-import { Appbar, Button, Caption, IconButton, Title, TouchableRipple, } from 'react-native-paper';
+import { Appbar, Button, Caption, IconButton, Text, Title, TouchableRipple, } from 'react-native-paper';
 import {CalendarProvider, WeekCalendar} from 'react-native-calendars';
 import moment from 'moment';
 import TimeCard2 from '../../components/Cards/TimeCard';
@@ -89,7 +89,6 @@ const WeeklyTimesheet = ({route, navigation}) => {
 
         //find if entries are already created
         let entries =  getCurrentDateData(day, timesheet_data, emptyEntries, leaveEntries)
-
         setDate(day);
         setItems({title: entries.title, data: [...entries.data]});
 
@@ -123,6 +122,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
   };
 
   const renderItem = ({item, index}) => {
+    // console.log(item.entryId, item.leaveType)
     return (
       <TimeCard2
         timeEntry={item}
@@ -209,7 +209,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
             // <View style={{flex: 1}}>
             <TouchableRipple
               onPress={() => setdateTime(!dateTime)}
-              rippleColor="rgba(0, 0, 0, .32)">
+              rippleColor="rgba(0, 0, 0, .12)">
               <Title
                 style={{
                   textTransform: 'uppercase',
@@ -302,9 +302,9 @@ const WeeklyTimesheet = ({route, navigation}) => {
         />
         {items?.data.length > 0 ? (
           <View style={{flex: 1}}>
-            <Caption style={{ textAlign: 'center', paddingVertical: 5 }}>
+            <Text style={styles.dayTitle}>
               {formatDate(sDate, false, 'dddd - DD MMM YYYY')}
-            </Caption>
+            </Text>
             <FlatList
               data={items?.data ?? []}
               renderItem={renderItem}
@@ -430,6 +430,14 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 2,
   },
+  dayTitle: {
+    fontSize: 12,
+    color: 'rgba(0,0,0,0.54)',
+    marginVertical: 2,
+    letterSpacing: 0.45,
+    textAlign: 'center', 
+    paddingVertical: 5
+  }
 });
 
 //--------Helping Function --------//
@@ -458,7 +466,7 @@ function restructure(data, date) {
         if (el.leaveRequest) {
           value = {
             ...value,
-            entryId: 'l' + e_index,
+            entryId: 'l' + (el['typeId']?? '') + (el['workId']?? ''),
             project: el['project'],
             projectType: el['projectType'],
             leaveRequest: el['leaveRequest'],
@@ -506,7 +514,7 @@ function restructure(data, date) {
       //To avoid selecting multiple entries aganist single milestones
       createdMiletones.push(el['milestoneId'])
       //to add Empty data if timeEntry is not created against the project
-      if (['SV', 'RJ'].includes(el['status'])){
+      // if (['SV', 'RJ'].includes(el['status'])){
         emptyEntries.push({
           entryId:  'empty' + p_index,
           milestone: el['milestone'],
@@ -517,7 +525,7 @@ function restructure(data, date) {
           projectId: el['projectId'],
           milestoneEntryId: el['milestoneEntryId']
         })
-      }
+      // }
     }
     
   });
@@ -529,12 +537,12 @@ function restructure(data, date) {
 
 function getCurrentDateData(date, entriesData, emptyData, leaveData){
   date = formatDate(date, false, true)
-  let dayEntries = entriesData[date]
-  let dayLeaves = leaveData[date] ?? []
+  const dayEntries = entriesData[date]
+  const dayLeaves = leaveData[date] ?? []
   if (dayEntries){
     if ( emptyData.length > 0 || dayEntries.length === emptyData.length){
-      let createdEntriesIds = new Set(dayEntries.map(el => el['milestoneEntryId']))
-      let mergeEmptyCreated = [...dayEntries, ...emptyData.filter(el=> !createdEntriesIds.has(el['milestoneEntryId']))]
+      const createdEntriesIds = new Set(dayEntries.map(el => el['milestoneEntryId']))
+      const mergeEmptyCreated = [...dayEntries, ...emptyData.filter(el=> !createdEntriesIds.has(el['milestoneEntryId']))]
       return {title: date, data: [...mergeEmptyCreated, ...dayLeaves ]}
     }else{
       return {title: date, data: [...dayEntries, ...dayLeaves ]}

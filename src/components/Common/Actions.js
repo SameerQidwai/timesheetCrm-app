@@ -6,6 +6,8 @@ const height = Dimensions.get('screen').height
 
 function Actions({visible, onDismiss, select, onOption1, onOption2, disableOption2}) {
 
+  const option1Name =  disableOption2.includes(select['status']) ? 'View' : 'Edit'
+
   return (
     <Portal>
       <Modal
@@ -27,7 +29,7 @@ function Actions({visible, onDismiss, select, onOption1, onOption2, disableOptio
             onPress={()=>onOption1(select)}
             color={colors['primary']}
             style={{marginVertical: 10}}>
-            View
+            {option1Name}
           </Button>
           <Button
             mode="contained"

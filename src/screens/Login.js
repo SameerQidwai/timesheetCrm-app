@@ -3,6 +3,7 @@ import { Image, ImageBackground, StyleSheet, View, Platform, StatusBar  } from '
 import { Button, Card, Headline, Snackbar, TextInput } from 'react-native-paper'
 import { colors } from '../components/Common/theme'
 import { AppContext } from '../context/AppContext'
+import { storage } from '../services/constant'
 import { loginApi } from '../services/login-api'
 
 function Login() {
@@ -21,6 +22,7 @@ function Login() {
         let {success, data} = await loginApi(formData)
         if (success){
             setAppStorage(data)
+            storage.set('data', JSON.stringify(data))
         }else{
             setSnack(prev =>({...prev, visible: true}))
         }

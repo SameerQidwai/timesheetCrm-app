@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -11,7 +12,7 @@ export const ColView = ({children, flex,justify, padding, style,}) =>{
 }
 
 export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, dailyhours}) =>{
-   
+
     const [reload, setReload] = useState(false)
     useEffect(() => {
         setReload(!reload)
@@ -56,12 +57,12 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                     }}
                 >
                     <View>
-                        <Text style={[styles.renderDayText(state),marking?.['customStyles']?.text]}>
+                        <Text style={[styles.renderDayText(state), styles.todayDayText(date),marking?.['customStyles']?.text]}>
                         {date.day}
                         </Text>
                     </View>
                     <View>
-                        <Text style={[styles.renderDayText(state),marking?.['customStyles']?.text, {fontSize: 12}]}>
+                        <Text style={[styles.renderDayText(state), styles.todayDayText(date), marking?.['customStyles']?.text, {fontSize: 12}]}>
                             {getDayHour()}
                         </Text>
                     </View>
@@ -90,5 +91,10 @@ const styles = StyleSheet.create({
     renderDayText: (state)=>({
         textAlign: 'center',
         color: state === 'today'? '#1890ff' : state === 'disabled' ? 'gray' : 'black'
-    })
+    }),
+    todayDayText:(date)=>{
+        if (moment().isSame(formatDate(date.dateString, 'YYYY-MM-DD'), 'day')){
+            return {color: '#1890ff'}
+        }
+    }
 })

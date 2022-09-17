@@ -45,6 +45,7 @@ const LeaveRequest = () =>{
 
   const onSuccess = ()=>{
     setOpenModal({visible: false})
+    getData()
   }
 
   const renderItem = ({item, index}) => {
@@ -58,7 +59,7 @@ const LeaveRequest = () =>{
   };
   
   const onDelete = () => {
-    let id = selected
+    let { id } = selected
     setFetching(true);
     setConfirming(false)
     setSelected(false);
@@ -73,15 +74,15 @@ const LeaveRequest = () =>{
   };
 
   const onPressItem = (item, index) => {
-    setSelected(item.id);
+    setSelected(item);
   };
 
-  const onView = (key, index) =>{
+  const onView = (item, index) =>{
     setSelected(false);
     setOpenModal({
       visible: true, 
       // index,
-      edit: key
+      edit: item.id
     });
   };
 

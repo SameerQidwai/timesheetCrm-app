@@ -57,7 +57,7 @@ calanders overlay
 
 icons as web
 
-timesheet_ NAN problen on timer
+
 
 Changes
     add Timesheet buttn -> View Timesheet
@@ -67,3 +67,29 @@ outlook calendar
     weekliyTimesheet 
         + button add and will always found  in days if entered
         don't show empty timesheet if Submitted or Approved
+
+New on 15
+    Timesheet
+        Weekly
+            //will show empty cards on Approve and submit with - not +
+            --Leaves will always ibe below...// not done yet
+            //approved or submitted will be dim color... ()
+        Low...
+            current date in weekly timehseet...
+
+    Leave Request 
+        // Approved is not be editable or deleteable
+        //hours date label will be on left and right seperately 
+        //collapseable hours
+        //Modal Header see..
+        //add or edit on modal Title
+        //View and edit on Approved and (sumbitted or Rejeced) respoctively
+        // tab on leave blances show other balances
+    
+    AsyncStorage
+
+    and then... 
+
+web Applicaion bug
+    timesheet_ NAN problen on timer
+    on web open upload modal  on Approved and submitted but now edditable

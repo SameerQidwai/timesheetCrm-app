@@ -8,6 +8,7 @@ import StatusTag from '../Common/StatusTag';
 
 const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
   const statusColor = status_color[timeEntry.status]?.['color'] ?? '#476ba6'
+  const overlay = (`${timeEntry['entryId']}`.includes('empty') && ['AP', 'SB'].includes(timeEntry['status']))
 
   useEffect(() => {
       // console.log(selected)
@@ -19,15 +20,15 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
   }
 
   return (
-    <Card style={styles.card} elevation={5} mode="elevated">
+    <Card style={styles.card(overlay)} elevation={5} mode="elevated">
       {!timeEntry.leaveRequest ? (
         <TouchableRipple
-          onPress={onPress}
-          rippleColor="rgba(0, 0, 0, .32)">
+          onPress={!overlay && onPress}
+          rippleColor={"rgba(0, 0, 0, .12)"}>
           <Card.Content style={{paddingRight: 0}}>
             <ColView justify={'space-between'}>
               <View style={styles.detailView}>
-                <Text style={styles.headline} numberOfLines={1}>
+                <Text style={styles.headline(overlay)} numberOfLines={1}>
                   {timeEntry.project}
                 </Text>
                 <Caption style={styles.subheading}>
@@ -36,7 +37,7 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
                     : '\n'}
                 </Caption>
                 {timeEntry['startTime'] ? (
-                  <Text>
+                  <Text style={styles.timeText(overlay)}>
                     {moment(timeEntry['startTime'], ['HH:mm']).format('h:mm A')}{' '}
                     To{' '}
                     {moment(timeEntry['endTime'], ['HH:mm']).format('h:mm A')}
@@ -46,13 +47,13 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
                       : ' '}
                   </Text>
                 ) : (
-                  <Text>Press To Add Time Entry {'\n'} </Text>
+                  <Text style={styles.timeText(overlay)}>Press To Add Time Entry {'\n'} </Text>
                 )}
                 {/* <Caption >{timeEntry.notes}</Caption> */}
               </View>
               <View style={[styles.hourView, status_background[timeEntry.status]]}>
                 {isNaN(timeEntry['entryId']) ?  (
-                  <IconButton icon="plus" color={statusColor} size={40} />
+                  <IconButton icon={overlay? 'minus': 'plus'} color={statusColor} size={40} />
                 ): (
                   <View>
                     <Title style={[{fontWeight: '900', textAlign: 'center'}, status_color[timeEntry.status]]}>
@@ -99,12 +100,12 @@ const styles = StyleSheet.create({
   cardView: {
     paddingVertical: 5,
   },
-  card:{
+  card:(selectColor)=>({
     borderRadius: 2,
     margin: 10,
     marginTop: 0,
-    // backgroundColor: selectColor ? '#727ef6b3' : 'white',
-  },
+    backgroundColor: selectColor ? '#f5f5f5' : 'white',
+  }),
   detailView: {
     width: '75%', 
     paddingRight: 5, 
@@ -116,16 +117,20 @@ const styles = StyleSheet.create({
     marginVertical: 0,
     // marginBottom: 5,
   },
-  headline: {
+  headline:(selectColor)=>( {
     lineHeight: 22, 
     marginVertical: 0,
-    fontWeight: 'bold'
-  },
+    fontWeight: 'bold',
+    color: selectColor ? '#747474' : '#000',
+  }),
+  timeText:(selectColor)=>( {
+    color: selectColor ? '#747474' : '#000',
+  }),
   hourView: {
     width: '25%',
     // height: 'auto',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });
 

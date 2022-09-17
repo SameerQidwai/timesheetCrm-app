@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
-import { Button, Dialog, IconButton, Portal, Subheading, Title } from 'react-native-paper'
+import { KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { Button, Dialog, IconButton, List, Portal, Subheading, Text, Title } from 'react-native-paper'
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
@@ -9,6 +9,7 @@ import { formatDate, formatFloat } from '../../services/constant';
 import { colors } from '../Common/theme';
 import { MDropDown, TextField } from '../Common/InputFields';
 import DatePicker from '../Common/DatePicker';
+import { ColView } from '../Common/ConstantComponent';
 
 export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=> {
   const {appStorage, setAppStorage} = useContext(AppContext)
@@ -21,6 +22,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
   const [daysHours, setDaysHours] = useState({})
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
     const { mounted } =OPTIONS
@@ -83,7 +85,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
 
       setDateTime(prev => ({...prev, open: false}));
       if(event === 'set'){
-        value = formatDate(value);
+        value = formatDate(value, 'YYYY/MM/DD');
         setOtherData(prev => ({...prev, [key]: value}))
       }
 
@@ -108,8 +110,8 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
     if (startDate) {
       //cloning date
       startDate = formatDate(startDate)  // if we are not selecting endDate it will be startDate
-      while(startDate.isSameOrBefore((endDate?? startDate))){
-        let day = formatDate(startDate, true, 'dddd - DD MMM YYYY')
+      while(startDate.isSameOrBefore((endDate?? startDate), 'day')){
+        let day = formatDate(startDate, true, 'ddd - DD MMM')
          // need key to push in the table
         const disabled = !include_off_days && ( (startDate.format('ddd') === 'Sun' || startDate.format('ddd') === 'Sat') && 'Weekend' || holidays[startDate.format('M/D/YYYY')] )                                              
         //hours are getting update on each call
@@ -169,7 +171,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
       <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog}>
         <View style={styles.modalHeader} >
           <View>
-            <Title style={styles.headerText}>{`${formData['entryId']? 'Edit': 'Add' } Leave Request`}</Title>
+            <Title style={styles.headerText}>{`${formData['id']? 'Edit': 'Add' } Leave Request`}</Title>
           </View>
           <View >
             <IconButton
@@ -245,22 +247,56 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                   }}
                   showSoftInputOnFocus={false}
                 />
-                <View
-                  style={styles.timeFieldsView}>
+                  <List.Accordion
+                    title={expanded? 'Collapse': 'Expanded'}
+                    style={{padding: 0}}
+                    titleStyle={{padding: 0, paddingVertical: 0, marginVertical: 0, fontSize:12, lineHeight: 14, color: '#000'}}
+                    expanded={expanded}
+                    onPress={()=> setExpanded(!expanded)}>
+                  <List.Item 
+                    title={<View style={styles.timeFieldsView}>
                   <ScrollView>
                     {days.map((el, index)=>(
-                      <TextField
-                        key={el.key}
-                        value={el.hours}
-                        disabled={el.disabled}
-                        label={el.label}
-                        placeholder="set hours"
-                        keyboardType="decimal-pad"
-                        onChangeText={text => setFieldValue(el.key, text, false, index)}
-                      />))
+                      <ColView key={el.key} style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <View>
+                          <Text>{el.label}</Text>
+                        </View>
+                        <View style={{marginHorizontal: 20}}>
+                          <TextField
+                            value={el.hours}
+                            disabled={el.disabled}
+                            placeholder="set hours"
+                            keyboardType="decimal-pad"
+                            onChangeText={text => setFieldValue(el.key, text, false, index)}
+                            />
+                        </View>
+                      </ColView>
+                      ))
                     }
                   </ScrollView>
-                </View>
+                </View>} />
+      </List.Accordion>
+                {/* <View style={styles.timeFieldsView}>
+                  <ScrollView>
+                    {days.map((el, index)=>(
+                      <ColView key={el.key} style={{alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <View>
+                          <Text>{el.label}</Text>
+                        </View>
+                        <View style={{marginHorizontal: 20}}>
+                          <TextField
+                            value={el.hours}
+                            disabled={el.disabled}
+                            placeholder="set hours"
+                            keyboardType="decimal-pad"
+                            onChangeText={text => setFieldValue(el.key, text, false, index)}
+                            />
+                        </View>
+                      </ColView>
+                      ))
+                    }
+                  </ScrollView>
+                </View> */}
                 <TextField
                   value={formData['description']}
                   label="Notes"

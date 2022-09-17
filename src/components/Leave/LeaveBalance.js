@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native'
-import { Caption, Card, Headline, Subheading, Text, Title } from 'react-native-paper'
+import { Caption, Card, Headline, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
 import { leave_request_balance } from '../../../assets/constant'
 import { formatFloat } from '../../services/constant'
 import { ColView } from '../Common/ConstantComponent'
 import { colors } from '../Common/theme'
+import LeaveBalanceModal from '../Modals/LeaveBalanceModal'
 
 
 export default LeaveBalance= ({leave_balnce})=> {
+    const [select, setSelect] = useState(false)
     const Leave_Balance = leave_balnce
     /** SUMMARY  */
     // const renderItem = ({item}) =>{ 
@@ -45,21 +47,31 @@ export default LeaveBalance= ({leave_balnce})=> {
     //     </Card>
 
     // }
+    // const onPressItem = (item) =>{
+    //     setS
+    // }
 
      const renderItem = ({item}) =>{ 
-        return <Card
+        return (
+        <Card
             style={styles.card}
             elevation={10} 
             mode="elevated"
         >
-            <Card.Content>
+            <TouchableRipple
+                onPress={()=>{setSelect(item)}}
+                rippleColor={"rgba(0, 0, 0, .12)"}
+            >
+            <Card.Content style={styles.content}>
                 <Subheading numberOfLines={1} >{item.name}</Subheading>
                     <View>
                         <Headline style={{fontWeight: '700'}}>{formatFloat(item.balanceHours)}</Headline>
                         <Text style={styles.caption}>hours</Text>
                     </View>
             </Card.Content>
+            </TouchableRipple>
         </Card>
+        )
     }
 
     // const renderItem = ({item}) =>{ 
@@ -103,6 +115,7 @@ export default LeaveBalance= ({leave_balnce})=> {
                 renderItem={renderItem}
                 keyExtractor={(item, index)=> index}
             />
+            {select && <LeaveBalanceModal visible={select} item={select} onClose={()=>setSelect(false)}/>}
         </View>
     )
 }
@@ -115,7 +128,12 @@ const styles = StyleSheet.create({
     card: {
         borderRadius: 2,  
         margin:10,
-        width: 200
+        width: 200,
+        paddingVertical: 0,
+        
+    },
+    content: {
+        paddingVertical: 15,
     },
     caption: {
         fontSize: 12,

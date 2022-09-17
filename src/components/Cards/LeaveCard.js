@@ -24,7 +24,7 @@ const LeaveCard = ({item, index, onPress}) => {
     <Card elevation={5} mode="elevated" style={styles.card}>
         <TouchableRipple
           onPress={onPress}
-          rippleColor="rgba(0, 0, 0, .32)"
+          rippleColor="rgba(0, 0, 0, .12)"
         >
           <Card.Content style={{paddingHorizontal: 0}}>
             <ColView justify={'space-between'}>

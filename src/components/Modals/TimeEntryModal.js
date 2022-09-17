@@ -24,7 +24,6 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
   let disableDropdown = (!data['entryId'] && data['milestoneId'])
 
   useEffect(() => {
-    
     const {id: userId, accessToken} = appStorage
     userMilestonesApi(userId, 0, accessToken)
     .then(res=>{

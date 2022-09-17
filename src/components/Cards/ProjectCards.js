@@ -6,16 +6,17 @@ import { ColView } from '../Common/ConstantComponent';
 import StatusTag from '../Common/StatusTag';
 
 const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
+    const dimCOlor = (['AP', 'SB'].includes(timesheet['status']))
     return( 
         <Card 
-            style={styles.card(selected)} 
+            style={styles.card(dimCOlor)} 
             elevation={10} 
             mode="elevated"
         >
             <TouchableRipple
                 // onLongPress={onLongPress}
-                onPress={()=>!timesheet['leaveRequest'] && onPress()}
-                rippleColor={!timesheet['leaveRequest'] ?"rgba(0, 0, 0, .32)": ''}
+                onPress={onPress}
+                rippleColor={"rgba(0, 0, 0, .12)"}
             >
             {/* <Pressable
                 android_ripple={!timesheet['leaveRequest']?{color: '#747474', borderless: true} : {}}
@@ -42,9 +43,9 @@ const ProjectCards = ({timesheet, selected, onLongPress, onPress}) =>{
                         // </ColView>
                         <ColView justify={'space-between'} >
                         <View style={styles.detailView}>
-                            <Text style={styles.headline} numberOfLines={1} >{timesheet.project}</Text>
+                            <Text style={styles.headline(dimCOlor)} numberOfLines={1} >{timesheet.project}</Text>
                             <Caption style={styles.subheading}>{timesheet.projectType === 1 ? `${timesheet.milestone}` : '\n'}</Caption>
-                            <Text >{'\n' + status_name[timesheet.status?? 'SV']}</Text>
+                            <Text style={styles.statusText(dimCOlor)}>{'\n' + status_name[timesheet.status?? 'SV']}</Text>
                             {/* <Caption >{timeEntry.notes}</Caption> */}
                         </View>
                         <View style={[styles.hourView, status_background[timesheet.status]] }
@@ -92,10 +93,11 @@ const styles = StyleSheet.create({
     cardView: {
         paddingVertical:  5,
     },
-    card: (selectColor)=> ({
+    card: (dimColor)=> ({
         borderRadius: 2,
         marginHorizontal: 10,
         marginVertical: 5,
+        backgroundColor: dimColor ? '#f5f5f5' : 'white',
     }),
     detailView: {
         width: '75%', 
@@ -104,17 +106,21 @@ const styles = StyleSheet.create({
         paddingRight: 5, 
     paddingVertical: 5
     },
-    headline: {
+    headline: (dimColor)=>({
         lineHeight: 22, 
         marginVertical: 0,
-        fontWeight: 'bold'
-    },
+        fontWeight: 'bold',
+        color: dimColor ? '#747474' : '#000',
+    }),
     subheading:{
         color: '#747474', 
         lineHeight: 14, 
         marginVertical: 0, 
         // marginBottom: 5
     },
+    statusText:(dimColor)=>( {
+        color: dimColor ? '#747474' : '#000',
+      }),
     hourView:{
         width: '25%',
         justifyContent: 'center',
