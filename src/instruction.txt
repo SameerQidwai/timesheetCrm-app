@@ -7,7 +7,7 @@ release apk
         android\app\src\main\assets\index.android.bundle
         android\app\build\intermediates\assets\release\mergeReleaseAssets\index.android.bundle
     run command
-        npm run release-build
+        npm run release-build (in git bash)
         cd android && ./gradlew assembleRelease && cd ..
 
 Splash Screen
