@@ -2,5 +2,13 @@ If you run npm install
     1) goto => node_modules\react-native-calendars\src\expandableCalendar\WeekCalendar\new.js
     2) set pageHeight to 70 on InfiniteList
 
+release apk
+    remove:
+        android\app\src\main\assets\index.android.bundle
+        android\app\build\intermediates\assets\release\mergeReleaseAssets\index.android.bundle
+    run command
+        npm run release-build
+        cd android && ./gradlew assembleRelease && cd ..
+
 Splash Screen
 https://medium.com/@appstud/add-a-splash-screen-to-a-react-native-app-810492e773f9

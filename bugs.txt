@@ -96,3 +96,5 @@ web Applicaion bug
 
 shahbaz 
     set height 57 to 74 in document attach
+
+    https://stackoverflow.com/questions/53239705/react-native-error-duplicate-resources-android
