@@ -1,15 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { KeyboardAvoidingView, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
-import { Button, Dialog, IconButton, List, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
+import { Alert, Dimensions, Image, KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { Button, Dialog, IconButton, List, Modal, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
 import { addLeaveApi, editLeaveApi, getLeaveApi, getUserLeaveType } from '../../services/leaveRequest-api';
-import { formatDate, formatFloat } from '../../services/constant';
+import { formatDate, formatFloat, thumbUrl } from '../../services/constant';
 import { colors } from '../Common/theme';
 import { MDropDown, TextField } from '../Common/InputFields';
 import DatePicker from '../Common/DatePicker';
 import { ColView } from '../Common/ConstantComponent';
+import DocumentPicker, { types } from 'react-native-document-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+import {addAttachment} from '../../services/attachment-api'
+import { checkPermission } from '../Common/DownloadFile';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 
 export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=> {
   const {appStorage, setAppStorage} = useContext(AppContext)
@@ -23,7 +31,9 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [expanded, setExpanded] = useState(false)
-
+  const [documentModal, setDocumentModal] = useState(false);
+  const [showFullSize, setShowFullSize] = useState(false);
+  
   useEffect(() => {
     const { mounted } =OPTIONS
     if (!mounted){
@@ -52,10 +62,12 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           const { success: rSuccess, data, entries, entriesHours} =res[2]
           //find holiday type to find if holidays are included or not
           let selectedLeaveType = LeaveRequestTypes.find(x=> x.id === (data.typeId ?? 0))
+          console.log("res2--->",data.attachments);
           setFormData({
             ...data,
             typeId: selectedLeaveType?.id,
             description: data.desc,
+            attachments: data.attachments
           })
           setDays(entries)
           setDaysHours(entriesHours)
@@ -128,9 +140,10 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
     // return dayArray
   }
   
-  const getFormValues = () => {
+  const getFormValues = async () => {
+    console.log("press hua");
     setLoading(true)
-    const { description, workId,typeId } = formData;
+    const { description, workId,typeId, attachments } = formData;
     const {accessToken} = appStorage  
     const newVal = {
             description: description ?? '',
@@ -143,26 +156,145 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
             //   return el
             // }),
             // attachments: fileIds ?? []
-            attachments: []
+            attachments: await attachments.map((ele) => {
+              return ele.fileId;
+            })
     }
+    console.log("nreVal attachments->", newVal);
     if(edit){
       editLeaveApi(edit, newVal, accessToken).then((res) => {
           setLoading(false)
-          if (res.success) {
+        if (res.success) {
+            console.log("res.success-->", res);
             onSuccess()
           }
       });
     }else{
       addLeaveApi(newVal, accessToken).then((res) => {
           setLoading(false)
-          if (res.success) {
+        if (res.success) {
+          console.log(" add res.success-->", res);
             onSuccess()
           }
       });
     }
   }
 
+  // edited by shahbaz 
+  const selectDocument = async () => {
+    const response = await DocumentPicker.pickSingle({
+      presentationStyle: 'fullScreen',
+      type: [types.allFiles],
+    });
+  handleUplaod("document", response);
+  };
+  
+  const handleUplaod = (name, file) => {
+    // console.log("attached file->", file);
+    let newObj = {};
+    if (name === "document") {
+      newObj = file;
+    } else if (name === "image") {
+      let name = file.path.split('/');
+      newObj = { name: name[name.length - 1], type: file.mime, uri: file.path, size: file.size };
+    }
+
+    let imageData = new FormData();
+    imageData.append('files', newObj);
     
+    addAttachment(imageData, appStorage.accessToken).then((res) => {
+      if (res.success) {
+        console.log("res file->", res.file);
+        setDocumentModal(false);
+        const {attachments = [] } = formData;
+        setFormData(prev => ({
+          ...prev,
+          attachments: [...attachments ,res.file]
+        }));
+      }
+    })
+  };
+  
+      
+  const askFromWhereToPickImage = () => {
+    Alert.alert(
+      'Select image from',
+      '',
+      [
+        { text: 'Gallery', onPress: () => pickImage('GALLERY') },
+        { text: 'Camera', onPress: () => pickImage('CAMERA') },
+      ],
+      { cancelable: true },
+    );
+};
+
+const pickImage = async location => {
+  // console.log("location-->", location);
+ 
+  if (location === 'GALLERY') {
+    ImagePicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+      // cropping: true
+    })
+      .then(image => {
+        handleUplaod("image", image);  
+        setDocumentModal(false);
+        })
+        .catch(e => console.log('error->', e.message));
+  } else if (location === 'CAMERA') {
+    ImagePicker.openCamera({
+      multiple: false,
+      mediaType: 'photo',
+      // cropping: true
+    })
+      .then(image => {
+        handleUplaod("image", image);
+        setDocumentModal(false);
+      }) 
+      .catch(e => console.log('error->', e.message));
+  }
+};
+
+  const iconRenderer = (file, index) => {
+  let url = thumbUrl(file.type);
+    return <>
+        <View style={{display:"flex", justifyContent:"space-between", flexDirection:"row", alignItems:"center",borderWidth:1, borderColor:"#909090", borderStyle:"dotted", backgroundColor:"#fafafa", height:54, marginBottom: 5}} key={index}>
+        <TouchableRipple onPress={()=> checkPermission(file.uri)}>
+        <View style={{ justifyContent: "flex-start", flexDirection: "row", alignItems: "center" }} >
+          {/* {console.log("file",file.uri)}     */}
+          <Image source={url} style={{ width: 34, height: 34, marginLeft: 5 }} />
+              <Text style={{marginLeft:5,maxWidth:150 }} numberOfLines={1}>{file.name}</Text>
+        </View>
+        </TouchableRipple>    
+        <View>
+              <IconButton
+                      icon={"delete-outline"}
+                      // disabled={disable}
+                      color={colors.danger}
+                      size={25}
+            onPress={()=>deleteFileEvent(file.fileId)}
+          >
+                          delete
+              </IconButton>
+            </View>
+        </View>
+    </>
+  };
+
+  const deleteFileEvent = (fileId) => {
+    console.log("fileId->", fileId);
+    // Linking.openURL(url);
+    var id = formData.attachments.findIndex(ele => {
+      return ele.fileId == fileId;
+    })
+    formData.attachments.splice(id, 1);
+    setFormData(formData => ({
+      ...formData,
+    }));
+  };
+
+  // console.log("form data attachments->",formData.attachments)
   return (
     <Portal>
       <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog}>
@@ -320,6 +452,55 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
                   onChangeText={text => setFieldValue('description', text)}
                   returnKeyType="next"
                 />
+                <View style={{ marginTop: 10 }}>
+                  <ScrollView style={{maxHeight:114}}>
+                  {
+                    formData?.attachments ?
+                      formData?.attachments.map((ele, index) => {
+                        return (
+                          <>
+                            {ele.type === 'jpg' ?
+                              <View style={{ display: "flex", justifyContent: "space-between", flexDirection: "row", alignItems: "center", borderWidth: 1, borderColor: "#909090", borderStyle: "dotted", backgroundColor: "#fafafa", height: 54, marginBottom: 5 }} key={index}>
+                                <TouchableRipple
+                                  onPress={() => setShowFullSize(ele?.uri)}
+                                >
+                                  <View style={{ justifyContent: "flex-start", flexDirection: "row", alignItems: "center", paddingLeft: 5 }}>
+                                    <Image source={{ uri: ele?.uri, width: 54, height: 54 }} />
+                                    <Text style={{ marginLeft: 5, maxWidth:150 }} numberOfLines={1}>{ele?.name}</Text>
+                                  </View>
+                                </TouchableRipple>
+                                <View>
+                                  <IconButton
+                                    icon={"delete-outline"}
+                                    // disabled={disable}
+                                    color={colors.danger}
+                                    size={25}
+                                    onPress={() => deleteFileEvent(ele.fileId)}
+                                  >
+                                    delete
+                                  </IconButton>
+                                </View>
+                              </View>
+                              : iconRenderer(ele, index)}
+                          </>
+                        );
+                      })
+                      : ''
+                  }
+                  </ScrollView>
+                  </View>
+                  
+                <View style={{ width: 50, borderRadius: 10, borderColor: "#909090", borderStyle: "dotted", borderWidth: 1, marginTop:10, padding:2 }}>
+                  <View style={{with:"100%", borderRadius: 10, borderColor: "#909090", borderStyle: "dotted", borderWidth: 1, alignItems:"center"}}>
+                <IconButton icon={"plus-outline"}
+                                // disabled={disable}
+                                color={colors.primary}
+                                // size={25}
+                                onPress={()=>setDocumentModal(true)}/>  
+                    </View>
+                </View>
+              
+              {/* end    */}
               </ScrollView>
             </Dialog.ScrollArea>
           </Dialog.Content>
@@ -350,6 +531,41 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           </Button>
         </Dialog.Actions>
       </Dialog>
+      <Dialog visible={documentModal} onDismiss={()=>setDocumentModal(false)}>
+        <View style={styles.modalHeader} >
+            <View>
+              <Title style={styles.headerText}>Add Attachment & Notes</Title>
+            </View>
+            <View >
+              <IconButton
+                color='#fff' 
+                icon="close" 
+                size={20} 
+                onPress={()=>setDocumentModal(false)}
+              />
+            </View>
+        </View>            
+        <View style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", flexDirection: "row", marginTop: 10, backgroundColor: "#fafafa" }}>
+          <View >
+            <IconButton icon={"file-outline"}
+                color={colors.primary}
+                size={25}
+                onPress={selectDocument} 
+              />
+            <Text style={{fontSize: 12, color: 'rgba(0,0,0,0.54)', marginVertical: 2, letterSpacing: 0.45}}>Document</Text>
+          </View>  
+          <View >
+            <IconButton icon={"image-outline"}
+              color={colors.primary}
+              size={25}
+                onPress={askFromWhereToPickImage}
+              />
+            <Text style={{fontSize: 12, color: 'rgba(0,0,0,0.54)', marginVertical: 2, letterSpacing: 0.45}}>Image</Text>
+          </View>
+                                
+        </View> 
+      </Dialog>  
+                  
       {/* {dateTime.open && (
         <DateTimePicker
           mode={dateTime['mode']}
@@ -363,6 +579,27 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           }}
         />
       )} */}
+      <Modal visible={showFullSize} style={styles.modalView} onDismiss={() => { setShowFullSize(false) }}>
+        <TouchableRipple
+          style={styles.downloadIcon}
+          >
+            <IconButton icon={"download-outline"}
+              color={"white"}
+              size={30}
+              onPress={() => { checkPermission(showFullSize) }} />      
+        </TouchableRipple>
+        <TouchableRipple
+          style={styles.closeButton}>
+          <IconButton icon={"close"}
+            color={"white"}
+            size={25}
+            onPress={()=> setShowFullSize(false)}/>      
+        </TouchableRipple>
+          <View style={{ borderRadius: 10, width: windowWidth, height: windowHeight }}>
+                <Image source={{uri: showFullSize, width: windowWidth, height: windowHeight}} />              
+            </View>
+      </Modal>
+      
       {dateTime.open && (
         <DatePicker
           visible={dateTime.open}
@@ -484,7 +721,29 @@ const styles = StyleSheet.create({
     },
     expandTouch:{
       paddingHorizontal: 5,
-    }
+  },
+  downloadIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 30,
+    height: 30,
+    position: 'absolute',
+    top: 20,
+    left: 15,
+    zIndex: 1,
+  },
+  closeButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "red",
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    position: 'absolute',
+    top: 20,
+    right: 10,
+    zIndex: 1,
+  },
   });
 
 
