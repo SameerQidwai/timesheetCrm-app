@@ -8,7 +8,7 @@ import { loginApi } from '../services/login-api'
 
 function Login() {
   // mustafa.syed@1lm.com.au
-  const [formData, setFormData] = useState({email: 'victoria.terkuile@1lm.com.au', password: 'Rauf20'})
+  const [formData, setFormData] = useState({email: '', password: ''})
     const [snack, setSnack] = useState({
         visible: false,
         duration: 3000,
