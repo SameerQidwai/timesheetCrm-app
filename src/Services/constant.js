@@ -115,7 +115,6 @@ export const sorting = (data, key) => {
 };
 
 export const thumbUrl = (type) => {
-  // console.log("type->",type);
   if (type === 'pdf') {
     return require('../../assets/icons/pdf.png');
   } else if (type === 'doc' || type === 'docx') {

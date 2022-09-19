@@ -493,10 +493,10 @@ const pickImage = async location => {
                 <View style={{ width: 50, borderRadius: 10, borderColor: "#909090", borderStyle: "dotted", borderWidth: 1, marginTop:10, padding:2 }}>
                   <View style={{with:"100%", borderRadius: 10, borderColor: "#909090", borderStyle: "dotted", borderWidth: 1, alignItems:"center"}}>
                 <IconButton icon={"plus-outline"}
-                                // disabled={disable}
-                                color={colors.primary}
-                                // size={25}
-                                onPress={()=>setDocumentModal(true)}/>  
+                    // disabled={disable}
+                    color={colors.primary}
+                    // size={25}
+                    onPress={()=>setDocumentModal(true)}/>  
                     </View>
                 </View>
               

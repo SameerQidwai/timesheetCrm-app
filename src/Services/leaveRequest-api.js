@@ -21,7 +21,6 @@ export const getLeavesApi = (token) => {
 };
 
 export const addLeaveApi = (data, token) => {
-    console.log("add main enter hua")
     return axios
         .post(url, data, {headers:headers(token)})
         .then((res) => {
@@ -30,7 +29,6 @@ export const addLeaveApi = (data, token) => {
             return {success, setToken};
         })
         .catch((err) => {
-            console.log("error-->",err);
             // err?.response.data
             return {
                 error: "Please login again!",
@@ -41,18 +39,15 @@ export const addLeaveApi = (data, token) => {
 };
 
 export const editLeaveApi = (id, data, token) => {
-    console.log("url: ", `${url}/${id}`);
     return axios
     .patch(`${url}/${id}`, data, {headers:headers(token)})
         .then((res) => {
-            console.log("res.data-->", res.data);
             const { success, message, data } = res.data;
             let setToken = (res.headers && res.headers.authorization)
 
             return {success, data, setToken};
         })
         .catch((err) => {
-            console.log("error-->",err.message);
             return {
                 error: "Please login again!",
                 success: false,
@@ -86,9 +81,6 @@ export const getLeaveApi = (id, token) => {
         .then((res) => {
             const { success, message, data } = res.data;
             let setToken = (res.headers && res.headers.authorization)
-            // data.attachments = data.attachments.map((x) => {
-            //     return x.file;
-            // });
             if (success){
                 let entriesHours = {} //to show Values in date fields 
                 let entries = (data?.entries??[]).map(el=>{
