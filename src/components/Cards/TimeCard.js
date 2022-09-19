@@ -23,7 +23,7 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
     <Card style={styles.card(overlay)} elevation={5} mode="elevated">
       {!timeEntry.leaveRequest ? (
         <TouchableRipple
-          onPress={!overlay && onPress}
+          onPress={!isNaN(timeEntry['entryId']) && onPress}
           rippleColor={"rgba(0, 0, 0, .12)"}>
           <Card.Content style={{paddingRight: 0}}>
             <ColView justify={'space-between'}>
@@ -47,7 +47,7 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
                       : ' '}
                   </Text>
                 ) : (
-                  <Text style={styles.timeText(overlay)}>Press To Add Time Entry {'\n'} </Text>
+                  <Text style={styles.timeText(overlay, isNaN(timeEntry['entryId']))}>Press To Add Time Entry {'\n'} </Text>
                 )}
                 {/* <Caption >{timeEntry.notes}</Caption> */}
               </View>
@@ -123,8 +123,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: selectColor ? '#747474' : '#000',
   }),
-  timeText:(selectColor)=>( {
-    color: selectColor ? '#747474' : '#000',
+  timeText:(selectColor, emptyOverlay)=>( {
+    color: emptyOverlay ? '#f5f5f5' :selectColor ? '#747474' : '#000',
   }),
   hourView: {
     width: '25%',

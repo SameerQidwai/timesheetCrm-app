@@ -91,10 +91,19 @@ New on 15
     and then... 
 
 web Applicaion bug
-    timesheet_ NAN problen on timer
-    on web open upload modal  on Approved and submitted but now edditable
+    NAN problen on timer
+     timesheet_ on web open upload modal  on Approved and submitted but now edditable
 
 shahbaz 
     set height 57 to 74 in document attach
 
     https://stackoverflow.com/questions/53239705/react-native-error-duplicate-resources-android
+
+//press to add... remove on approved and submitted
+//onPress on timeCard view submit and approved weeklytimesheet
+//remove status from left timesheet monthly
+//grey out Leave Request...
+
+
+low pirority
+    //disable leave request fields on aprroved

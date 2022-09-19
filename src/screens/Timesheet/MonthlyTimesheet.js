@@ -71,7 +71,6 @@ const MonthlyTimesheet =({navigation}) =>{
           }
         setSelected({...newSelected})
       } else {
-        console.log('fixed')
         setFileModelEvent(item);
       }
       // if (!long && selectedItems === 0) {

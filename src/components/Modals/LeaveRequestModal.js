@@ -383,6 +383,7 @@ const pickImage = async location => {
                   value={otherData['startDate'].format('dddd - DD MMM YYYY')}
                   label="start Date"
                   placeholder="Set Date"
+                  disable={formData['approvedBy']}
                   onFocus={() => {
                     openDateTime(true, 'startDate', 'date');
                   }}
@@ -395,6 +396,7 @@ const pickImage = async location => {
                   value={otherData['endDate'].format('dddd - DD MMM YYYY')}
                   label="End Date"
                   placeholder="Set Date"
+                  disable={formData['approvedBy']}
                   onFocus={() => {
                     openDateTime(true, 'endDate', 'date');
                   }}
@@ -462,7 +464,7 @@ const pickImage = async location => {
                             <TextField
                               style={styles.hoursField}
                               value={el.hours}
-                              disabled={el.disabled}
+                              disable={el.disabled}
                               keyboardType="decimal-pad"
                               onChangeText={text =>
                                 setFieldValue(el.key, text, false, index)
@@ -478,6 +480,7 @@ const pickImage = async location => {
                   value={formData['description']}
                   label="Notes"
                   placeholder="Add Some Reason.."
+                  disable={formData['approvedBy']}
                   textarea
                   onChangeText={text => setFieldValue('description', text)}
                   returnKeyType="next"

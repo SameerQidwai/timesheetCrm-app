@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         // marginBottom: 5
     },
     statusText:(dimColor)=>( {
-        color: dimColor ? '#747474' : '#000',
+        color: dimColor ? '#f5f5f5' : 'white',
       }),
     hourView:{
         width: '25%',
