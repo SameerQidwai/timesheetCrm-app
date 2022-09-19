@@ -140,43 +140,53 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
   }
   
   const getFormValues = async () => {
-    console.log("press hua");
-    setLoading(true)
-    const { description, workId,typeId, attachments } = formData;
-    const {accessToken} = appStorage  
+    setLoading(true);
+    const {description, workId, typeId, attachments} = formData;
+    const {accessToken} = appStorage;
     const newVal = {
-            description: description ?? '',
-            typeId: typeId ?? 0,
-            workId,
-            entries: days,
-            //this is for if I need a seperate variable for daysHours to stop reRendring
-            // entries: days.map(el=> {
-            //   el['hours'] = daysHours[el['date']]
-            //   return el
-            // }),
-            // attachments: fileIds ?? []
-            attachments: await attachments.map((ele) => {
-              return ele.fileId;
-            })
-    }
-    if(edit){
-      editLeaveApi(edit, newVal, accessToken).then((res) => {
-          setLoading(false)
+      description: description ?? '',
+      typeId: typeId ?? 0,
+      workId,
+      entries: days,
+      //this is for if I need a seperate variable for daysHours to stop reRendring
+      // entries: days.map(el=> {
+      //   el['hours'] = daysHours[el['date']]
+      //   return el
+      // }),
+      // attachments: fileIds ?? []
+      attachments: await (attachments ?? []).map(ele => {
+        return ele.fileId;
+      }),
+    };
+    if (edit) {
+      editLeaveApi(edit, newVal, accessToken).then(res => {
+        setLoading(false);
         if (res.success) {
-            console.log("res.success-->", res);
-            onSuccess()
-          }
+          onSuccess();
+        } else {
+          errorMessage(res.message);
+        }
       });
-    }else{
-      addLeaveApi(newVal, accessToken).then((res) => {
-          setLoading(false)
+    } else {
+      addLeaveApi(newVal, accessToken).then(res => {
+        setLoading(false);
         if (res.success) {
-          console.log(" add res.success-->", res);
-            onSuccess()
-          }
+          onSuccess();
+        } else {
+          errorMessage(res.message);
+        }
       });
     }
-  }
+  };
+
+  const errorMessage = (message) => {
+    Alert.alert(
+      message,
+      '',
+      [ ],
+      { cancelable: true },
+    );
+};
 
   // edited by shahbaz 
   const selectDocument = async () => {

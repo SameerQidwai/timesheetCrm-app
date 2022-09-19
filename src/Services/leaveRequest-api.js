@@ -29,11 +29,11 @@ export const addLeaveApi = (data, token) => {
             return {success, setToken};
         })
         .catch((err) => {
-            // err?.response.data
+            const {message} = err?.response?.data ?? {}
             return {
                 error: "Please login again!",
                 success: false,
-                message: err.message,
+                message: message,
             };
         });
 };
@@ -48,10 +48,11 @@ export const editLeaveApi = (id, data, token) => {
             return {success, data, setToken};
         })
         .catch((err) => {
+            const {message} = err?.response?.data ?? {}
             return {
                 error: "Please login again!",
                 success: false,
-                message: err.message,
+                message: message,
             };
         });
 };
