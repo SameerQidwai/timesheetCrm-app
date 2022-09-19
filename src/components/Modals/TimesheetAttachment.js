@@ -169,13 +169,13 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
     let url = thumbUrl(file.type);
       return <>
           <View style={{display:"flex", justifyContent:"space-between", flexDirection:"row", alignItems:"center",borderWidth:1, borderColor:"#909090", borderStyle:"dotted", backgroundColor:"#fafafa", height:74}}>
-          <Pressable onPress={()=> checkPermission(file.uri)}>
+          <TouchableRipple onPress={()=> checkPermission(file.uri)}>
           <View style={{ justifyContent: "flex-start", flexDirection: "row", alignItems: "center" }} >
             {console.log("file",file.uri)}    
             <Image source={url} style={{ width: 34, height: 34, marginLeft: 5 }} />
-                <Text style={{marginLeft:5}}>{file.name}</Text>
+                <Text style={{marginLeft:5, maxWidth:150 }} numberOfLines={1}>{file.name}</Text>
           </View>
-          </Pressable>    
+          </TouchableRipple>    
           <View>
                 <IconButton
                         icon={"delete-outline"}
@@ -233,7 +233,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
                           <TouchableRipple onPress={() => setShowFullSize(true)} >
                             <View style={{justifyContent:"flex-start", flexDirection:"row", alignItems:"center", paddingLeft:5}}>  
                           <Image source={{ uri: formState.values?.file?.uri, width:54, height:54}} />              
-                        <Text style={{ marginLeft: 5 }}>hello</Text>
+                        <Text style={{ marginLeft: 5,maxWidth:150 }} numberOfLines={1}>hello</Text>
                             </View>
                           </TouchableRipple>
                             <View>
