@@ -115,7 +115,11 @@ backend
     // date filter on leave_request not working properly (i.e) 
     contract is created still saying no contract
     token expries in 30d
+    
+    app
+        troy ->
+            timesheet
+                empty card not opening
 
-    troy ->
-        timesheet
-            empty card not opening 
+        camera -> app crash
+        upload action -> 

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Alert, Dimensions, Image, KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
-import { Button, Dialog, IconButton, List, Modal, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
+import { ActivityIndicator, Button, Dialog, IconButton, List, Modal, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
@@ -33,6 +33,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
   const [expanded, setExpanded] = useState(false)
   const [documentModal, setDocumentModal] = useState(false);
   const [showFullSize, setShowFullSize] = useState(false);
+  const [uploading, setUploading] = useState(false)
   
   useEffect(() => {
     const { mounted } =OPTIONS
@@ -194,10 +195,13 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
       presentationStyle: 'fullScreen',
       type: [types.allFiles],
     });
-  handleUplaod("document", response);
+    setDocumentModal(false)
+    handleUplaod("document", response);
+
   };
   
   const handleUplaod = (name, file) => {
+    setUploading(true)
     // console.log("attached file->", file);
     let newObj = {};
     if (name === "document") {
@@ -220,6 +224,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
           attachments: [...attachments ,res.file]
         }));
       }
+      setUploading(false)
     })
   };
   
@@ -405,37 +410,6 @@ const pickImage = async location => {
                   }}
                   showSoftInputOnFocus={false}
                 />
-                {/* <List.Accordion
-                    title={expanded? 'Collapse': 'Expand'}
-                    style={{padding: 0}}
-                    titleStyle={{padding: 0, paddingVertical: 0, marginVertical: 0, fontSize:12, lineHeight: 14, color: '#000'}}
-                    expanded={expanded}
-                    onPress={()=> setExpanded(!expanded)}>
-                    <ScrollView style={styles.timeFieldsView}>
-                      {days.map((el, index)=>(
-                  <List.Item 
-                    key={el.key}
-                    style={{padding: 0}}
-                    titleStyle={{width:'100%'}}
-                    title={<View style={{width: '100%'}}>
-                      <View  style={{flexDirection: 'row' ,alignItems: 'center',  justifyContent: 'space-between' }}>
-                        <View>
-                          <Text>{el.label}</Text>
-                        </View>
-                        <View >
-                          <TextField
-                            value={el.hours}
-                            disabled={el.disabled}
-                            placeholder="set hours"
-                            keyboardType="decimal-pad"
-                            onChangeText={text => setFieldValue(el.key, text, false, index)}
-                            />
-                        </View>
-                      </View>
-                </View>} />
-                ))}
-                  </ScrollView>
-      </List.Accordion> */}
                 <TouchableRipple
                   onPress={() => setExpanded(!expanded)}
                   rippleColor={'rgba(0, 0, 0, .12)'}
@@ -488,59 +462,59 @@ const pickImage = async location => {
                 <View style={{marginTop: 10}}>
                   <ScrollView style={{maxHeight: 114}}>
                     {(formData?.attachments?? []).map((ele, index) => {
-                          return ele.type === 'jpg' ? (
+                      return ele.type === 'jpg' ? (
+                        <View
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            borderWidth: 1,
+                            borderColor: '#909090',
+                            borderStyle: 'dotted',
+                            backgroundColor: '#fafafa',
+                            height: 54,
+                            marginBottom: 5,
+                          }}>
+                          <TouchableRipple
+                            onPress={() => setShowFullSize(ele?.uri)}>
                             <View
-                              key={index}
                               style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
+                                justifyContent: 'flex-start',
                                 flexDirection: 'row',
                                 alignItems: 'center',
-                                borderWidth: 1,
-                                borderColor: '#909090',
-                                borderStyle: 'dotted',
-                                backgroundColor: '#fafafa',
-                                height: 54,
-                                marginBottom: 5,
+                                paddingLeft: 5,
                               }}>
-                              <TouchableRipple
-                                onPress={() => setShowFullSize(ele?.uri)}>
-                                <View
-                                  style={{
-                                    justifyContent: 'flex-start',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    paddingLeft: 5,
-                                  }}>
-                                  <Image
-                                    source={{
-                                      uri: ele?.uri,
-                                      width: 54,
-                                      height: 54,
-                                    }}
-                                  />
-                                  <Text
-                                    style={{marginLeft: 5, maxWidth: 150}}
-                                    numberOfLines={1}>
-                                    {ele?.name}
-                                  </Text>
-                                </View>
-                              </TouchableRipple>
-                              <View>
-                                <IconButton
-                                  icon={'delete-outline'}
-                                  disabled={fetching || loading || formData['approvedBy']}
-                                  color={colors.danger}
-                                  size={25}
-                                  onPress={() => deleteFileEvent(ele.fileId)}>
-                                  delete
-                                </IconButton>
-                              </View>
+                              <Image
+                                source={{
+                                  uri: ele?.uri,
+                                  width: 54,
+                                  height: 54,
+                                }}
+                              />
+                              <Text
+                                style={{marginLeft: 5, maxWidth: 150}}
+                                numberOfLines={1}>
+                                {ele?.name}
+                              </Text>
                             </View>
-                          ) : (
-                            iconRenderer(ele, index)
-                          );
-                        })}
+                          </TouchableRipple>
+                          <View>
+                            <IconButton
+                              icon={'delete-outline'}
+                              disabled={fetching || loading || formData['approvedBy']}
+                              color={colors.danger}
+                              size={25}
+                              onPress={() => deleteFileEvent(ele.fileId)}>
+                              delete
+                            </IconButton>
+                          </View>
+                        </View>
+                      ) : (
+                        iconRenderer(ele, index)
+                      );
+                    })}
                   </ScrollView>
                 </View>
 
@@ -570,6 +544,8 @@ const pickImage = async location => {
                       // size={25}
                       onPress={() => setDocumentModal(true)}
                     />
+                    {uploading && <View style={[styles.overlay]} />}
+                    {uploading && <ActivityIndicator style={styles.overlayIcon} color="#969696" />  }
                   </View>
                 </View>
 
@@ -662,20 +638,6 @@ const pickImage = async location => {
           </View>
         </View>
       </Dialog>
-
-      {/* {dateTime.open && (
-        <DateTimePicker
-          mode={dateTime['mode']}
-          value={
-            otherData[dateTime['key']]
-              ? formatDate(otherData[dateTime['key']]).toDate()
-              : new Date()
-          }
-          onChange={({type}, dateValue) => {
-            setFieldValue(dateTime['key'], dateValue, type);
-          }}
-        />
-      )} */}
       <Modal
         visible={showFullSize}
         style={styles.modalView}
@@ -859,6 +821,22 @@ const styles = StyleSheet.create({
     top: 20,
     right: 10,
     zIndex: 1,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'white',
+    opacity: 0.5,
+  },
+  overlayIcon: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
   },
   });
 

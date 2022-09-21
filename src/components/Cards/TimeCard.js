@@ -9,6 +9,7 @@ import StatusTag from '../Common/StatusTag';
 const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
   const statusColor = status_color[timeEntry.status]?.['color'] ?? '#476ba6'
   const overlay = timeEntry.leaveRequest ? (timeEntry['status'] === 'AP') : (['AP', 'SB'].includes(timeEntry['status']))
+  const emptyCard = `${timeEntry['entryId']}`.includes('empty')
 
   useEffect(() => {
       // console.log(selected)
@@ -23,7 +24,7 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
     <Card style={styles.card(overlay)} elevation={5} mode="elevated">
       {!timeEntry.leaveRequest ? (
         <TouchableRipple
-          onPress={!isNaN(timeEntry['entryId']) && onPress}
+          onPress={((emptyCard && !overlay) || !emptyCard) && onPress}
           rippleColor={"rgba(0, 0, 0, .12)"}>
           <Card.Content style={{paddingRight: 0}}>
             <ColView justify={'space-between'}>
@@ -47,12 +48,12 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
                       : ' '}
                   </Text>
                 ) : (
-                  <Text style={styles.timeText(overlay, isNaN(timeEntry['entryId']))}>Press To Add Time Entry {'\n'} </Text>
+                  <Text style={styles.timeText(overlay, emptyCard)}>Press To Add Time Entry {'\n'} </Text>
                 )}
                 {/* <Caption >{timeEntry.notes}</Caption> */}
               </View>
               <View style={[styles.hourView, status_background[timeEntry.status]]}>
-                {isNaN(timeEntry['entryId']) ?  (
+                {emptyCard ?  (
                   <IconButton icon={overlay? 'minus': 'plus'} color={statusColor} size={40} />
                 ): (
                   <View>
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     color: selectColor ? '#747474' : '#000',
   }),
   timeText:(selectColor, emptyOverlay)=>( {
-    color: emptyOverlay ? '#f5f5f5' :selectColor ? '#747474' : '#000',
+    color: (emptyOverlay && !selectColor) ? '#000':  emptyOverlay ? '#f5f5f5' :selectColor ? '#747474' : '#000',
   }),
   hourView: {
     width: '25%',
