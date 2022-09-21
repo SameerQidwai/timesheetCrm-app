@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { Api, formatDate, headers } from "./constant";
+import { Api, checkToken, formatDate, headers } from "./constant";
 
 const url = `${Api}/employees/`;
 
@@ -10,19 +10,17 @@ export const getEmployee = (id, token) => {
       .then((res) => {
         const { success, data, message } = res.data;
         if (success) {
-            let setToken = (res.headers && res.headers.authorization)
-            const { basic } = reStructure(data);
-            return { success, data, basic, setToken };
+          let setToken = checkToken(message, res?.headers)
+          const { basic } = reStructure(data);
+          return { success, data, basic, setToken };
         }
         return { success };
       })
       .catch((err) => {
-        console.log(err)
-        return {
-          error: 'Please login again!',
-          status: false,
-          message: err.message,
-        };
+        const {message, success} =  err?.response?.data ?? {}
+        const {status} = err?.response
+        let setToken = checkToken(message, err?.response.headers)
+        return { status, success, message, setToken};
       });
   };
 
@@ -115,4 +113,4 @@ function reStructure(data) {
     // };
     // return { basic, detail, kin, bank, billing, train };
     return {basic}
-  }
+}

@@ -29,8 +29,8 @@ project
     //card border raduis 2
     //header height
     //header left 
-    description
-    project Name to big
+    //description
+    //project Name to big
 
 week
     //Modal header same as tiese
@@ -107,3 +107,15 @@ shahbaz
 
 low pirority
     //disable leave request fields on aprroved
+
+
+
+backend
+    leave attachment
+    // date filter on leave_request not working properly (i.e) 
+    contract is created still saying no contract
+    token expries in 30d
+
+    troy ->
+        timesheet
+            empty card not opening 

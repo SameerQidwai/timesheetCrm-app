@@ -29,12 +29,13 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
     .then(res=>{
       const {success, data, setToken} = res
       if(success){
-        setAppStorage(prev=> ({...prev, accessToken: setToken}))
         setMILESTONES(enableMilestones(data))
         setFetching(false)
       }
+      setAppStorage(prev=> ({...prev, accessToken: setToken}))
     })
   }, [modalVisible])
+
   const enableMilestones = (data) =>{
     if(disabledKeys?.length >0){
       return data.map(el => {

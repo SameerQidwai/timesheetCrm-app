@@ -22,12 +22,8 @@ export const addAttachment = (data, token) => {
             return { success: false }
         })
         .catch((err) => {
-            console.log(err);
-            return {}
-            // return {
-            //     error: err.response.status,
-            //     status: false,
-            //     message: err.message, 
-            // };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            return { status, success, message, };
         });
 };
