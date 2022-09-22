@@ -123,3 +123,8 @@ backend
 
         camera -> app crash
         upload action -> 
+
+        Not Resolved: 
+            ak issue hai ak bar save kar k jab dobara open kara to all 
+            data sahe ata hai or koi update keay nai or save keya to next 
+            time open kar ny per image fatch nai kar ta hai.
