@@ -128,3 +128,16 @@ backend
             ak issue hai ak bar save kar k jab dobara open kara to all 
             data sahe ata hai or koi update keay nai or save keya to next 
             time open kar ny per image fatch nai kar ta hai.
+
+IOS:
+    font link
+        https://callstack.github.io/react-native-paper/4.0/fonts.html
+    gradle version 
+packages
+    documnet picker:
+        If you are using RN >= 0.63, only run pod install from the ios directory. Then rebuild your project. Older RN versions are not supported.
+    react-native-image-crop-picker:
+        pod
+        Step 3
+    react-native-mmkv
+        pod
