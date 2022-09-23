@@ -41,6 +41,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
       ...formState,
       values: {
         file: newObj,
+        fileId: id,
         note: fileModelEvent?.notes,
         isDocType: fileModelEvent?.attachment?.type === 'jpg' ? false : true
       },

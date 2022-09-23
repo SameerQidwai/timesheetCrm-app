@@ -79,7 +79,7 @@ New on 15
 
     Leave Request 
         // Approved is not be editable or deleteable
-        //hours date label will be on left and right seperately 
+        // hours date label will be on left and right seperately 
         //collapseable hours
         //Modal Header see..
         //add or edit on modal Title
@@ -141,3 +141,6 @@ packages
         Step 3
     react-native-mmkv
         pod
+    react-native-vector-icons
+        https://www.npmjs.com/package/react-native-vector-icons#ios
+    rn-fetch-blob
