@@ -28,7 +28,6 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
   // for check attachment already attach or not
   useEffect(() => {
     const {id,originalName,type, uniqueName} = fileModelEvent?.attachment?.file ?? {};
-    
     let newObj = id ? {
       fileId: id,
       name: originalName,
@@ -40,6 +39,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
       ...formState,
       values: {
         file: newObj,
+        fileId: id,
         note: fileModelEvent?.notes,
         isDocType: fileModelEvent?.attachment?.type === 'jpg' ? false : true
       },
@@ -72,7 +72,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
     };
 
     const pickImage = async location => {
-      console.log("location-->", location);
+      // console.log("location-->", location);
      
       if (location === 'GALLERY') {
         ImagePicker.openPicker({
@@ -134,6 +134,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
       attachments: formState.values.fileId ? [formState.values.fileId] : [],
       milestoneEntryIds: [fileModelEvent.milestoneEntryId],
     };
+    console.log("data-->",data);
     addTimesheetNote(fileModelEvent, data, appStorage.accessToken).then((res) =>{
       if (res.success) {
         onSuccess();
@@ -167,16 +168,14 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
     
     const iconRenderer = (file) => {
     let url = thumbUrl(file.type);
-      return <>
-          <View style={{display:"flex", justifyContent:"space-between", flexDirection:"row", alignItems:"center",borderWidth:1, borderColor:"#909090", borderStyle:"dotted", backgroundColor:"#fafafa", height:74}}>
-          <Pressable onPress={()=> checkPermission(file.uri)}>
-          <View style={{ justifyContent: "flex-start", flexDirection: "row", alignItems: "center" }} >
-            {console.log("file",file.uri)}    
-            <Image source={url} style={{ width: 34, height: 34, marginLeft: 5 }} />
-                <Text style={{marginLeft:5}}>{file.name}</Text>
-          </View>
-          </Pressable>    
-          <View>
+      return <View style={{display:"flex", justifyContent:"space-between", flexDirection:"row", alignItems:"center",borderWidth:1, borderColor:"#909090", borderStyle:"dotted", backgroundColor:"#fafafa", height:74}}>
+              <Pressable onPress={()=> checkPermission(file.uri)}>
+              <View style={{ justifyContent: "flex-start", flexDirection: "row", alignItems: "center" }} >
+                <Image source={url} style={{ width: 34, height: 34, marginLeft: 5 }} />
+                    <Text style={{marginLeft:5}}>{file.name}</Text>
+              </View>
+              </Pressable>    
+              <View>
                 <IconButton
                         icon={"delete-outline"}
                         disabled={disable}
@@ -186,8 +185,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
                             delete
                 </IconButton>
               </View>
-          </View>
-      </>
+        </View>
     };
     
   const onDismiss = () => {
@@ -205,7 +203,8 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
         <Dialog visible={fileModelEvent} style={styles.modalView} onDismiss={onDismiss}>
           <Dialog.Content style={{ paddingVertical: 10, paddingHorizontal: 20}}>
                 <Text style={{ fontSize: 18, color: "black" }}>Add Attachment & Notes</Text>
-            {!formState.values.file ?
+            
+          {!formState.values.file ?
               <>
                 <View style={{ display: "flex", justifyContent:"space-evenly", alignItems:"center", flexDirection: "row", marginTop:10, borderWidth:1, borderColor:"#909090", borderStyle:"dotted", backgroundColor:"#fafafa"}}>
                 <View >

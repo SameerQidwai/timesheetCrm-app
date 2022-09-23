@@ -103,7 +103,7 @@ export const addTimesheetNote = (id, data, token) => {
     return axios
         .patch(`${url}/milestoneEntriesUpdate`, data, {headers:headers(token)})
         .then((res) => {
-            console.log("res-->", res);
+            // console.log("res-->", res);
             const { success, message, data } = res.data;
             if (success) {
                 let obj = {
