@@ -129,6 +129,17 @@ backend
             data sahe ata hai or koi update keay nai or save keya to next 
             time open kar ny per image fatch nai kar ta hai.
 
+new changes: 
+    //timesheet submit can add notes and attachment on submit
+    //Leave Request Modal height
+
+    ios:
+        dropdown on zIndex
+        padding on action Modal
+        attachment on camera of gallery app crash 
+        paddin on hearder icon go far
+
+
 IOS:
     font link
         https://callstack.github.io/react-native-paper/4.0/fonts.html

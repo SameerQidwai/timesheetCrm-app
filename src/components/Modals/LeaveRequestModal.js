@@ -356,7 +356,7 @@ const pickImage = async location => {
               </Subheading>
             </View>
             <Dialog.ScrollArea style={styles.fieldView}>
-              <ScrollView>
+              <ScrollView nestedScrollEnabled={true}>
                 <MDropDown
                   placeholder="Select Leave Types"
                   label="Leave Type"
@@ -428,7 +428,7 @@ const pickImage = async location => {
                 </TouchableRipple>
                 {expanded && (
                   <View style={styles.timeFieldsView}>
-                    <ScrollView>
+                    <ScrollView nestedScrollEnabled={true} >
                       {days.map((el, index) => (
                         <ColView key={el.key} style={styles.colViewCenter}>
                           <View>
@@ -460,7 +460,7 @@ const pickImage = async location => {
                   returnKeyType="next"
                 />
                 <View style={{marginTop: 10}}>
-                  <ScrollView style={{maxHeight: 114}}>
+                  <ScrollView style={{maxHeight: 114}} nestedScrollEnabled={true}>
                     {(formData?.attachments?? []).map((ele, index) => {
                       return ele.type === 'jpg' ? (
                         <View
@@ -755,6 +755,7 @@ const styles = StyleSheet.create({
     fieldView: {
       paddingHorizontal: 0,
       paddingVertical: 10,
+      maxHeight: windowHeight -300
     },
     actionView: {
       justifyContent: 'space-evenly',

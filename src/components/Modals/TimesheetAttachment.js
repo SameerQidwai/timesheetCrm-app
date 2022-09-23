@@ -15,7 +15,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) => {
-  let disable = ['SB', 'AP'].includes(fileModelEvent['status'])
+  let disable = ['AP'].includes(fileModelEvent['status'])
   const { appStorage, setAppStrorage } = useContext(AppContext);
   const [formState, setFormState] = useState({
       values: {
