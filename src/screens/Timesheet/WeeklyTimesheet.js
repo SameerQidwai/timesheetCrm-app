@@ -193,15 +193,49 @@ const WeeklyTimesheet = ({route, navigation}) => {
   return (
     <View style={styles.pageView}>
       <Appbar.Header style={styles.containerView}>
-        <IconButton
-          icon="arrow-left"
-          color="#fff"
-          size={30}
-          style={{width: 20, marginLeft: 0, paddingVertical: 10}}
-          onPress={() => navigation.navigate('Timesheet')}
-        />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <IconButton
+            icon="arrow-left"
+            color="#fff"
+            size={30}
+            style={{ width: 20, marginLeft: 0, paddingVertical: 10, marginRight: 10 }}
+            onPress={() => navigation.navigate('Timesheet')}
+          />
+          <TouchableRipple
+            onPress={() => setdateTime(!dateTime)}
+            rippleColor="rgba(0, 0, 0, .12)">
+            <View style={{ flexDirection: 'row' }}>
+              <Title
+                style={{
+                  textTransform: 'uppercase',
+                  color: '#fff',
+                }}>
+                {sDate.format('MMM YYYY')}
 
-        <Appbar.Content
+              </Title>
+              <IconButton
+                icon="chevron-down"
+                color="#fff"
+                size={24}
+                style={{ width: 28, height: 20 }}
+              />
+            </View>
+
+          </TouchableRipple>
+        </View>
+          <View style={{justifyContent: 'center'}}>
+              <View>
+                <Caption style={{color: '#fff'}}>Total Hours</Caption>
+              </View>
+              <View>
+                <Title
+                  style={{lineHeight: 22, textAlign: 'center', color: '#fff'}}>
+                  {formatFloat(timesheet?.['total'])}
+                </Title>
+              </View>
+            </View>
+
+        {/* <Appbar.Content
           titleStyle={{paddingHorizontal: 0, margin: 0}}
           style={{paddingHorizontal: 0, marginLeft: 0}}
           title={
@@ -225,8 +259,8 @@ const WeeklyTimesheet = ({route, navigation}) => {
             </TouchableRipple>
             // </View>
           }
-        />
-        <Appbar.Content
+        /> */}
+        {/* <Appbar.Content
           title={
             <View style={{justifyContent: 'center'}}>
               <View>
@@ -241,7 +275,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
             </View>
           }
           titleStyle={{marginLeft: 'auto'}}
-        />
+        /> */}
       </Appbar.Header>
       <CalendarProvider
         date={sDate.format('yyyy-MM-DD')}

@@ -367,7 +367,7 @@ const pickImage = async location => {
                     setFieldValue('typeId', item.id);
                     setOtherData(prev => ({...prev, leavetype: item}));
                   }}
-                  zIndex={3000}
+                  zIndex={6000}
                   zIndexInverse={1000}
                   schema={{
                     label: 'name',

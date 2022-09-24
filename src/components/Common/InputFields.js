@@ -73,7 +73,7 @@ export const MDropDown =({value, data, mode, placeholder, onSelect, inputStyle, 
         setValue={setSelect}
         setItems={setItems}
         listMode="SCROLLVIEW"
-        zIndex={zIndex??2000}
+        zIndex={zIndex?? 2000}
         zIndexInverse={zIndexInverse??2000}
         searchable={true}
         schema={schema} // required
@@ -98,6 +98,8 @@ export const MDropDown =({value, data, mode, placeholder, onSelect, inputStyle, 
             setValueLabel(item[schema['label']])
             onSelect(item)
         }}
+        // containerStyle={{zIndex: 10000}}
+        // dropDownDirection="TOP"
       />
     </View>
   )

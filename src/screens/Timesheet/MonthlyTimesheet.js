@@ -148,7 +148,9 @@ const MonthlyTimesheet =({navigation}) =>{
       <View style={styles.pageView}>
         <StatusBar  backgroundColor={colors['primary']} />
         <Appbar.Header style={styles.header}>
-          <Appbar.Content
+          <View >
+          {/* <Appbar.Content
+            titleStyle={{alignItems: 'center'}}
             title={
               <TouchableRipple onPress={() => setDateTime(!dateTime)}>
                 <Title
@@ -166,8 +168,44 @@ const MonthlyTimesheet =({navigation}) =>{
                 </Title>
               </TouchableRipple>
             }
-          />
-          <Appbar.Content
+          /> */}
+          <TouchableRipple onPress={() => setDateTime(!dateTime)}>
+              <View style={{ flexDirection: 'row' }}>
+                <Title
+                  style={{
+                    textTransform: 'uppercase',
+                    color: '#fff',
+                  }}>
+                  {sDate.format('MMM YYYY')}
+
+                </Title>
+                <IconButton
+                  icon="chevron-down"
+                  color="#fff"
+                  size={24}
+                  style={{ width: 28, height: 20 }}
+                />
+              </View>
+                
+              </TouchableRipple>
+          </View>
+          <View>
+          <View style={{justifyContent: 'center'}}>
+                <View>
+                  <Caption style={{color: '#fff'}}>Total Hours</Caption>
+                </View>
+                <View>
+                  <Title
+                    style={{
+                      lineHeight: 22,
+                      textAlign: 'center',
+                      color: '#fff',
+                    }}>
+                    {formatFloat(timesheets?.['total'])}
+                  </Title>
+                </View>
+              </View>
+          {/* <Appbar.Content
             title={
               <View style={{justifyContent: 'center'}}>
                 <View>
@@ -186,7 +224,8 @@ const MonthlyTimesheet =({navigation}) =>{
               </View>
             }
             titleStyle={{marginLeft: 'auto'}}
-          />
+          /> */}
+          </View>
           {longPressed && <View style={[styles.overlay]} />}
         </Appbar.Header>
         {/* {projects_timesheet?.length >0 ?  */}

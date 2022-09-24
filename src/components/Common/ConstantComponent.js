@@ -53,15 +53,17 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                         height: 65
                     }}
                 >
-                    <View>
-                        <Text style={[styles.renderDayText(state), styles.todayDayText(date),marking?.['customStyles']?.text]}>
-                        {date.day}
-                        </Text>
-                    </View>
-                    <View>
-                        <Text style={[styles.renderDayText(state), styles.todayDayText(date), marking?.['customStyles']?.text, {fontSize: 12}]}>
-                            {getDayHour()}
-                        </Text>
+                    <View style={{flexDirection: 'column', justifyContent: 'space-between', flex:2}}>
+                        <View>
+                            <Text style={[styles.renderDayText(state), styles.todayDayText(date),marking?.['customStyles']?.text]}>
+                            {date.day}
+                            </Text>
+                        </View>
+                        <View>
+                            <Text style={[styles.renderDayText(state), styles.todayDayText(date), marking?.['customStyles']?.text, {fontSize: 12}]}>
+                                {getDayHour()}
+                            </Text>
+                        </View>
                     </View>
                 </TouchableRipple>
             </View>
