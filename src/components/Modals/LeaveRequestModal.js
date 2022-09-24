@@ -274,32 +274,16 @@ const pickImage = async location => {
     return (
       <View
         key={index}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          alignItems: 'center',
-          borderWidth: 1,
-          borderColor: '#909090',
-          borderStyle: 'dotted',
-          backgroundColor: '#fafafa',
-          height: 54,
-          marginBottom: 5,
-        }}
+        style={styles.docView}
       >
         <TouchableRipple onPress={() => checkPermission(file.uri)}>
           <View
-            style={{
-              justifyContent: 'flex-start',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            {/* {console.log("file",file.uri)}     */}
+            style={styles.docImgView}>
             <Image
               source={url}
-              style={{width: 34, height: 34, marginLeft: 5}}
+              style={styles.docImg}
             />
-            <Text style={{marginLeft: 5, maxWidth: 150}} numberOfLines={1}>
+            <Text style={styles.uploadName} numberOfLines={1}>
               {file.name}
             </Text>
           </View>
@@ -465,18 +449,7 @@ const pickImage = async location => {
                       return ele.type === 'jpg' ? (
                         <View
                           key={index}
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            borderWidth: 1,
-                            borderColor: '#909090',
-                            borderStyle: 'dotted',
-                            backgroundColor: '#fafafa',
-                            height: 54,
-                            marginBottom: 5,
-                          }}>
+                          style={styles.imgView}>
                           <TouchableRipple
                             onPress={() => setShowFullSize(ele?.uri)}>
                             <View
@@ -494,7 +467,7 @@ const pickImage = async location => {
                                 }}
                               />
                               <Text
-                                style={{marginLeft: 5, maxWidth: 150}}
+                                style={styles.uploadName}
                                 numberOfLines={1}>
                                 {ele?.name}
                               </Text>
@@ -519,24 +492,9 @@ const pickImage = async location => {
                 </View>
 
                 <View
-                  style={{
-                    width: 50,
-                    borderRadius: 10,
-                    borderColor: '#909090',
-                    borderStyle: 'dotted',
-                    borderWidth: 1,
-                    marginTop: 10,
-                    padding: 2,
-                  }}>
+                  style={[styles.uploadIcon,styles.outterUpload]}>
                   <View
-                    style={{
-                      with: '100%',
-                      borderRadius: 10,
-                      borderColor: '#909090',
-                      borderStyle: 'dotted',
-                      borderWidth: 1,
-                      alignItems: 'center',
-                    }}>
+                    style={[styles.uploadIcon, styles.innerUpload]}>
                     <IconButton
                       icon={'plus-outline'}
                       disabled={fetching || loading || formData['approvedBy']}
@@ -561,8 +519,8 @@ const pickImage = async location => {
             color={colors['light']}
             disabled={fetching || loading}
             compact
-            style={{width: '45%', borderRadius: 2}}
-            labelStyle={{color: '#fff'}}
+            style={styles.actionButton}
+            labelStyle={styles.buttonLabel}
             onPress={hideDialog}>
             Cancel
           </Button>
@@ -572,8 +530,8 @@ const pickImage = async location => {
             color={colors['primary']}
             disabled={fetching || loading || formData['approvedBy']}
             compact
-            style={{width: '45%', borderRadius: 2}}
-            labelStyle={{color: '#fff'}}
+            style={styles.actionButton}
+            labelStyle={styles.buttonLabel}
             onPress={getFormValues}>
             Save
           </Button>
@@ -594,14 +552,7 @@ const pickImage = async location => {
           </View>
         </View>
         <View
-          style={{
-            display: 'flex',
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-            flexDirection: 'row',
-            marginTop: 10,
-            backgroundColor: '#fafafa',
-          }}>
+          style={styles.pickerModal}>
           <View>
             <IconButton
               icon={'file-outline'}
@@ -610,12 +561,7 @@ const pickImage = async location => {
               onPress={selectDocument}
             />
             <Text
-              style={{
-                fontSize: 12,
-                color: 'rgba(0,0,0,0.54)',
-                marginVertical: 2,
-                letterSpacing: 0.45,
-              }}>
+              style={styles.pickerIconText}>
               Document
             </Text>
           </View>
@@ -627,12 +573,7 @@ const pickImage = async location => {
               onPress={askFromWhereToPickImage}
             />
             <Text
-              style={{
-                fontSize: 12,
-                color: 'rgba(0,0,0,0.54)',
-                marginVertical: 2,
-                letterSpacing: 0.45,
-              }}>
+              style={styles.pickerIconText}>
               Image
             </Text>
           </View>
@@ -663,7 +604,7 @@ const pickImage = async location => {
           />
         </TouchableRipple>
         <View
-          style={{borderRadius: 10, width: windowWidth, height: windowHeight}}>
+          style={styles.fullImgModal}>
           <Image
             source={{
               uri: showFullSize,
@@ -728,117 +669,179 @@ const styles = StyleSheet.create({
       marginTop: 0,
       marginVertical: 0,
     },
-    headerText: {
-      color: '#fff',
-      fontWeight: '700',
+      headerText: {
+        color: '#fff',
+        fontWeight: '700',
+      },
+      subHeader:{
+        justifyContent: 'space-between', 
+        flexDirection: 'row',
+      },
+      modalBody: {
+        // paddingVertical: 10,
+        paddingBottom: 10,
+        paddingTop: 0,
+        paddingHorizontal: 20,
+      },
+      subheading:{
+        paddingVertical: 10,
+        fontWeight: '700'
+      },
+      button: {
+        borderRadius: 2,
+        padding: 10,
+        elevation: 2,
+        width: 90,
+      },
+      fieldView: {
+        paddingHorizontal: 0,
+        paddingVertical: 10,
+        maxHeight: windowHeight -300
+      },
+      actionView: {
+        justifyContent: 'space-evenly',
+      },
+      divider: {
+        marginVertical: 10,
+      },
+      buttonOpen: {
+        backgroundColor: '#4356fa',
+      },
+      buttonClose: {
+        backgroundColor: '#f47b4e',
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+      },
+      
+      bText: {
+        color: '#fff',
+      },
+      timeFieldsView: {
+        height: 150,
+        // borderLeftWidth: 2,
+        paddingHorizontal: 5,
+        marginHorizontal: 5,
+      },
+      hoursField: {
+        width: 100
+      },
+      expandIcon: {
+        margin: 0
+      },
+      colViewCenter: {
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      },
+      expandTouch:{
+        paddingHorizontal: 5,
     },
-    subHeader:{
-      justifyContent: 'space-between', 
-      flexDirection: 'row',
-    },
-    modalBody: {
-      // paddingVertical: 10,
-      paddingBottom: 10,
-      paddingTop: 0,
-      paddingHorizontal: 20,
-    },
-    subheading:{
-      paddingVertical: 10,
-      fontWeight: '700'
-    },
-    button: {
-      borderRadius: 2,
-      padding: 10,
-      elevation: 2,
-      width: 90,
-    },
-    fieldView: {
-      paddingHorizontal: 0,
-      paddingVertical: 10,
-      maxHeight: windowHeight -300
-    },
-    actionView: {
-      justifyContent: 'space-evenly',
-    },
-    divider: {
-      marginVertical: 10,
-    },
-    buttonOpen: {
-      backgroundColor: '#4356fa',
-    },
-    buttonClose: {
-      backgroundColor: '#f47b4e',
-    },
-    textStyle: {
-      color: 'white',
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: 'center',
-    },
-    
-    bText: {
-      color: '#fff',
-    },
-    timeFieldsView: {
-      height: 150,
-      // borderLeftWidth: 2,
-      paddingHorizontal: 5,
-      marginHorizontal: 5,
-    },
-    hoursField: {
-      width: 100
-    },
-    expandIcon: {
-      margin: 0
-    },
-    colViewCenter: {
+    downloadIcon: {
+      justifyContent: 'center',
       alignItems: 'center',
-      justifyContent: 'space-between'
+      width: 30,
+      height: 30,
+      position: 'absolute',
+      top: 20,
+      left: 15,
+      zIndex: 1,
     },
-    expandTouch:{
-      paddingHorizontal: 5,
-  },
-  downloadIcon: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 30,
-    height: 30,
-    position: 'absolute',
-    top: 20,
-    left: 15,
-    zIndex: 1,
-  },
-  closeButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: "red",
-    width: 30,
-    height: 30,
-    borderRadius: 50,
-    position: 'absolute',
-    top: 20,
-    right: 10,
-    zIndex: 1,
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    backgroundColor: 'white',
-    opacity: 0.5,
-  },
-  overlayIcon: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
+    closeButton: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: "red",
+      width: 30,
+      height: 30,
+      borderRadius: 50,
+      position: 'absolute',
+      top: 20,
+      right: 10,
+      zIndex: 1,
+    },
+    overlay: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      backgroundColor: 'white',
+      opacity: 0.5,
+    },
+    overlayIcon: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+    },
+    docView: {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#909090',
+      borderStyle: 'dotted',
+      backgroundColor: '#fafafa',
+      height: 54,
+      marginBottom: 5,
+    },
+    docImgView:{
+      justifyContent: 'flex-start',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    docImg: {width: 34, height: 34, marginLeft: 5},
+    uploadName: {marginLeft: 5, maxWidth: 150},
+    imgView: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: '#909090',
+      borderStyle: 'dotted',
+      backgroundColor: '#fafafa',
+      height: 54,
+      marginBottom: 5,
+    },
+    outterUpload: {
+      width: 50,
+      marginTop: 10,
+      padding: 2,
+    },
+    innerUpload: {
+      with: '100%',
+      alignItems: 'center',
+    },
+    uploadIcon: {
+      borderRadius: 10,
+      borderColor: '#909090',
+      borderStyle: 'dotted',
+      borderWidth: 1,
+    }, 
+    actionButton: {width: '45%', borderRadius: 2},
+    buttonLabel: {color: '#fff'},
+    pickerModal: {
+      display: 'flex',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginTop: 10,
+      backgroundColor: '#fafafa',
+    }, 
+    pickerIconText: {
+      fontSize: 12,
+      color: 'rgba(0,0,0,0.54)',
+      marginVertical: 2,
+      letterSpacing: 0.45,
+    },
+    fullImgModal: {borderRadius: 10, width: windowWidth, height: windowHeight}
   });
 
 

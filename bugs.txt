@@ -138,6 +138,7 @@ new changes:
         padding on action Modal
         attachment on camera of gallery app crash 
         paddin on hearder icon go far
+        select Modal from bottom
 
 
 IOS:
