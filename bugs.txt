@@ -80,10 +80,10 @@ New on 15
     Leave Request 
         // Approved is not be editable or deleteable
         // hours date label will be on left and right seperately 
-        //collapseable hours
-        //Modal Header see..
-        //add or edit on modal Title
-        //View and edit on Approved and (sumbitted or Rejeced) respoctively
+        // collapseable hours
+        // Modal Header see..
+        // add or edit on modal Title
+        // View and edit on Approved and (sumbitted or Rejeced) respoctively
         // tab on leave blances show other balances
     
     AsyncStorage
@@ -134,11 +134,12 @@ new changes:
     //Leave Request Modal height
 
     ios:
-        dropdown on zIndex
+        //dropdown on zIndex
         padding on action Modal
         attachment on camera of gallery app crash 
-        paddin on hearder icon go far
-        select Modal from bottom
+        // download
+        //paddin on hearder icon go far
+        //select Modal from bottom
 
 
 IOS:

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Alert, Dimensions, Image, KeyboardAvoidingView, Pressable, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Dialog, IconButton, List, Modal, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
+import { Alert, Dimensions, Image, KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Button, Dialog, IconButton, Modal, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
