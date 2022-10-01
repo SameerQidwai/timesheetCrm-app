@@ -240,7 +240,7 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
           minuteInterval={15}
           display={dateTime['key'] !== 'date' ? 'spinner' : 'default'}
           themeVariant="dark"
-          value={
+          date={
             formData[dateTime['key']]
               ? dateTime['key'] !== 'date'
                 ? moment(formData[dateTime['key']]).toDate()

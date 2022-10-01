@@ -4,7 +4,8 @@ import RNFetchBlob from "rn-fetch-blob";
 export const checkPermission = async (uri) => {
     console.log(uri);
     if (Platform.OS === 'ios') {
-      downloadFile(uri);
+      // downloadFile(uri);
+      actualDownload(uri);
     } else {
       try {
         const granted = await PermissionsAndroid.request(
@@ -29,7 +30,56 @@ export const checkPermission = async (uri) => {
       }
     }
   };
-  
+
+  const actualDownload = (fileUrl) => {
+    let date = new Date();
+    // File URL which we want to download
+    let FILE_URL = fileUrl;    
+    // Function to get extention of the file url
+    let file_ext = getFileExtention(FILE_URL)[0];
+   
+    const { dirs } = RNFetchBlob.fs;
+    const dirToSave = Platform.OS == 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
+    const title = `file_${Math.floor(date.getTime() + date.getSeconds() / 2)}.${file_ext}`;
+
+    const configfb = {
+        fileCache: true,
+        useDownloadManager: true,
+        notification: true,
+        mediaScannable: true,
+        title: title,
+        path: `${dirToSave}/${title}`,
+    }
+    const configOptions = Platform.select({
+        ios: {
+            fileCache: configfb.fileCache,
+            title: configfb.title,
+            path: configfb.path,
+            appendExt: file_ext,
+        },
+        android: configfb,
+    });
+
+    console.log('The file saved to 23233', configfb, dirs);
+
+    RNFetchBlob.config(configOptions)
+        .fetch('GET', `${fileUrl}`, {})
+        .then((res) => {
+            if (Platform.OS === "ios") {
+                RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
+                RNFetchBlob.ios.previewDocument(configfb.path);
+            }
+            if (Platform.OS == 'android') {
+              alert('File Downloaded Successfully.');
+            }
+            console.log('The file saved to ', res);
+        })
+        .catch((e) => {
+            alert('File Downloaded Failed.');
+            console.log('The file saved to ERROR', e.message)
+        });
+}
+
 const downloadFile = (fileUrl) => {
    
     // Get today's date to add the time suffix in filename
@@ -44,7 +94,7 @@ const downloadFile = (fileUrl) => {
     // config: To get response by passing the downloading related options
     // fs: Root directory path to download
     const { config, fs } = RNFetchBlob;
-    let RootDir = fs.dirs.PictureDir;
+    let RootDir = fs.dirs.DocumentDir;
     let options = {
       fileCache: true,
       addAndroidDownloads: {
@@ -62,6 +112,12 @@ const downloadFile = (fileUrl) => {
     config(options)
       .fetch('GET', FILE_URL)
       .then(res => {
+        if (Platform.OS === "ios") {
+
+          // RNFetchBlob.ios.openDocument(res.data);
+          RNFetchBlob.fs.writeFile(options.addAndroidDownloads.path,res.data, 'base64');
+          RNFetchBlob.ios.previewDocument(options.addAndroidDownloads.path);
+        }
         // Alert after successful downloading
         console.log('res -> ', JSON.stringify(res));
         alert('File Downloaded Successfully.');

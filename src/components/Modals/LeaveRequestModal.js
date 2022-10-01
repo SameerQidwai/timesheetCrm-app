@@ -607,7 +607,7 @@ const pickImage = async location => {
           style={styles.fullImgModal}>
           <Image
             source={{
-              uri: showFullSize,
+              uri: showFullSize || "",
               width: windowWidth,
               height: windowHeight,
             }}
