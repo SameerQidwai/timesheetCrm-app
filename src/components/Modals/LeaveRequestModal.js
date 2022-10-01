@@ -398,7 +398,7 @@ const pickImage = async location => {
                   onPress={() => setExpanded(!expanded)}
                   rippleColor={'rgba(0, 0, 0, .12)'}
                   style={styles.expandTouch}>
-                  <ColView style={styles.colViewCenter}>
+                  <View style={styles.colViewCenter}>
                     <View>
                       <Text>{expanded ? 'Collapse' : 'Expand'}</Text>
                     </View>
@@ -408,7 +408,7 @@ const pickImage = async location => {
                         icon={expanded ? 'chevron-up' : 'chevron-down'}
                       />
                     </View>
-                  </ColView>
+                  </View>
                 </TouchableRipple>
                 {expanded && (
                   <View style={styles.timeFieldsView}>
@@ -737,7 +737,8 @@ const styles = StyleSheet.create({
       },
       colViewCenter: {
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        flexDirection: 'row'
       },
       expandTouch:{
         paddingHorizontal: 5,

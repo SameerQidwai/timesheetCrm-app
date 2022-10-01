@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { Image, ImageBackground, StyleSheet, View, Platform, StatusBar  } from 'react-native'
+import { Image, ImageBackground, StyleSheet, View, Platform, StatusBar, KeyboardAvoidingView  } from 'react-native'
 import { Button, Card, Headline, Snackbar, TextInput } from 'react-native-paper'
 import { colors } from '../components/Common/theme'
 import { AppContext } from '../context/AppContext'
@@ -32,6 +32,8 @@ function Login() {
     <Fragment>
         <StatusBar barStyle="light-content" />
       <View style={styles.loginView}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View>
           <Card elevation={10} mode="elevated" style={styles.loginCard}>
             <View>
@@ -84,6 +86,7 @@ function Login() {
             </Card.Actions>
           </Card>
         </View>
+        </KeyboardAvoidingView>
         <Snackbar
           visible={snack['visible']}
           duration={snack['duration']}

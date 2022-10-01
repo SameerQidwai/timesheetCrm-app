@@ -1,14 +1,16 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Dialog, Portal, Button, Title, IconButton, Text, Subheading, } from 'react-native-paper';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
-import { ScrollView, StyleSheet, View} from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, View} from 'react-native';
 import { addTimeEntryApi, editTimeEntryApi } from '../../services/timesheet-api';
 import { userMilestonesApi } from '../../services/constant-api';
 import { AppContext } from '../../context/AppContext';
 import { formatDate } from '../../services/constant';
 import { TextField, MDropDown } from '../Common/InputFields';
 import { colors } from '../Common/theme';
+
+const windowHeight = Dimensions.get('window').height;
 
 export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disabledKeys}) => {
   const { appStorage, setAppStorage } = useContext( AppContext )
@@ -230,11 +232,12 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
         </Dialog.Content>
       </Dialog>
       {dateTime.open && (
-        <RNDateTimePicker
+        <DateTimePickerModal
+          textColor={'#000'}
+          isVisible={dateTime.open }
           mode={dateTime['mode']}
           is24Hour={dateTime['is24Hour']}
           minuteInterval={15}
-          // display={dateTime['is24Hour']? 'spinner':'default'}
           display={dateTime['key'] !== 'date' ? 'spinner' : 'default'}
           themeVariant="dark"
           value={
@@ -244,27 +247,13 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
                 : formatDate(formData['date']).toDate()
               : new Date()
           }
-          onChange={(event, dateValue) => {
-            if (event?.type === 'set' && dateValue) {
+          onConfirm={(dateValue) => {
+            if (dateValue) {
               setFieldValue(dateTime.key, dateValue);
             }
           }}
+          onCancel={()=> setdateTime(prev => ({...prev, open: false}))}
         />
-        // <DatePicker
-        //   visible={dateTime.open}
-        //   // selected={formData[dateTime['key']] ?
-        //   //   moment(formData[dateTime['key']]).toDate()
-        //   //   : new Date()
-        //   // }
-        //   mode={dateTime['mode']}
-        //   interval={15}
-        //   onDismiss={() => setdateTime(prev => ({...prev, open: false}))}
-        //   onTimeChange={selectedTime => {
-        //     console.log(selectedTime)
-        //     setFieldValue(dateTime.key, selectedTime)
-        //     // setdateTime(false);
-        //   }}
-        // />
       )}
     </Portal>
   );
