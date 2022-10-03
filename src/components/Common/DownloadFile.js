@@ -19,8 +19,7 @@ export const checkPermission = async (uri) => {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           // Start downloading
           downloadFile(uri);
-          console.log('Storage Permission Granted.');
-        } else {
+         } else {
           // If permission denied then show alert
           Alert.alert('Error','Storage Permission Not Granted');
         }
@@ -81,7 +80,6 @@ export const checkPermission = async (uri) => {
 }
 
 const downloadFile = (fileUrl) => {
-   
     // Get today's date to add the time suffix in filename
     let date = new Date();
     // File URL which we want to download
@@ -94,7 +92,7 @@ const downloadFile = (fileUrl) => {
     // config: To get response by passing the downloading related options
     // fs: Root directory path to download
     const { config, fs } = RNFetchBlob;
-    let RootDir = fs.dirs.DocumentDir;
+    let RootDir = fs.dirs.DownloadDir;
     let options = {
       fileCache: true,
       addAndroidDownloads: {
@@ -112,20 +110,12 @@ const downloadFile = (fileUrl) => {
     config(options)
       .fetch('GET', FILE_URL)
       .then(res => {
-        if (Platform.OS === "ios") {
-
-          // RNFetchBlob.ios.openDocument(res.data);
-          RNFetchBlob.fs.writeFile(options.addAndroidDownloads.path,res.data, 'base64');
-          RNFetchBlob.ios.previewDocument(options.addAndroidDownloads.path);
-        }
         // Alert after successful downloading
-        console.log('res -> ', JSON.stringify(res));
         alert('File Downloaded Successfully.');
       });
   };
 
 const getFileExtention = fileUrl => {
-    console.log("fileUrl-->", fileUrl);
     // To get the file extension
     return /[.]/.exec(fileUrl) ?
              /[^.]+$/.exec(fileUrl) : undefined;
