@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Api, headers } from "./constant";
+import { Api, checkToken, headers } from "./constant";
 
 const url = `${Api}/leave-requests`
 
@@ -7,16 +7,15 @@ export const getLeavesApi = (token) => {
     return axios
         .get(url,{headers:headers(token)})
         .then((res) => {
-            const { success, data } = res.data;
-            let setToken = (res.headers && res.headers.authorization)
+            const { success, data, message } = res?.data;
+            let setToken = checkToken(message, res?.headers)
             return { success, data, setToken};
         })
         .catch((err) => {
-            return {
-                error: "Please login again!",
-                success: false,
-                message: err.message,
-            };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            let setToken = checkToken(message, err?.response.headers)
+            return { status, success, message, setToken};
         });
 };
 
@@ -25,16 +24,14 @@ export const addLeaveApi = (data, token) => {
         .post(url, data, {headers:headers(token)})
         .then((res) => {
             const { success, message } = res.data;
-            let setToken = (res.headers && res.headers.authorization)
+            let setToken = checkToken(message, res?.headers)
             return {success, setToken};
         })
         .catch((err) => {
-            // err?.response.data
-            return {
-                error: "Please login again!",
-                success: false,
-                message: err.message,
-            };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            let setToken = checkToken(message, err?.response.headers)
+            return { status, success, message, setToken};
         });
 };
 
@@ -43,16 +40,15 @@ export const editLeaveApi = (id, data, token) => {
     .patch(`${url}/${id}`, data, {headers:headers(token)})
         .then((res) => {
             const { success, message, data } = res.data;
-            let setToken = (res.headers && res.headers.authorization)
+            let setToken = checkToken(message, res?.headers)
 
             return {success, data, setToken};
         })
         .catch((err) => {
-            return {
-                error: "Please login again!",
-                success: false,
-                message: err.message,
-            };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            let setToken = checkToken(message, err?.response.headers)
+            return { status, success, message, setToken};
         });
 };
 
@@ -60,17 +56,15 @@ export const deleteLeaveApi = (entryId, token) => {
     return axios
         .delete(`${url}/${entryId}`, {headers:headers(token)})
         .then((res) => {
-            const { success, data } = res.data;
-            let setToken = (res.headers && res.headers.authorization)
+            const { success, data, message } = res.data;
+            let setToken = checkToken(message, res?.headers)
             return {success, data, setToken};
         })
         .catch((err) => {
-            console.log(err)
-            return {
-                error: "Please login again!",
-                status: false,
-                message: err.message,
-            };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            let setToken = checkToken(message, err?.response.headers)
+            return { status, success, message, setToken};
         });
 };
 
@@ -80,7 +74,7 @@ export const getLeaveApi = (id, token) => {
         .get(`${url}/${id}`,{headers:headers(token)})
         .then((res) => {
             const { success, message, data } = res.data;
-            let setToken = (res.headers && res.headers.authorization)
+            let setToken = checkToken(message, res?.headers)
             if (success){
                 let entriesHours = {} //to show Values in date fields 
                 let entries = (data?.entries??[]).map(el=>{
@@ -103,22 +97,20 @@ export const getLeaveApi = (id, token) => {
                         uid: el.file.uniqueName,
                         name: el.file.originalName,
                         type: el.file.type === 'png'? 'image/png': el.file.type,
-                        url: `${Api}/files/${el.file.uniqueName}`,
-                        thumbUrl: thumbUrl(el.file.type)
+                        uri: `${Api}/files/${el.file.uniqueName}`,
+                        // thumbUrl: thumbUrl(el.file.type)
                     })
                 });
+                data.attachments = fileList;
                 return { success, data, entries, entriesHours, fileIds, fileList, setToken }
             }
             return {success, data }
         })
         .catch((err) => {
-            const message = err?.response?.data?.message
-            console.log(message)
-            return {
-                error: "Please login again!",
-                success: false,
-                message: err.message,
-            };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            let setToken = checkToken(message, err?.response.headers)
+            return { status, success, message, setToken};
         });
 };
 export const getBalanceApi = (id, token) => {
@@ -130,11 +122,9 @@ export const getBalanceApi = (id, token) => {
             return { success, data};
         })
         .catch((err) => {
-            return {
-                error: "Please login again!",
-                success: false,
-                message: err.message,
-            };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            return { status, success, message, };
         });
 };
 
@@ -142,8 +132,8 @@ export const getUserLeaveType = (token) => {
     return axios
         .get(`${Api}/leave-request-types/getOwn`, {headers:headers(token)})
         .then((res) => {
-            const { success, data } = res.data;
-            let setToken = (res.headers && res.headers.authorization)
+            const { success, data, message } = res.data;
+            let setToken = checkToken(message, res?.headers)
             if (success){
                 const {holidays, contractDetails, LeaveRequestTypes = []} = data
                 let requestType = [{id: 0, name: 'Unpaid', include_off_days: true}]
@@ -160,10 +150,9 @@ export const getUserLeaveType = (token) => {
             return {success, data}
         })
         .catch((err) => {
-            return {
-                error: "Please login again!",
-                success: false,
-                message: err.message,
-            };
+            const {message, success} =  err?.response?.data ?? {}
+            const {status} = err?.response
+            let setToken = checkToken(message, err?.response.headers)
+            return { status, success, message, setToken};
         });
 };

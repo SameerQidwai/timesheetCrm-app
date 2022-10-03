@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
-import { Text } from 'react-native-paper';
+import { View, StyleSheet, } from 'react-native';
+import { Text, TouchableRipple } from 'react-native-paper';
 import { formatDate, formatFloat } from '../../services/constant';
 import { colors } from './theme';
 
@@ -38,12 +38,9 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                     marking?.['customStyles']?.container,
                 ]}
             >
-                <Pressable
-                    android_ripple={{
-                        color: colors.primaryCondition(state, 'selected'),
-                        borderless: true,
-                        // foreground:  true
-                    }}
+                <TouchableRipple
+                    rippleColor={colors.primaryCondition(state, 'selected')}
+                    borderless
                     onPress={() => {
                         // if (state !== 'disabled'){
                             onDateChanged(getDate())
@@ -56,17 +53,19 @@ export const RenderDay = ({sDate, date, state, marking, theme, onDateChanged, da
                         height: 65
                     }}
                 >
-                    <View>
-                        <Text style={[styles.renderDayText(state), styles.todayDayText(date),marking?.['customStyles']?.text]}>
-                        {date.day}
-                        </Text>
+                    <View style={{flexDirection: 'column', justifyContent: 'space-between', flex:2}}>
+                        <View>
+                            <Text style={[styles.renderDayText(state), styles.todayDayText(date),marking?.['customStyles']?.text]}>
+                            {date.day}
+                            </Text>
+                        </View>
+                        <View>
+                            <Text style={[styles.renderDayText(state), styles.todayDayText(date), marking?.['customStyles']?.text, {fontSize: 12}]}>
+                                {getDayHour()}
+                            </Text>
+                        </View>
                     </View>
-                    <View>
-                        <Text style={[styles.renderDayText(state), styles.todayDayText(date), marking?.['customStyles']?.text, {fontSize: 12}]}>
-                            {getDayHour()}
-                        </Text>
-                    </View>
-                </Pressable>
+                </TouchableRipple>
             </View>
         </View>
     );

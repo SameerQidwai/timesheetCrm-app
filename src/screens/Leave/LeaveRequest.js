@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Pressable, StyleSheet, View, VirtualizedList } from "react-native";
-import { Appbar, Button, Caption, Card, FAB, Headline, Paragraph, Subheading, Text, Title } from "react-native-paper";
-import { leave_request, leave_request_balance } from "../../../assets/constant";
+import {  StyleSheet, View, VirtualizedList } from "react-native";
+import { Appbar, Button, Subheading } from "react-native-paper";
 import LeaveCard from "../../components/Cards/LeaveCard";
 import Actions from "../../components/Common/Actions";
 import Confirm from "../../components/Common/Confirm";
-import { ColView } from "../../components/Common/ConstantComponent";
+import NoRecords from "../../components/Common/NoRecords";
 import { colors } from "../../components/Common/theme";
 import LeaveBalance from "../../components/Leave/LeaveBalance";
 import LeaveRequestModal from "../../components/Modals/LeaveRequestModal";
 import { AppContext } from "../../context/AppContext";
-import { formatDate, status_color } from "../../services/constant";
 import { deleteLeaveApi, getBalanceApi, getLeavesApi } from "../../services/leaveRequest-api";
 
 const LeaveRequest = () =>{
@@ -26,7 +24,6 @@ const LeaveRequest = () =>{
     getData()
   }, [])
     
-
   const getData = async() =>{
     const { accessToken: token} =appStorage
     setFetching(true)
@@ -34,7 +31,10 @@ const LeaveRequest = () =>{
     .then(res=>{
       const {success: leaveSuccess, data: leaveData, setToken} = res[0]
       const {success: balanceSuccess, data: balanceData} = res[1]
-      setData({leaves: leaveSuccess? leaveData: [], balances: balanceSuccess? balanceData: []})
+      setData({
+        leaves: leaveSuccess ? leaveData : [],
+        balances: balanceSuccess ? balanceData : [],
+      });
       setFetching(false)
       setAppStorage(prev=> ({...prev, accessToken: setToken}))
     })
@@ -102,6 +102,8 @@ const LeaveRequest = () =>{
           getItem={(data, index)=> (data[index])}
           onRefresh={getData}
           refreshing={fetching}
+          contentContainerStyle={!data['leaves'].length &&{flex:1}}
+          ListEmptyComponent={<NoRecords />}
         />
       </View>
         <Button
@@ -151,36 +153,27 @@ export default LeaveRequest
 
 const styles = StyleSheet.create({
   pageView: {
-    flex: 1, 
-    backgroundColor: colors['display']
+    flex: 1,
+    backgroundColor: colors['display'],
   },
-  header:{
+  header: {
     flexDirection: 'row',
     backgroundColor: colors['primary'],
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 15,
   },
-  // header: {
-  //   justifyContent: 'center',
-  //   backgroundColor: '#2e44fc',
-  //   alignItems: 'baseline',
-  //   height: 48
-  // },
   headerTitle: {
-    color: '#fff'
+    color: '#fff',
   },
-  card: (selectColor)=>({
+  card: selectColor => ({
     borderRadius: 2,
     margin: 10,
-    backgroundColor: selectColor ? "#727ef6b3" : "white"
+    backgroundColor: selectColor ? '#727ef6b3' : 'white',
     // padding: 10,
     // height: 120
   }),
-  dateView: {width: 75, 
-    alignItems: 'center', 
-    justifyContent: 'center'
-  },
+  dateView: {width: 75, alignItems: 'center', justifyContent: 'center'},
   dateCard: {
     width: 60,
     justifyContent: 'center',
@@ -197,7 +190,11 @@ const styles = StyleSheet.create({
     color: 'grey',
     textTransform: 'uppercase',
   },
-  projectText: {lineHeight: 22, marginVertical: 0, color: 'grey'},
+  projectText: {
+    lineHeight: 22,
+    marginVertical: 0, 
+    color: 'grey'
+  },
   notesText: {color: '#bfbfbf'},
   statusCaption: {
     borderWidth: 1,
@@ -212,18 +209,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 7,
   },
-  fab: (pressed)=> ({
+  fab: pressed => ({
     position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: pressed ? 'red' : '#f8a587'
+    backgroundColor: pressed ? 'red' : '#f8a587',
   }),
   bottomButton: {
-    marginHorizontal: 15, 
+    marginHorizontal: 15,
     marginVertical: 8,
     borderRadius: 2,
-},
+  },
   overlay: {
     position: 'absolute',
     top: 0,
@@ -231,6 +228,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     backgroundColor: 'black',
-    opacity: 0.5
-},
+    opacity: 0.5,
+  },
 });

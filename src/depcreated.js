@@ -205,3 +205,30 @@
     }
   />
 </View>;}
+
+//ModalDropDownFlatList
+{<Portal>
+  <Modal visible={open} onDismiss={()=>opening(!open)}   >
+  <TextInput
+    mode={"outlined"}
+    label={"Search Item"}
+    placeholder={"Type to Search"}
+    dense
+    activeOutlineColor="#909090"
+    onChangeText={searchingText}
+    right={<TextInput.Icon 
+        disabled={disabled}
+        name="search"  
+    />}
+  />
+    <FlatList
+      data={items ?? []}
+      renderItem={renderListItem}
+      keyExtractor={(item, index) => index}
+      extraData={select}
+      // onRefresh={getData}
+      // refreshing={fetching}
+      style={{marginTop: 10}}
+    />
+  </Modal>
+</Portal>}

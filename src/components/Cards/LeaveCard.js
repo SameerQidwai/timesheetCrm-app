@@ -6,7 +6,8 @@ import { ColView } from '../Common/ConstantComponent'
 import StatusTag from '../Common/StatusTag'
 
 const LeaveCard = ({item, index, onPress}) => {
-
+  const dimColor = item.status === 'AP'
+  
   const getTotalDays = () =>{
     let numberOfDays = formatDate(item.endDate).diff( formatDate(item.startDate), 'days', )+1
     return (<View style={[styles.dateView, status_background[item.status]]}>
@@ -21,7 +22,7 @@ const LeaveCard = ({item, index, onPress}) => {
   }
 
   return (
-    <Card elevation={5} mode="elevated" style={styles.card}>
+    <Card elevation={5} mode="elevated" style={styles.card(dimColor)}>
         <TouchableRipple
           onPress={onPress}
           rippleColor="rgba(0, 0, 0, .12)"
@@ -31,17 +32,17 @@ const LeaveCard = ({item, index, onPress}) => {
               <View style={styles.detailView}>
                 <View style={styles.nameView}>
                     <Text 
-                      style={styles.headline}
+                      style={styles.headline(dimColor)}
                       numberOfLines={1}
                     >
                         {item.leaveRequestName}
                     </Text>
                 </View>
                 <Caption style={styles.projectText} numberOfLines={1}>{item.project}</Caption>
-                <Caption style={{color: '#000'}}>
+                <Caption style={styles.datesText(dimColor)}>
                     {formatDate(item.startDate, false, 'ddd DD MMM YYYY') + ' to ' + formatDate(item.endDate, false, 'ddd DD MMM YYYY')}
                 </Caption>
-                <Caption style={{color: '#000'}}>
+                <Caption style={styles.datesText(dimColor)}>
                     {formatFloat(item.totalHours)}hr {' '}
                 </Caption>
                 
@@ -60,11 +61,12 @@ export default LeaveCard
 
 
 const styles = StyleSheet.create({
-  card: {
+  card: (dimColor)=> ({
     borderRadius: 2,
     margin: 10,
     marginTop: 0,
-  },
+    backgroundColor: dimColor ? '#f5f5f5' : 'white',
+  }),
   detailView: {
     width: '75%',
     paddingLeft: 10,
@@ -104,11 +106,15 @@ const styles = StyleSheet.create({
     // color: 'grey'
   },
   notesText: {color: '#bfbfbf'},
-  headline: {
+  headline: (dimColor)=>({
     lineHeight: 22,
     marginVertical: 0,
     fontWeight: 'bold',
-  },
+    color: dimColor ? '#747474' : '#000',
+  }),
+  datesText:(dimColor)=>( {
+    color: dimColor ? '#747474' : '#000',
+  }),
   statusCaption: {
     borderWidth: 1,
     borderRadius: 2,
