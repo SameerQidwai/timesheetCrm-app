@@ -72,7 +72,7 @@ export const MDropDown =({value, data, mode, placeholder, onSelect, inputStyle, 
         visible={open} 
         onDismiss={()=>opening(!false)}
       > */}
-      <DropDownPicker
+      <DropDownPicker 
         open={open}
         value={select}
         items={items}
