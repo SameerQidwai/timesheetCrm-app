@@ -25,6 +25,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
       }
   });
   const [uploading, setUploading] = useState(false)
+  const [askFromWhereDialog, setAskFromWhereDialog] = useState(false);
   
   // for check attachment already attach or not
   useEffect(() => {
@@ -61,15 +62,17 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
     };
     
     const askFromWhereToPickImage = () => {
-        Alert.alert(
-          'Select image from',
-          '',
-          [
-            { text: 'Gallery', onPress: () => pickImage('GALLERY') },
-            { text: 'Camera', onPress: () => pickImage('CAMERA') },
-          ],
-          { cancelable: true },
-        );
+      setAskFromWhereDialog(true);
+        
+      // Alert.alert(
+      //     'Select image from',
+      //     '',
+      //     [
+      //       { text: 'Gallery', onPress: () => pickImage('GALLERY') },
+      //       { text: 'Camera', onPress: () => pickImage('CAMERA') },
+      //     ],
+      //     { cancelable: true },
+      //   );
     };
 
     const pickImage = async location => {
@@ -82,7 +85,9 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
         })
           .then(image => {
             handleUplaod("image", image);  
-            })
+            setFileModelEvent(false);
+            setAskFromWhereDialog(false);
+          })
             .catch(e => console.log('error->', e.message));
       } else if (location === 'CAMERA') {
         ImagePicker.openCamera({
@@ -92,6 +97,8 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
         })
           .then(image => {
             handleUplaod("image", image);
+            setFileModelEvent(false);
+            setAskFromWhereDialog(false);
           }) 
           .catch(e => console.log('error->', e.message));
       }
@@ -191,7 +198,8 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
     };
     
   const onDismiss = () => {
-    setFileModelEvent(false); setFormState({
+    setFileModelEvent(false);
+    setFormState({
       values: {
         file: '',
         note: '',
@@ -340,7 +348,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
           visible={showFullSize}
           style={styles.modalView}
           onDismiss={() => {
-            setShowFullSize(false);
+          setShowFullSize(false);
           }}>
           <TouchableRipple style={styles.downloadIcon}>
             <IconButton
@@ -375,6 +383,21 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
             />
           </View>
         </Modal>
+        <Dialog visible={askFromWhereDialog} onDismiss={()=>setAskFromWhereDialog(false)} style={{paddingVertical:6, marginHorizontal:36}}>
+        <Dialog.Title>Select image from</Dialog.Title>
+      {/* <Dialog.Content>
+        <View style={{}}>
+        <View>
+            <Text style={{fontSize:12}}></Text>            
+        </View>
+        </View>
+        </Dialog.Content> */}
+        <Dialog.Actions>
+          <Button color={colors['primary']} onPress={()=>pickImage('GALLERY')}>GALLERY</Button>
+          <Button color={colors['primary']} onPress={()=>pickImage('CAMERA')}>CAMERA</Button>
+        </Dialog.Actions>
+      </Dialog>
+      
       </Portal>
     </>
   );

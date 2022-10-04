@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Alert, Dimensions, Image, KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Dialog, IconButton, Modal, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
+import { ActivityIndicator, Button, Dialog, IconButton, Modal, Paragraph, Portal, Subheading, Text, Title, TouchableRipple } from 'react-native-paper'
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../../context/AppContext';
 import { getUserProjects } from '../../services/constant-api';
@@ -34,7 +34,7 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
   const [documentModal, setDocumentModal] = useState(false);
   const [showFullSize, setShowFullSize] = useState(false);
   const [uploading, setUploading] = useState(false)
-  
+  const [askFromWhereDialog, setAskFromWhereDialog] = useState(false);
   useEffect(() => {
     const { mounted } =OPTIONS
     if (!mounted){
@@ -184,7 +184,10 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
     Alert.alert(
       message,
       '',
-      [ ],
+      [{
+        text: "Cancel",
+        style: "cancel",
+      }, ],
       { cancelable: true },
     );
 };
@@ -229,16 +232,8 @@ export default  LeaveRequestModal =({modalVisible, onClose, onSuccess, edit })=>
   };
   
       
-  const askFromWhereToPickImage = () => {
-    Alert.alert(
-      'Select image from',
-      '',
-      [
-        { text: 'Gallery', onPress: () => pickImage('GALLERY') },
-        { text: 'Camera', onPress: () => pickImage('CAMERA') },
-      ],
-      { cancelable: true },
-    );
+const askFromWhereToPickImage = () => {
+  setAskFromWhereDialog(true);
 };
 
 const pickImage = async location => {
@@ -253,6 +248,7 @@ const pickImage = async location => {
       .then(image => {
         handleUplaod("image", image);  
         setDocumentModal(false);
+        setAskFromWhereDialog(false);
         })
         .catch(e => console.log('error->', e.message));
   } else if (location === 'CAMERA') {
@@ -264,6 +260,7 @@ const pickImage = async location => {
       .then(image => {
         handleUplaod("image", image);
         setDocumentModal(false);
+        setAskFromWhereDialog(false);
       }) 
       .catch(e => console.log('error->', e.message));
   }
@@ -537,7 +534,7 @@ const pickImage = async location => {
           </Button>
         </Dialog.Actions>
       </Dialog>
-      <Dialog visible={documentModal} onDismiss={() => setDocumentModal(false)}>
+      <Dialog visible={documentModal} onDismiss={() => setDocumentModal(false)} style={{marginHorizontal:36}}>
         <View style={styles.modalHeader}>
           <View>
             <Title style={styles.headerText}>Add Attachment & Notes</Title>
@@ -614,8 +611,21 @@ const pickImage = async location => {
           />
         </View>
       </Modal>
-
-      {dateTime.open && (
+      <Dialog visible={askFromWhereDialog} onDismiss={()=>setAskFromWhereDialog(false)} style={{paddingVertical:6, marginHorizontal:36}}>
+        <Dialog.Title>Select image from</Dialog.Title>
+      {/* <Dialog.Content>
+        <View style={{}}>
+        <View>
+            <Text style={{fontSize:12}}></Text>            
+        </View>
+        </View>
+        </Dialog.Content> */}
+        <Dialog.Actions>
+          <Button color={colors['primary']} onPress={()=>pickImage('GALLERY')}>GALLERY</Button>
+          <Button color={colors['primary']} onPress={()=>pickImage('CAMERA')}>CAMERA</Button>
+        </Dialog.Actions>
+      </Dialog>
+      {dateTime.open && (   
         <DatePicker
           visible={dateTime.open}
           mode="calendar"
