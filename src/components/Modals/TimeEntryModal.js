@@ -124,7 +124,7 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
 
   return (
     <Portal>
-      <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog}>
+      <Dialog visible={visible} style={styles.modalView} onDismiss={hideDialog} dismissable={false}>
         <View style={styles.modalHeader} >
           <View>
             <Title style={styles.headerText}>{`${formData['entryId']? 'Edit': 'Add' } Entry`}</Title>

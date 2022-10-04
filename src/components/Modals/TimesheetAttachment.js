@@ -213,7 +213,9 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
       <Dialog
         visible={fileModelEvent}
         style={styles.modalView}
-        onDismiss={onDismiss}>
+        onDismiss={onDismiss}
+        dismissable={false}
+        >
         <Dialog.Content style={{paddingVertical: 10, paddingHorizontal: 20}}>
           <Text style={{fontSize: 18, color: 'black'}}>
             Add Attachment & Notes

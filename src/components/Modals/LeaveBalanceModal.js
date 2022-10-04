@@ -8,7 +8,7 @@ import { colors } from '../Common/theme'
 const LeaveBalanceModal = ({visible, item, onClose}) => {
   return (
     <Portal>
-        <Dialog visible={visible} style={styles.modalView} onDismiss={onClose}>
+        <Dialog visible={visible} style={styles.modalView} onDismiss={onClose} dismissable={false}>
             <Dialog.Content>
                 <Title >{item.name}</Title>
                 {/* <Card mode="outlined" style={styles.card} > */}
