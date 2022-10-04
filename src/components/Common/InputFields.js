@@ -38,7 +38,7 @@ export const MDropDown =({value, data, mode, placeholder, onSelect, inputStyle, 
   useEffect(() => {
       setValueLabel((data??[]).find(el => el[schema['value']] === value )?.[schema['label']])
       setSelect(value)
-      // setItems(data)
+      setItems(data)
   }, [data, value])
   
   const opening = (open) =>{
@@ -67,11 +67,11 @@ export const MDropDown =({value, data, mode, placeholder, onSelect, inputStyle, 
             onPress={()=>{setSelect(null);setValueLabel(null);opening(!open)}}
         />}
       />
-      <Portal>
+      {/* <Portal>
       <Modal 
         visible={open} 
         onDismiss={()=>opening(!false)}
-      >
+      > */}
       <DropDownPicker
         open={open}
         value={select}
@@ -108,8 +108,8 @@ export const MDropDown =({value, data, mode, placeholder, onSelect, inputStyle, 
             onSelect(item)
         }}
       />
-      </Modal>
-      </Portal>
+      {/* </Modal>
+      </Portal> */}
     </View>
   )
 }

@@ -44,11 +44,11 @@ const MonthlyTimesheet = ({navigation}) => {
       );
       if (success) {
         const {grandtotal, newData} = restructure(data);
-        setAppStorage(prev => ({...prev, accessToken: setToken}));
         setTimesheets({data: newData, total: grandtotal});
       } else {
         setTimesheets({data: [], total: 0});
       }
+      setAppStorage(prev => ({...prev, accessToken: setToken}));
       setFetching(false);
       setFileModelEvent(false);
     } catch (e) {

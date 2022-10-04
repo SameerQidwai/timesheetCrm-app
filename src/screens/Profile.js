@@ -20,10 +20,10 @@ const Profile = () => {
     const {success, data, basic, setToken } = await getEmployee(id, accessToken)
     if (success){
       setProfile(basic)
-      setAppStorage(prev=> ({...prev, accessToken: setToken}))
     }else{
       setProfile({})
     }
+    setAppStorage(prev=> ({...prev, accessToken: setToken}))
   }
 
   const signOut = () =>{
