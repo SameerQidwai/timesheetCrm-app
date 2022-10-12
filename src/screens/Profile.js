@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Appbar, Button, Headline, IconButton, Title, Text, Subheading } from 'react-native-paper'
+import { Appbar, Button, Headline, IconButton, Title, Text, Subheading, Caption } from 'react-native-paper'
 import { colors } from '../components/Common/theme'
 import { AppContext } from '../context/AppContext'
 import { storage } from '../services/constant'
@@ -32,16 +32,25 @@ const Profile = () => {
   }
 
   return (
-    <View style={{flex:1}}>
+    <View style={{flex: 1}}>
       <Appbar.Header style={styles.header}>
         <Appbar.Content title={'Profile'} />
       </Appbar.Header>
+      <View style={{flex:1,flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
         <View style={styles.iconView}>
-          <IconButton icon="account-circle" size={100} color={colors['primary']} animated onPress={()=>console.log('me')}/>
-          <Headline>{profile?.['firstName']} {profile?.['lastName']}</Headline>
+          <IconButton
+            icon="account-circle"
+            size={100}
+            color={colors['primary']}
+            animated
+            onPress={() => console.log('me')}
+          />
+          <Headline>
+            {profile?.['firstName']} {profile?.['lastName']}
+          </Headline>
           <Subheading>{profile['username']}</Subheading>
-        <Button
-            mode={"contained"}
+          <Button
+            mode={'contained'}
             color={colors['danger']}
             compact
             style={{width: '45%', borderRadius: 2}}
@@ -50,8 +59,10 @@ const Profile = () => {
             Sign Out
           </Button>
         </View>
+        <View><Caption>Version: 1.0.1</Caption></View>
+      </View>
     </View>
-  )
+  );
 }
 
 export default Profile
