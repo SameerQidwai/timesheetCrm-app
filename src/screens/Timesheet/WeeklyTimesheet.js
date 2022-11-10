@@ -361,7 +361,7 @@ const WeeklyTimesheet = ({route, navigation}) => {
         size="large"
         disabled={fetching}
         onPress={()=>onNewEntry()}>
-        Add Timesheet Entry
+        Add New Project
       </Button>
       {openModal['visible'] && (
         <TimeEntryModal

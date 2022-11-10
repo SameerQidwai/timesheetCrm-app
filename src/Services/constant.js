@@ -5,7 +5,9 @@ export const storage = new MMKV()
 
 // export const Api = "http://localhost:3301/api/v1";
 // export const Api = "http://192.168.10.12:3301/api/v1"; // Me
-export const Api = "http://54.91.49.138:8000/api/v1"; //Test 
+// export const Api = "http://54.91.49.138:8000/api/v1"; //Test 
+// export const Api = "http://3.239.21.153:8000/api/v1"; //live api
+export const Api = 'http://54.174.229.28:8000/api/v1'; //demo live api's
 
 export const status_background = StyleSheet.create({
     'AP': {backgroundColor :'#f6ffed' },

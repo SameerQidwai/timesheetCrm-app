@@ -12,3 +12,9 @@ release apk
 
 Splash Screen
 https://medium.com/@appstud/add-a-splash-screen-to-a-react-native-app-810492e773f9
+
+app launcher
+https://stackoverflow.com/a/73918646
+
+icons set
+https://romannurik.github.io/AndroidAssetStudio/index.html

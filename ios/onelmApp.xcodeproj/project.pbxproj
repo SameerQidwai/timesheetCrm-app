@@ -12,8 +12,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		44E5225FF41CA2FB5005980C /* libPods-onelmApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-onelmApp.a */; };
 		7699B88040F8A987B510C191 /* libPods-onelmApp-onelmAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-onelmApp-onelmAppTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		820ED291D6DC4D2CB5B9BA17 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC203696C0484F4E8743F032 /* Poppins-Medium.ttf */; };
 		87244062706C44E8A174DBAC /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2D0D57FB8684BE6AD940B70 /* Poppins-Regular.ttf */; };
 		8F4E8FAE8D094AC2ABA69E2A /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1698EEFCAA65401D828D062F /* Poppins-SemiBold.ttf */; };
@@ -29,6 +29,13 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = onelmApp;
 		};
+		0E1D071128FA2DCB00F4762B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0E1D070D28FA2DCB00F4762B /* SplashScreen.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D7682761D8E76B80014119E;
+			remoteInfo = SplashScreen;
+		};
 		0E6CE2A228DE95C4004378DE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0E6CE29E28DE95C4004378DE /* RNFetchBlob.xcodeproj */;
@@ -42,6 +49,7 @@
 		00E356EE1AD99517003FC87E /* onelmAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = onelmAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* onelmAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = onelmAppTests.m; sourceTree = "<group>"; };
+		0E1D070D28FA2DCB00F4762B /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		0E6CE27E28DE41EC004378DE /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		0E6CE27F28DE41EC004378DE /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		0E6CE28028DE41EC004378DE /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -73,7 +81,6 @@
 		5709B34CF0A7D63546082F79 /* Pods-onelmApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-onelmApp.release.xcconfig"; path = "Target Support Files/Pods-onelmApp/Pods-onelmApp.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-onelmApp-onelmAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-onelmApp-onelmAppTests.debug.xcconfig"; path = "Target Support Files/Pods-onelmApp-onelmAppTests/Pods-onelmApp-onelmAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-onelmApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-onelmApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = onelmApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-onelmApp-onelmAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-onelmApp-onelmAppTests.release.xcconfig"; path = "Target Support Files/Pods-onelmApp-onelmAppTests/Pods-onelmApp-onelmAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		A119B25CB0F04D64A50297F0 /* OFL.txt */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = OFL.txt; path = ../assets/fonts/OFL.txt; sourceTree = "<group>"; };
 		A2D0D57FB8684BE6AD940B70 /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
@@ -94,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44E5225FF41CA2FB5005980C /* libPods-onelmApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +123,14 @@
 				00E356F11AD99517003FC87E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0E1D070E28FA2DCB00F4762B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0E1D071228FA2DCB00F4762B /* libSplashScreen.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		0E6CE27D28DE41EC004378DE /* Fonts */ = {
@@ -156,7 +172,6 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = onelmApp;
@@ -188,6 +203,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				0E1D070D28FA2DCB00F4762B /* SplashScreen.xcodeproj */,
 				0E6CE29E28DE95C4004378DE /* RNFetchBlob.xcodeproj */,
 			);
 			name = Libraries;
@@ -309,6 +325,10 @@
 					ProductGroup = 0E6CE29F28DE95C4004378DE /* Products */;
 					ProjectRef = 0E6CE29E28DE95C4004378DE /* RNFetchBlob.xcodeproj */;
 				},
+				{
+					ProductGroup = 0E1D070E28FA2DCB00F4762B /* Products */;
+					ProjectRef = 0E1D070D28FA2DCB00F4762B /* SplashScreen.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -319,6 +339,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		0E1D071228FA2DCB00F4762B /* libSplashScreen.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSplashScreen.a;
+			remoteRef = 0E1D071128FA2DCB00F4762B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		0E6CE2A328DE95C4004378DE /* libRNFetchBlob.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -340,7 +367,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				039A12773C70468F96BEEEC1 /* Poppins-Bold.ttf in Resources */,
 				B729E9279A2447E2BC6CFEEA /* Poppins-Light.ttf in Resources */,
