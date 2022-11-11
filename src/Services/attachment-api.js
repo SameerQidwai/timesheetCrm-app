@@ -1,7 +1,8 @@
 import axios  from "axios";
-import { Api } from "./constant";
+import { getApi } from "./constant";
 
 export const addAttachment = (data, token) => {
+    let Api = getApi()
     return axios
         .post(`${Api}/files`, data, {headers: {"content-type": "multipart/form-data", Authorization: token}})
         .then((res) => {

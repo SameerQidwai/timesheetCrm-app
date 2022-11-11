@@ -1,7 +1,8 @@
 import axios from "axios";
-import { Api, checkToken, headers, sorting } from "./constant";
+import { checkToken, getApi, headers, sorting } from "./constant";
 
 export const getUserProjects = (userId, mod, phase, token) => {
+    let Api = getApi()
     return axios
         .get(`${Api}/helpers/projects?userId=${userId}&mod=${mod}&phase=${phase}`, { headers: headers(token) })
         .then((res) => {
@@ -18,6 +19,7 @@ export const getUserProjects = (userId, mod, phase, token) => {
 };
 
 export const userMilestonesApi = (userId, phase, token) => {
+    let Api = getApi()
     return axios
         .get(`${Api}/helpers/milestones?userId=${userId}&phase=${phase}`, { headers: headers(token) })
         .then((res) => {

@@ -1,9 +1,9 @@
 import axios from "axios";
-import { Api, checkToken, headers } from "./constant";
+import {  checkToken, getApi, headers } from "./constant";
 
-const url = `${Api}/leave-requests`
 
 export const getLeavesApi = (token) => {
+    let url = getApi(`/leave-requests`)
     return axios
         .get(url,{headers:headers(token)})
         .then((res) => {
@@ -20,6 +20,7 @@ export const getLeavesApi = (token) => {
 };
 
 export const addLeaveApi = (data, token) => {
+    let url = getApi(`/leave-requests`)
     return axios
         .post(url, data, {headers:headers(token)})
         .then((res) => {
@@ -36,6 +37,7 @@ export const addLeaveApi = (data, token) => {
 };
 
 export const editLeaveApi = (id, data, token) => {
+    let url = getApi(`/leave-requests`)
     return axios
     .patch(`${url}/${id}`, data, {headers:headers(token)})
         .then((res) => {
@@ -53,6 +55,7 @@ export const editLeaveApi = (id, data, token) => {
 };
 
 export const deleteLeaveApi = (entryId, token) => {
+    let url = getApi(`/leave-requests`)
     return axios
         .delete(`${url}/${entryId}`, {headers:headers(token)})
         .then((res) => {
@@ -70,8 +73,9 @@ export const deleteLeaveApi = (entryId, token) => {
 
 
 export const getLeaveApi = (id, token) => {
+    let Api = getApi()
     return axios
-        .get(`${url}/${id}`,{headers:headers(token)})
+        .get(`${Api}/leave-requests/${id}`,{headers:headers(token)})
         .then((res) => {
             const { success, message, data } = res.data;
             let setToken = checkToken(message, res?.headers)
@@ -114,6 +118,7 @@ export const getLeaveApi = (id, token) => {
         });
 };
 export const getBalanceApi = (id, token) => {
+    let Api = getApi()
     return axios
         .get(`${Api}/leave-request-balances?employeeId=${id}`,{headers:headers(token)})
         .then((res) => {
@@ -129,6 +134,7 @@ export const getBalanceApi = (id, token) => {
 };
 
 export const getUserLeaveType = (token) => {
+    let Api = getApi()
     return axios
         .get(`${Api}/leave-request-types/getOwn`, {headers:headers(token)})
         .then((res) => {

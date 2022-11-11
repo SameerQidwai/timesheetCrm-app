@@ -1,9 +1,9 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, StyleSheet, View, Platform, StatusBar, KeyboardAvoidingView  } from 'react-native'
-import { Button, Card, Headline, Snackbar, TextInput } from 'react-native-paper'
+import { Button, Card, Headline, Snackbar, Text, TextInput } from 'react-native-paper'
 import { colors } from '../components/Common/theme'
 import { AppContext } from '../context/AppContext'
-import { storage } from '../services/constant'
+import { getLocalStorage, storage } from '../services/constant'
 import { loginApi } from '../services/login-api'
 
 function Login() {
@@ -18,9 +18,11 @@ function Login() {
     const [eye, setEye]= useState(true)
     const {setAppStorage} = useContext(AppContext)
 
-    const signIn = async() =>{
+  const signIn = async () => {
+      const {domain} = getLocalStorage()
         let {success, data} = await loginApi(formData)
-        if (success){
+    if (success) {
+            data['domain'] = domain
             setAppStorage(data)
             storage.set('data', JSON.stringify(data))
         }else{
@@ -85,6 +87,10 @@ function Login() {
               </Button>
             </Card.Actions>
           </Card>
+            <Text onPress={() => {
+              setAppStorage({})
+              storage.clearAll()
+            }}>Go to Previous Screen</Text>
         </View>
         </KeyboardAvoidingView>
         <Snackbar

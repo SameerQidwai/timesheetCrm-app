@@ -1,10 +1,10 @@
 import axios from "axios";
 
-import { Api, checkToken, formatDate, headers } from "./constant";
+import { checkToken, formatDate, getApi, headers } from "./constant";
 
-const url = `${Api}/employees/`;
 
 export const getEmployee = (id, token) => {
+  let url = getApi(`/employees`)
     return axios
       .get(url + `/${id}`, { headers: headers(token) })
       .then((res) => {

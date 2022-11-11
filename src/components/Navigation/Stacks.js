@@ -10,7 +10,8 @@ import LeaveRequest from '../../screens/Leave/LeaveRequest';
 import MonthlyTimesheet from '../../screens/Timesheet/MonthlyTimesheet';
 import { AppContext } from '../../context/AppContext';
 import { colors } from '../Common/theme';
-import { storage } from '../../services/constant';
+import { DomainName, getLocalStorage, storage } from '../../services/constant';
+import AfterSplashScreen from '../../screens/AfterSplashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -89,12 +90,6 @@ function SignInScreen() {
 
 
 function Stacks() {
-  const getLocalStorage = () =>{
-    const jsonUser = storage.getString('data')
-    const userObject = jsonUser ? JSON.parse(jsonUser): {}
-    return userObject
-  }
-
     const {appStorage, setAppStorage} = useContext(AppContext)
     const [localStorage, setLocalStorage ] = useState(getLocalStorage())
     
@@ -105,7 +100,13 @@ function Stacks() {
     
   return (
     <View style={{flex:1}}>
-        {appStorage?.['accessToken'] ? <TabScreen/>: <SignInScreen setLocalStorage={setLocalStorage}/>}
+    {
+      DomainName[appStorage?.['domain']] ? 
+        appStorage?.['accessToken'] ? 
+          <TabScreen /> :
+          <SignInScreen setLocalStorage={setLocalStorage} /> :
+        <AfterSplashScreen />
+    }
     </View>
   )
 }

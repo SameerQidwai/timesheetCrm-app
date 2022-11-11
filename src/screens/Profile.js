@@ -26,9 +26,10 @@ const Profile = () => {
     setAppStorage(prev=> ({...prev, accessToken: setToken}))
   }
 
-  const signOut = () =>{
-    setAppStorage({})
-    storage.clearAll()
+  const signOut = () => {
+    let remain = {'domain': appStorage?.domain}
+    setAppStorage(remain)
+    storage.set('data', JSON.stringify(remain))
   }
 
   return (

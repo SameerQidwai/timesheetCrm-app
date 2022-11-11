@@ -1,10 +1,8 @@
 import axios from 'axios';
-import { Api } from './constant';
-
-const url = `${Api}/auth`;
+import { getApi } from './constant';
 
 export const loginApi = (data) => {
-  console.log(data)
+  let Api = getApi()
   return axios
     .post(`${Api}/login`, data)
     .then((res) => {

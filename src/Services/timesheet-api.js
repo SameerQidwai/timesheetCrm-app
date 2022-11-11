@@ -1,10 +1,9 @@
 import axios from "axios";
 
-import { Api, checkToken, headers, sorting } from "./constant";
-
-const url = `${Api}/timesheets/`;
+import { checkToken, getApi, headers, sorting } from "./constant";
 
 export const getTimesheetApi = (keys, token) => {
+    let url = getApi(`/timesheets/`)
     return axios
         .get(url + `${keys.startDate}&${keys.endDate}&${keys.userId}`, {headers:headers(token)})
         .then((res) => {
@@ -21,6 +20,7 @@ export const getTimesheetApi = (keys, token) => {
 };
 
 export const reviewTimeSheet = (keys, stage, data, token) => {
+    let url = getApi(`/timesheets/`)
     return axios
         .post(url + `${keys.startDate}&${keys.endDate}&${keys.userId}/milestoneEntries${stage}`, data, {headers:headers(token)})
         .then((res) => {
@@ -36,7 +36,8 @@ export const reviewTimeSheet = (keys, stage, data, token) => {
         });
 };
 
-export const addTimeEntryApi = (keys ,data, token) => {
+export const addTimeEntryApi = (keys, data, token) => {
+    let url = getApi(`/timesheets/`)
     return axios
         .post(url +`${keys.startDate}&${keys.endDate}&${keys.userId}`, data, {headers:headers(token)})
         .then((res) => {
@@ -56,6 +57,7 @@ export const addTimeEntryApi = (keys ,data, token) => {
 };
 
 export const editTimeEntryApi = (data, token) => {
+    let url = getApi(`/timesheets/`)
     return axios
         .put(url +`entries/${data['entryId']}`, data, {headers:headers(token)})
         .then((res) => {
@@ -76,6 +78,7 @@ export const editTimeEntryApi = (data, token) => {
 };
 
 export const deleteTimeEntryApi = (entryId, token) => {
+    let url = getApi(`/timesheets/`)
     return axios
         .delete(url +`entries/${entryId}`, {headers:headers(token)})
         .then((res) => {
@@ -92,6 +95,7 @@ export const deleteTimeEntryApi = (entryId, token) => {
 };
 
 export const addTimesheetNote = (id, data, token) => {
+    let url = getApi(`/timesheets/`)
     return axios
         .patch(`${url}/milestoneEntriesUpdate`, data, {headers:headers(token)})
         .then((res) => {

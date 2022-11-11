@@ -4,7 +4,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import { TextField } from '../Common/InputFields';
 import { ActivityIndicator, Button, Caption, Dialog, IconButton, Modal, Portal, Text, TouchableRipple } from 'react-native-paper';
-import { Api, thumbUrl } from '../../services/constant';
+import { getApi, thumbUrl } from '../../services/constant';
 import { colors } from '../Common/theme';
 import { addAttachment } from '../../services/attachment-api';
 import { AppContext } from '../../context/AppContext';
@@ -29,6 +29,7 @@ const TimesheetAttachment = ({ fileModelEvent, setFileModelEvent, onSuccess }) =
   
   // for check attachment already attach or not
   useEffect(() => {
+    let Api = getApi()
     const {id,originalName,type, uniqueName} = fileModelEvent?.attachment?.file ?? {};
     let newObj = id ? {
       fileId: id,

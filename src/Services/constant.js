@@ -3,11 +3,35 @@ import moment from "moment";
 import { MMKV } from 'react-native-mmkv'
 export const storage = new MMKV()
 
+export const getLocalStorage = (key) =>{
+  const jsonUser = storage.getString('data')
+  const userObject = jsonUser ? JSON.parse(jsonUser) : {}
+  if (key && userObject[key]) {
+    return userObject[key]
+  }
+  return userObject
+}
+
+export const DomainName = {
+  'testcrm.1lm.com.au' : 'http://54.91.49.138:8000/api/v1', //Test
+  'crm.1lm.com.au' : "http://3.239.21.153:8000/api/v1", //live api
+  'finance-advisory.timewize.com.au': 'http://54.174.229.28:8000/api/v1', //finance live api
+  'demo.timewize.com.au': 'http://54.174.229.28:8000/api/v1' //Demo...
+}
+
 // export const Api = "http://localhost:3301/api/v1";
 // export const Api = "http://192.168.10.12:3301/api/v1"; // Me
-// export const Api = "http://54.91.49.138:8000/api/v1"; //Test 
+// export const Api = "http://54.91.49.138:8000/api/v1"; //Test
 // export const Api = "http://3.239.21.153:8000/api/v1"; //live api
-export const Api = 'http://54.174.229.28:8000/api/v1'; //demo live api's
+// export const Api = 'http://54.174.229.28:8000/api/v1'; //demo live api's
+// export let Api = DomainName[getLocalStorage('domain')]
+export function getApi(request) {
+  let ip = getLocalStorage('domain')
+  if (request) {
+    return  `${DomainName[ip]}/${request}`
+  }
+  return DomainName[ip]
+}
 
 export const status_background = StyleSheet.create({
     'AP': {backgroundColor :'#f6ffed' },
