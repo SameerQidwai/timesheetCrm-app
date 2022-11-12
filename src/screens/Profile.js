@@ -60,7 +60,7 @@ const Profile = () => {
             Sign Out
           </Button>
         </View>
-        <View><Caption>Version: 1.0.1</Caption></View>
+        <View><Caption>Version: 1.0.3</Caption></View>
       </View>
     </View>
   );

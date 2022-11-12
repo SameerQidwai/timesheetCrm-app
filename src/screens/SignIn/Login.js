@@ -1,10 +1,10 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { Image, ImageBackground, StyleSheet, View, Platform, StatusBar, KeyboardAvoidingView  } from 'react-native'
 import { Button, Card, Headline, Snackbar, Text, TextInput } from 'react-native-paper'
-import { colors } from '../components/Common/theme'
-import { AppContext } from '../context/AppContext'
-import { getLocalStorage, storage } from '../services/constant'
-import { loginApi } from '../services/login-api'
+import { colors } from '../../components/Common/theme'
+import { AppContext } from '../../context/AppContext'
+import { getLocalStorage, storage } from '../../services/constant'
+import { loginApi } from '../../services/login-api'
 
 function Login() {
   // mustafa.syed@1lm.com.au
@@ -41,7 +41,7 @@ function Login() {
             <View>
               <Image
                 style={styles.logo}
-                source={require('../../assets/images/Z-logo.png')}
+                source={require('../../../assets/images/Z-logo.png')}
               />
             </View>
             <Card.Content style={{paddingVertical: 15}}>
@@ -76,7 +76,7 @@ function Login() {
               />
             </Card.Content>
             <Card.Actions
-              style={{justifyContent: 'center', alignItems: 'center'}}>
+              style={styles.cardAction}>
               <Button 
                 mode="contained" 
                 onPress={signIn}
@@ -87,12 +87,18 @@ function Login() {
               </Button>
             </Card.Actions>
           </Card>
-            <Text onPress={() => {
-              setAppStorage({})
-              storage.clearAll()
-            }}>Go to Previous Screen</Text>
         </View>
         </KeyboardAvoidingView>
+      </View>
+      <View style={styles.companyView}>
+          <Text
+            style={styles.companyText}
+            onPress={() => {
+            setAppStorage({})
+            storage.clearAll()
+          }}
+          >Change Company?</Text>
+        </View>
         <Snackbar
           visible={snack['visible']}
           duration={snack['duration']}
@@ -100,7 +106,6 @@ function Login() {
           onDismiss={() => setSnack(prev => ({...prev, visible: false}))}>
           {snack['label']}
         </Snackbar>
-      </View>
     </Fragment>
   );
 }
@@ -108,20 +113,27 @@ function Login() {
 export default Login
 
 const styles = StyleSheet.create({
-    loginView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        backgroundColor: colors['display'],
-    },
-    loginCard: {
-        width: 300, 
-        height: 300
-    },
-    logo: {
-        width:200, 
-        height: 50,
-        alignSelf: 'center'
-    }
+  loginView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: colors['display'],
+  },
+  loginCard: {
+    width: 300,
+    height: 300,
+  },
+  logo: {
+    width: 200,
+    height: 50,
+    alignSelf: 'center',
+  },
+  cardAction: {justifyContent: 'center', alignItems: 'center'},
+  companyView: {
+    alignItems: 'center',
+    position: 'relative',
+    bottom: 100,
+  },
+  companyText: {textDecorationLine: 'underline', color: colors['primary']},
 });

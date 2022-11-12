@@ -1,26 +1,26 @@
 import React, { useContext, useState,useEffect } from 'react'
 import { ImageBackground, StyleSheet, View } from 'react-native'
-import { Appbar, Button, HelperText, IconButton, Text, Title } from 'react-native-paper'
-import { TextField } from '../components/Common/InputFields'
-import { colors } from '../components/Common/theme'
-import { AppContext } from '../context/AppContext'
-import { DomainName, getLocalStorage, storage } from '../services/constant'
+import { Appbar, Button, HelperText, IconButton, Snackbar, Text, Title } from 'react-native-paper'
+import { TextField } from '../../components/Common/InputFields'
+import { colors } from '../../components/Common/theme'
+import { AppContext } from '../../context/AppContext'
+import { DomainName, getLocalStorage, storage } from '../../services/constant'
 
-const AfterSplashScreen = () => {
+const CompanyDomain = ({navigation}) => {
 
     const {appStorage, setAppStorage} = useContext(AppContext)
+    const [formState, setFormState] = useState({
+        domain: '',
+        isPress: false
+    });
+    const [snack, setSnack] = useState(false)
+    
 
     useEffect(() => {
-      console.log(getLocalStorage())
     
     }, [])
     
 
-    const [formState, setFormState] = useState({
-          domain: '',
-          isPress: false
-        });
-    
     // console.log("formState", formState.domain)
 
     const onInputText = (name, val) => {
@@ -47,7 +47,7 @@ const AfterSplashScreen = () => {
             setAppStorage(stored)
             storage.set('data', JSON.stringify(stored))
         } else {
-            console.error("domain not found");
+            setSnack(true)
         }
     }
 
@@ -141,14 +141,22 @@ const AfterSplashScreen = () => {
                  </IconButton>     */}
                 </View>
                 <View style={{ flex: 3, justifyContent:"flex-end" }}>
-                    <ImageBackground source={require('../../assets/images/Z-logo.png')} resizeMode="center" style={styles.backgroundImage} />
+                    <ImageBackground source={require('../../../assets/images/Z-logo.png')} resizeMode="center" style={styles.backgroundImage} />
                 </View>
             </View>
+            <Snackbar
+                 visible={snack}
+                 duration={3000}
+                 label={'Wrong Usernam or Password.'}
+                 wrapperStyle={{backgroundColor: colors['danger']}}
+                onDismiss={() => setSnack(false)}>
+                    Domain not found..!
+            </Snackbar>
         </View>
     )
 }
 
-export default AfterSplashScreen
+export default CompanyDomain
 
 const styles = StyleSheet.create({
     pageView: {

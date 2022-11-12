@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { IconButton } from 'react-native-paper';
 import { View } from 'react-native';
-import Login from '../../screens/Login';
+import Login from '../../screens/SignIn/Login';
 import WeeklyTimesheet from '../../screens/Timesheet/WeeklyTimesheet';
 import Profile from '../../screens/Profile';
 import LeaveRequest from '../../screens/Leave/LeaveRequest';
@@ -11,7 +11,7 @@ import MonthlyTimesheet from '../../screens/Timesheet/MonthlyTimesheet';
 import { AppContext } from '../../context/AppContext';
 import { colors } from '../Common/theme';
 import { DomainName, getLocalStorage, storage } from '../../services/constant';
-import AfterSplashScreen from '../../screens/AfterSplashScreen';
+import CompanyDomain from '../../screens/SignIn/CompanyDomain';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,15 +75,19 @@ function TabScreen () {
 
 const SignInStack = createNativeStackNavigator();
 
-function SignInScreen() {
+function SignInScreen({domain}) {
   return (
     <SignInStack.Navigator
       screenOptions={{
         headerShown: false
       }}
     >
-      <SignInStack.Screen name="Login" component={Login} />
-      {/* <SignInStack.Screen name="Details" component={WeeklyTimesheet} /> */}
+      
+      {
+      DomainName[domain] ? 
+        <SignInStack.Screen  name="Login" component={Login} /> :
+        <SignInStack.Screen  name="Company" component={CompanyDomain} />
+      }
     </SignInStack.Navigator>
   );
 }
@@ -95,17 +99,16 @@ function Stacks() {
     
     useEffect(() => {
       setAppStorage(localStorage)    
+      console.log(localStorage)
     }, [localStorage])
 
     
   return (
     <View style={{flex:1}}>
     {
-      DomainName[appStorage?.['domain']] ? 
-        appStorage?.['accessToken'] ? 
-          <TabScreen /> :
-          <SignInScreen setLocalStorage={setLocalStorage} /> :
-        <AfterSplashScreen />
+      appStorage?.['accessToken'] ? 
+        <TabScreen /> :
+        <SignInScreen setLocalStorage={setLocalStorage} domain={appStorage?.['domain']} /> 
     }
     </View>
   )
