@@ -41,9 +41,11 @@ const CompanyDomain = ({navigation}) => {
     }
 
     const onsubmit = () => {
-        if (DomainName[formState?.domain]) {
-            let stored = { domain: formState?.domain }
-            console.log(formState?.domain)
+
+        let { domain } = formState
+        domain = (domain ?? '').toLowerCase()
+        if (DomainName[domain]) {
+            let stored = { domain: domain }
             setAppStorage(stored)
             storage.set('data', JSON.stringify(stored))
         } else {
@@ -148,7 +150,7 @@ const CompanyDomain = ({navigation}) => {
                  visible={snack}
                  duration={3000}
                  label={'Wrong Usernam or Password.'}
-                 wrapperStyle={{backgroundColor: colors['danger']}}
+                 style={{backgroundColor: colors['danger']}}
                 onDismiss={() => setSnack(false)}>
                     Domain not found..!
             </Snackbar>
