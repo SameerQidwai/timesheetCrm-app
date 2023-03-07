@@ -58,7 +58,7 @@ const TimeCard = ({timeEntry, selected, onLongPress, onPress}) => {
                 ): (
                   <View>
                     <Title style={[{fontWeight: '900', textAlign: 'center'}, status_color[timeEntry.status]]}>
-                      {formatFloat(timeEntry.actualHours)}
+                      {timeEntry.actualHours}
                     </Title>
                     <Subheading style={[{textAlign: 'center'},status_color[timeEntry.status]]}>hours</Subheading>
                     <StatusTag status={timeEntry.status}/>

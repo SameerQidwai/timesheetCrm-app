@@ -13,10 +13,11 @@ export const getLocalStorage = (key) =>{
 }
 
 export const DomainName = {
-  'testcrm.1lm.com.au' : 'http://54.91.49.138:8000/api/v1', //Test
+  'testcrm.1lm.com.au' : 'http://3.89.162.49:8000/api/v1', //Test
   'crm.1lm.com.au' : "http://3.239.21.153:8000/api/v1", //live api
   'finance-advisory.timewize.com.au': 'http://54.174.229.28:8000/api/v1', //finance live api
-  'demo.timewize.com.au': 'http://54.174.229.28:8000/api/v1' //Demo...
+  'demo.timewize.com.au': 'http://54.174.229.28:8000/api/v1', //Demo...
+  'rhodes-advisory.timewize.com.au': 'https://api-rhodes-advisory.timewize.com.au/api/v1' //Demo...
 }
 
 // export const Api = "http://localhost:3301/api/v1";

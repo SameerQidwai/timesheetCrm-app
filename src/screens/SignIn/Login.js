@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   companyView: {
     alignItems: 'center',
     position: 'relative',
-    bottom: 100,
+    bottom: 20,
   },
   companyText: {textDecorationLine: 'underline', color: colors['primary']},
 });
