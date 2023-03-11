@@ -237,6 +237,7 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
           isVisible={dateTime.open }
           mode={dateTime['mode']}
           is24Hour={dateTime['is24Hour']}
+          locale={dateTime['is24Hour'] &&"es-GB"}
           minuteInterval={15}
           display={dateTime['key'] !== 'date' ? 'spinner' : 'default'}
           // themeVariant="dark"
