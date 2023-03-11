@@ -65,12 +65,12 @@ const CompanyDomain = ({navigation}) => {
                     <View style={{flex:2, justifyContent: "flex-end"}}>
                     <Title>Enter Your Domain</Title>
                     <TextField
-                    value={formState?.domain}
-                    disabled={false}
-                    label="Domain"
-                    placeholder="Enter Note.."
-                    onChangeText={text=>onInputText('domain',text)}
-                    returnKeyType="next"
+                        value={formState?.domain}
+                        disabled={false}
+                        label="Domain"
+                        placeholder="Enter Note.."
+                        onChangeText={text=>onInputText('domain',text)}
+                        returnKeyType="next"
                     />
                         {
                         hasError() ? <HelperText type="error" visible={console.log(hasError())}>
@@ -80,74 +80,31 @@ const CompanyDomain = ({navigation}) => {
                     </View>
                 </View>
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>    
-                {/* <Button
-                    mode="contained"
-                    icon="arrow-right-box"     
-                    uppercase={false}
-                    raised
-                    color={colors['primary']}
-                    style={{width:140}}
-                    contentStyle={{flexDirection: 'row-reverse'}}
-                    onPress={() => console.log("dc")}>
-                    Next
-                </Button> */}
-                {/* <Button
-                    mode="contained"
-                    icon="arrow-right-circle"     
-                    uppercase={false}
-                    raised
-                    color={colors['primary']}
-                    style={{width:140}}
-                    contentStyle={{flexDirection: 'row-reverse'}}
-                    onPress={() => console.log("dc")}>
-                    Next
-                </Button> */}
-                {/* <Button
-                    mode="contained"
-                    icon="chevron-triple-right"     
-                    uppercase={false}
-                    raised
-                    color={colors['primary']}
-                    style={{width:140}}
-                    contentStyle={{flexDirection: 'row-reverse'}}
-                    onPress={() => console.log("dc")}>
-                    Next
-                </Button> */}
-                <Button
-                    mode="contained"
-                    // icon="arrow-right-thin"
-                    icon="arrow-right-thin-circle-outline"
-                    uppercase={false}
-                    raised
-                    color={colors['primary']}
-                        style={{ width: 140 }}
-                        labelStyle={{fontSize:18}}
-                        // labelStyle={{fontSize:18}}
-                    contentStyle={{flexDirection: 'row-reverse'}}
-                    onPress={onsubmit}>
-                    Next
-                </Button>
-                {/* <IconButton
-                    icon={'arrow-right-thin-circle-outline'}
-                    color={colors.primary}
-                    size={45}
-                    onPress={{}}>
-                    Next
-                 </IconButton>     */}
-                {/* <IconButton
-                    icon={'arrow-right-thick'}
-                    color={colors.primary}
-                    size={45}
-                    onPress={{}}>
-                    Next
-                 </IconButton>     */}
+                    <Button
+                        mode="contained"
+                        // icon="arrow-right-thin"
+                        icon="arrow-right-thin-circle-outline"
+                        uppercase={false}
+                        raised
+                        color={colors['primary']}
+                            style={{ width: 140 }}
+                            labelStyle={{fontSize:18}}
+                            // labelStyle={{fontSize:18}}
+                        contentStyle={{flexDirection: 'row-reverse'}}
+                        onPress={onsubmit}>
+                        Next
+                    </Button>
                 </View>
                 <View style={{ flex: 3, justifyContent:"flex-end" }}>
-                    <ImageBackground 
-                        source={require('../../../assets/images/Z-logo.png')} 
-                        resizeMode="center" 
-                        style={styles.backgroundImage} 
-                    />
+                    <View style={{ flex: 1, justifyContent:"flex-end"}}></View>
+                    <View style={{ flex: 2, justifyContent:"flex-end"}}>
+                        <ImageBackground 
+                            source={require('../../../assets/images/Z-logo.png')} 
+                            resizeMode="contain" 
+                            style={styles.backgroundImage} 
+                        />
+                    </View>
+
                 </View>
             </View>
             <Snackbar
@@ -187,12 +144,7 @@ const styles = StyleSheet.create({
 
     backgroundImage:{
         width: 200,
-        height: '100%',
         flex:1,
-        flexDirection: "column",
-        marginTop: 100,
-        // position: "absolute",
-        // position: "relative",
         alignSelf:"center"
       }
 })
