@@ -143,7 +143,11 @@ const CompanyDomain = ({navigation}) => {
                  </IconButton>     */}
                 </View>
                 <View style={{ flex: 3, justifyContent:"flex-end" }}>
-                    <ImageBackground source={require('../../../assets/images/Z-logo.png')} resizeMode="center" style={styles.backgroundImage} />
+                    <ImageBackground 
+                        source={require('../../../assets/images/Z-logo.png')} 
+                        resizeMode="center" 
+                        style={styles.backgroundImage} 
+                    />
                 </View>
             </View>
             <Snackbar
@@ -183,9 +187,12 @@ const styles = StyleSheet.create({
 
     backgroundImage:{
         width: 200,
-        height: 150,
+        height: '100%',
+        flex:1,
+        flexDirection: "column",
+        marginTop: 100,
         // position: "absolute",
-        position: "relative",
+        // position: "relative",
         alignSelf:"center"
       }
 })
