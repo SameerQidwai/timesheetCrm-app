@@ -6,6 +6,7 @@ export const loginApi = (data) => {
   return axios
     .post(`${Api}/login`, data)
     .then((res) => {
+      console.log(res)
       const { success, data, message } = res.data;
       if (success) {
         let permissions = {};
@@ -23,6 +24,7 @@ export const loginApi = (data) => {
         return { success, data };
     })
     .catch((err) => {
+      console.log(err)
       const {message, success} =  err?.response?.data ?? {}
       const {status} = err?.response
       return { status, success, message, };
