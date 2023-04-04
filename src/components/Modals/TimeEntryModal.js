@@ -240,8 +240,8 @@ export default TimeEntryModal = ({ modalVisible, data, onClose, onSuccess, disab
           locale={dateTime['is24Hour'] &&"es-GB"}
           minuteInterval={15}
           display={dateTime['key'] !== 'date' ? 'spinner' : 'default'}
-          // themeVariant="dark"
-          // isDarkModeEnabled={false}
+          themeVariant="light"
+          isDarkModeEnabled={false}
           date={
             formData[dateTime['key']]
               ? dateTime['key'] !== 'date'
