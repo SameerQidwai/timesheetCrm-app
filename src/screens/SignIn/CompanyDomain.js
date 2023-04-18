@@ -44,7 +44,7 @@ const CompanyDomain = ({navigation}) => {
 
         let { domain } = formState
         domain = (domain ?? '').toLowerCase()
-        if (DomainName[domain]) {
+        if (DomainName[domain] || domain.contains('http://localhost:')) {
             let stored = { domain: domain }
             setAppStorage(stored)
             storage.set('data', JSON.stringify(stored))
