@@ -94,8 +94,9 @@ function Login() {
           <Text
             style={styles.companyText}
             onPress={() => {
-            setAppStorage({})
-            storage.clearAll()
+              const {domain} = getLocalStorage()
+            setAppStorage({domain, changeCompany: true})
+            // storage.clearAll()
           }}
           >Change Company?</Text>
         </View>

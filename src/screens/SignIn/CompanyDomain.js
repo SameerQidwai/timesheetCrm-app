@@ -9,8 +9,9 @@ import { DomainName, getLocalStorage, storage } from '../../services/constant'
 const CompanyDomain = ({navigation}) => {
 
     const {appStorage, setAppStorage} = useContext(AppContext)
+    const {domain} = getLocalStorage()
     const [formState, setFormState] = useState({
-        domain: '',
+        domain: getLocalStorage()?.domain?? '',
         isPress: false
     });
     const [snack, setSnack] = useState(false)
@@ -44,9 +45,10 @@ const CompanyDomain = ({navigation}) => {
 
         let { domain } = formState
         domain = (domain ?? '').toLowerCase()
-        if (DomainName[domain] || domain.contains('?localhost-test')) {
+        if (DomainName[domain] || (domain ?? '').includes('?localhost-test')) {
             domain = domain.replace('?localhost-test', '')
             let stored = { domain: domain }
+            console.log(stored)
             setAppStorage(stored)
             storage.set('data', JSON.stringify(stored))
         } else {

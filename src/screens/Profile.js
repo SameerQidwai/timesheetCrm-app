@@ -27,7 +27,7 @@ const Profile = () => {
   }
 
   const signOut = () => {
-    let remain = {'domain': appStorage?.domain}
+    let remain = {'domain': appStorage?.domain, changeCompany: true}
     setAppStorage(remain)
     storage.set('data', JSON.stringify(remain))
   }

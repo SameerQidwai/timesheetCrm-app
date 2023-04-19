@@ -75,7 +75,8 @@ function TabScreen () {
 
 const SignInStack = createNativeStackNavigator();
 
-function SignInScreen({domain}) {
+function SignInScreen({appStorage}) {
+  const {domain, changeCompany} = appStorage
   return (
     <SignInStack.Navigator
       screenOptions={{
@@ -83,11 +84,10 @@ function SignInScreen({domain}) {
       }}
     >
       
-      {
-      DomainName[domain] ? 
-        <SignInStack.Screen  name="Login" component={Login} /> :
-        <SignInStack.Screen  name="Company" component={CompanyDomain} />
-      }
+      <SignInStack.Screen
+        name={changeCompany || !domain ? "Company" : "Login"}
+        component={changeCompany || !domain ? CompanyDomain : Login}
+      />
     </SignInStack.Navigator>
   );
 }
@@ -108,7 +108,7 @@ function Stacks() {
     {
       appStorage?.['accessToken'] ? 
         <TabScreen /> :
-        <SignInScreen setLocalStorage={setLocalStorage} domain={appStorage?.['domain']} /> 
+        <SignInScreen setLocalStorage={setLocalStorage} appStorage={appStorage} /> 
     }
     </View>
   )
