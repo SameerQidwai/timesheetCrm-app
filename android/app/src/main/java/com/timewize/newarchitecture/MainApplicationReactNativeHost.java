@@ -1,4 +1,4 @@
-package com.onelmapp.newarchitecture;
+package com.timewize.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.onelmapp.BuildConfig;
-import com.onelmapp.newarchitecture.components.MainComponentsRegistry;
-import com.onelmapp.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.timewize.BuildConfig;
+import com.timewize.newarchitecture.components.MainComponentsRegistry;
+import com.timewize.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

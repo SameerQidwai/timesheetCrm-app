@@ -1,5 +1,5 @@
 {
-  "name": "onelmApp",
+  "name": "timewize",
   "version": "1.0.3",
   "private": true,
   "scripts": {
@@ -11,7 +11,8 @@
     "debug-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
     "debug-apk": "cd android && ./gradlew assembleDebug && cd ..",
     "release-build": "rm -rf ./android/app/src/main/assets/index.android.bundle && rm -rf ./android/app/build/intermediates/assets/release/mergeReleaseAssets/index.android.bundle && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/ && rm -rf ./android/app/src/main/res/drawable-*/ && rm -rf ./android/app/src/main/res/raw/",
-    "release-apk": "cd android && ./gradlew assembleRelease && cd .."
+    "release-apk": "cd android && ./gradlew assembleRelease && cd ..",
+    "release-bundle": "cd android && ./gradlew bundleRelease && cd .."
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "^6.3.2",

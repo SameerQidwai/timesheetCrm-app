@@ -1,4 +1,4 @@
-package com.onelmapp;
+package com.timewize;
 
 import android.os.Bundle; // here
 
@@ -16,7 +16,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "onelmApp";
+    return "timewize";
   }
   
   @Override

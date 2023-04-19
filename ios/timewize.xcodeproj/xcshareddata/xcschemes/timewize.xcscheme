@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "onelmApp.app"
-               BlueprintName = "onelmApp"
-               ReferencedContainer = "container:onelmApp.xcodeproj">
+               BuildableName = "timewize.app"
+               BlueprintName = "timewize"
+               ReferencedContainer = "container:timewize.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "onelmAppTests.xctest"
-               BlueprintName = "onelmAppTests"
-               ReferencedContainer = "container:onelmApp.xcodeproj">
+               BuildableName = "timewizeTests.xctest"
+               BlueprintName = "timewizeTests"
+               ReferencedContainer = "container:timewize.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "onelmApp.app"
-            BlueprintName = "onelmApp"
-            ReferencedContainer = "container:onelmApp.xcodeproj">
+            BuildableName = "timewize.app"
+            BlueprintName = "timewize"
+            ReferencedContainer = "container:timewize.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "onelmApp.app"
-            BlueprintName = "onelmApp"
-            ReferencedContainer = "container:onelmApp.xcodeproj">
+            BuildableName = "timewize.app"
+            BlueprintName = "timewize"
+            ReferencedContainer = "container:timewize.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
