@@ -29,10 +29,11 @@ export const DomainName = {
 // export let Api = DomainName[getLocalStorage('domain')]
 export function getApi(request) {
   let ip = getLocalStorage('domain')
+  let domain = DomainName[ip] ?? ip
   if (request) {
-    return  `${DomainName[ip]}/${request}`
+    return  `${domain}/${request}`
   }
-  return DomainName[ip]
+  return domain
 }
 
 export const status_background = StyleSheet.create({
