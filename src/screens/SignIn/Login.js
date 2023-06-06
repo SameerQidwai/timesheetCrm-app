@@ -12,7 +12,7 @@ function Login() {
     const [snack, setSnack] = useState({
         visible: false,
         duration: 3000,
-        label: 'Wrong Usernam or Password.',
+        label: 'Wrong username or password.',
         wrapperStyle:{backgroundColor: colors['danger']}
     })
     const [eye, setEye]= useState(true)
@@ -49,7 +49,7 @@ function Login() {
                 mode="outlined"
                 label={'Username'}
                 value={formData['email']}
-                placeholder={'Enter Your Username'}
+                placeholder={'Enter username'}
                 onChangeText={text =>
                   setFormData(prev => ({...prev, email: text}))
                 }
@@ -59,7 +59,7 @@ function Login() {
                 mode="outlined"
                 label={'Password'}
                 value={formData['password']}
-                placeholder={'Enter Your Passwrod'}
+                placeholder={'Enter password'}
                 style={{marginVertical: 15}}
                 // keyboardType='visible-password'
                 secureTextEntry={eye}
