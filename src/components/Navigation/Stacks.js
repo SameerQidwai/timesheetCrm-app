@@ -10,7 +10,7 @@ import LeaveRequest from '../../screens/Leave/LeaveRequest';
 import MonthlyTimesheet from '../../screens/Timesheet/MonthlyTimesheet';
 import { AppContext } from '../../context/AppContext';
 import { colors } from '../Common/theme';
-import { DomainName, getLocalStorage, storage } from '../../Services/constant';
+import { DomainName, getLocalStorage, storage } from '../../services/constant';
 import CompanyDomain from '../../screens/SignIn/CompanyDomain';
 
 const Stack = createNativeStackNavigator();
